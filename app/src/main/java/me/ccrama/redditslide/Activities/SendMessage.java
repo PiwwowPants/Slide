@@ -1,19 +1,15 @@
 package me.ccrama.redditslide.Activities;
 
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,22 +17,22 @@ import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import net.dean.jraw.ApiException;
-import net.dean.jraw.managers.CaptchaHelper;
 import net.dean.jraw.managers.InboxManager;
 import net.dean.jraw.models.Captcha;
 import net.dean.jraw.models.PrivateMessage;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Locale;
 
 import me.ccrama.redditslide.Authentication;
 import me.ccrama.redditslide.DataShare;
+import me.ccrama.redditslide.Drafts;
 import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.Reddit;
 import me.ccrama.redditslide.UserSubscriptions;
 import me.ccrama.redditslide.Views.DoEditorActions;
 import me.ccrama.redditslide.Visuals.Palette;
-import me.ccrama.redditslide.util.LogUtil;
+import me.ccrama.redditslide.util.ToastHelper;
 
 /**
  * Created by ccrama on 3/5/2015.
@@ -180,7 +176,7 @@ public class SendMessage extends BaseActivity {
         String tried;
         Captcha captcha;
 
-        public AsyncDo(Captcha captcha, String tried){
+        AsyncDo(Captcha captcha, String tried) {
             this.captcha = captcha;
             this.tried = tried;
         }
@@ -191,7 +187,8 @@ public class SendMessage extends BaseActivity {
             return null;
         }
 
-        public void sendMessage(Captcha captcha, String captchaAttempt) {
+        void sendMessage(Captcha captcha, String captchaAttempt) {
+            Drafts.addDraft(bodytext);
             if (reply) {
                 try {
                     new net.dean.jraw.managers.AccountManager(Authentication.reddit).reply(previousMessage, bodytext);
@@ -201,8 +198,10 @@ public class SendMessage extends BaseActivity {
                 }
             } else {
                 try {
-                    if (captcha != null)
-                        new InboxManager(Authentication.reddit).compose(totext, subjecttext, bodytext, captcha, captchaAttempt);
+                    if (captcha != null) {
+                        new InboxManager(Authentication.reddit).compose(totext, subjecttext,
+                                bodytext, captcha, captchaAttempt);
+                    }
                     else {
                         String to = author;
                         if(to.startsWith("/r/")){
@@ -244,14 +243,18 @@ public class SendMessage extends BaseActivity {
             final String MESSAGE_SENT = (messageSent)
                     ? getString(R.string.msg_sent_success) : messageSentStatus;
 
-            Toast.makeText(SendMessage.this, MESSAGE_SENT, Toast.LENGTH_SHORT).show();
+            Toast firstToast = Toast.makeText(SendMessage.this, MESSAGE_SENT, Toast.LENGTH_SHORT);
+            firstToast.show();
 
             //Only finish() this Activity if the message sent successfully
             if (messageSent) {
                 finish();
+                Drafts.deleteDraft(bodytext);
             } else {
                 ((FloatingActionButton)findViewById(R.id.send)).show();
                 messageSent = true;
+                ToastHelper.makeTextDelayed(SendMessage.this, getString(R.string.draft_saved),
+                        Toast.LENGTH_SHORT, Collections.singletonList(firstToast));
             }
         }
     }

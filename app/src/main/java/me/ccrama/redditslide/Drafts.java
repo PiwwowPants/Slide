@@ -34,6 +34,17 @@ public class Drafts  {
         save(drafts);
     }
 
+    public static void deleteDraft(String bodyText) {
+        ArrayList<String> drafts = getDrafts();
+        for (int i = drafts.size() - 1; i >= 0; i--) {
+            if (drafts.get(i).equals(bodyText)) {
+                drafts.remove(i);
+                break;
+            }
+        }
+        save(drafts);
+    }
+
 
     public static void save(ArrayList<String> drafts) {
         SharedPreferences.Editor e = Authentication.authentication.edit();

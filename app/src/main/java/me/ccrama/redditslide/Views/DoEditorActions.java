@@ -167,7 +167,8 @@ public class DoEditorActions {
             @Override
             public void onClick(View v) {
                 Drafts.addDraft(editText.getText().toString());
-                Snackbar s = Snackbar.make(baseView.findViewById(R.id.savedraft), "Draft saved",
+                Snackbar s = Snackbar.make(baseView.findViewById(R.id.savedraft),
+                        baseView.getResources().getString(R.string.draft_saved),
                         Snackbar.LENGTH_SHORT);
                 View view = s.getView();
                 TextView tv = view.findViewById(android.support.design.R.id.snackbar_text);
