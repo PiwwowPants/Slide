@@ -202,7 +202,7 @@ public class SettingValues {
     public static boolean fab     = true;
     public static int     fabType = Constants.FAB_POST;
     public static boolean hideButton;
-    public static boolean tabletUI;
+    public static boolean isPro;
     public static boolean customtabs;
     public static boolean titleTop;
     public static boolean dualPortrait;
@@ -469,7 +469,7 @@ public class SettingValues {
 
     public static boolean isNight() {
         int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-        return (hour >= nightStart + 12 || hour < nightEnd) && tabletUI && nightMode;
+        return (hour >= nightStart + 12 || hour < nightEnd) && isPro && nightMode;
     }
 
     public static Sorting getBaseSubmissionSort(String sub) {
