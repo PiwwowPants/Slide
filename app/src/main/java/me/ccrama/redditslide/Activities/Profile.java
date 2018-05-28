@@ -43,8 +43,6 @@ import net.dean.jraw.models.Trophy;
 import net.dean.jraw.paginators.Sorting;
 import net.dean.jraw.paginators.TimePeriod;
 
-import org.ligi.snackengage.snacks.Snack;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -165,11 +163,7 @@ public class Profile extends BaseActivityAnim {
 
             @Override
             public void onPageSelected(int position) {
-                if (position == 6) {
-                    isSavedView = true;
-                } else {
-                    isSavedView = false;
-                }
+                isSavedView = position == 6;
                 findViewById(R.id.header).animate()
                         .translationY(0)
                         .setInterpolator(new LinearInterpolator())
@@ -211,11 +205,7 @@ public class Profile extends BaseActivityAnim {
         if (getIntent().hasExtra(EXTRA_UPVOTE) && name.equals(Authentication.name)) {
             pager.setCurrentItem(4);
         }
-        if (pager.getCurrentItem() == 6) {
-            isSavedView = true;
-        } else {
-            isSavedView = false;
-        }
+        isSavedView = pager.getCurrentItem() == 6;
         if (pager.getCurrentItem() != 0) {
             scrollToTabAfterLayout(pager.getCurrentItem());
         }
@@ -373,7 +363,7 @@ public class Profile extends BaseActivityAnim {
     }
 
     public void openPopup() {
-        PopupMenu popup = new PopupMenu(Profile.this, findViewById(R.id.anchor), Gravity.RIGHT);
+        PopupMenu popup = new PopupMenu(Profile.this, findViewById(R.id.anchor), Gravity.END);
         final Spannable[] base = Reddit.getSortingSpannables(getBaseContext(), profSort);
         for (Spannable s : base) {
             MenuItem m = popup.getMenu().add(s);
@@ -424,7 +414,7 @@ public class Profile extends BaseActivityAnim {
     }
 
     public void openPopupTime() {
-        PopupMenu popup = new PopupMenu(Profile.this, findViewById(R.id.anchor), Gravity.RIGHT);
+        PopupMenu popup = new PopupMenu(Profile.this, findViewById(R.id.anchor), Gravity.END);
         final Spannable[] base = Reddit.getSortingSpannablesTime(getBaseContext(), profTime);
         for (Spannable s : base) {
             MenuItem m = popup.getMenu().add(s);
@@ -577,7 +567,7 @@ public class Profile extends BaseActivityAnim {
                     LayoutInflater inflater = getLayoutInflater();
                     final View dialoglayout = inflater.inflate(R.layout.colorprofile, null);
                     AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(Profile.this);
-                    final TextView title = (TextView) dialoglayout.findViewById(R.id.title);
+                    final TextView title = dialoglayout.findViewById(R.id.title);
                     title.setText(name);
 
                     dialoglayout.findViewById(R.id.share).setOnClickListener(new View.OnClickListener() {
@@ -609,7 +599,7 @@ public class Profile extends BaseActivityAnim {
                     }
 
                     ((TextView) dialoglayout.findViewById(R.id.tagged)).setText(tag);
-                    LinearLayout l = (LinearLayout) dialoglayout.findViewById(R.id.trophies_inner);
+                    LinearLayout l = dialoglayout.findViewById(R.id.trophies_inner);
 
                     dialoglayout.findViewById(R.id.tag).setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -793,8 +783,8 @@ public class Profile extends BaseActivityAnim {
                         }
                     });
 
-                    LineColorPicker colorPicker = (LineColorPicker) dialoglayout.findViewById(R.id.picker);
-                    final LineColorPicker colorPicker2 = (LineColorPicker) dialoglayout.findViewById(R.id.picker2);
+                    LineColorPicker colorPicker = dialoglayout.findViewById(R.id.picker);
+                    final LineColorPicker colorPicker2 = dialoglayout.findViewById(R.id.picker2);
 
                     colorPicker.setColors(ColorPreferences.getBaseColors(Profile.this));
 
@@ -833,7 +823,7 @@ public class Profile extends BaseActivityAnim {
                     });
 
                     {
-                        TextView dialogButton = (TextView) dialoglayout.findViewById(R.id.ok);
+                        TextView dialogButton = dialoglayout.findViewById(R.id.ok);
 
                         // if button is clicked, close the custom dialog
                         dialogButton.setOnClickListener(new View.OnClickListener() {
@@ -870,7 +860,7 @@ public class Profile extends BaseActivityAnim {
 
                     }
                     {
-                        final TextView dialogButton = (TextView) dialoglayout.findViewById(R.id.reset);
+                        final TextView dialogButton = dialoglayout.findViewById(R.id.reset);
 
                         // if button is clicked, close the custom dialog
                         dialogButton.setOnClickListener(new View.OnClickListener() {

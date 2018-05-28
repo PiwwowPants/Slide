@@ -408,7 +408,7 @@ public class SubredditView extends BaseActivity {
                 builder.show();
                 return true;
             case R.id.sidebar:
-                drawerLayout.openDrawer(Gravity.RIGHT);
+                drawerLayout.openDrawer(Gravity.END);
                 return true;
             case R.id.hide_posts:
                 ((SubmissionsView) adapter.getCurrentFragment()).clearSeenPosts(false);
@@ -1127,8 +1127,7 @@ public class SubredditView extends BaseActivity {
         builder.show();
     }
     public void openPopup() {
-        PopupMenu popup =
-                new PopupMenu(SubredditView.this, findViewById(R.id.anchor), Gravity.RIGHT);
+        PopupMenu popup = new PopupMenu(SubredditView.this, findViewById(R.id.anchor), Gravity.END);
         final Spannable[] base = Reddit.getSortingSpannables(getBaseContext(), subreddit);
         for (Spannable s : base) {
             MenuItem m = popup.getMenu().add(s);
@@ -1172,8 +1171,7 @@ public class SubredditView extends BaseActivity {
     }
 
     public void openPopupTime() {
-        PopupMenu popup =
-                new PopupMenu(SubredditView.this, findViewById(R.id.anchor), Gravity.RIGHT);
+        PopupMenu popup = new PopupMenu(SubredditView.this, findViewById(R.id.anchor), Gravity.END);
         final Spannable[] base = Reddit.getSortingSpannablesTime(getBaseContext(), subreddit);
         for (Spannable s : base) {
             MenuItem m = popup.getMenu().add(s);
