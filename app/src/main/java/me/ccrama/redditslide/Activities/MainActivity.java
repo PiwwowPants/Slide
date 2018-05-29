@@ -938,8 +938,11 @@ public class MainActivity extends BaseActivity
         boolean first = false;
         if (Reddit.colors != null && !Reddit.colors.contains("firstStart53")) {
             new AlertDialogWrapper.Builder(this).setTitle("Content settings have moved!")
-                    .setMessage("NSFW content is now disabled by default. If you are over the age of 18, to re-enable NSFW content, visit Settings > Content settings")
-                    .setPositiveButton(R.string.btn_ok, null).setCancelable(false).show();
+                    .setMessage(
+                            "NSFW content is now disabled by default. If you are over the age of 18, to re-enable NSFW content, visit Settings > Content settings")
+                    .setPositiveButton(R.string.btn_ok, null)
+                    .setCancelable(false)
+                    .show();
             Reddit.colors.edit().putBoolean("firstStart53", true).apply();
         }
         if (Reddit.colors != null && !Reddit.colors.contains("Tutorial")) {
@@ -1047,7 +1050,9 @@ public class MainActivity extends BaseActivity
                                     Reddit.appRestart.edit().putString("url", s.getUrl()).apply();
 
                                     String title;
-                                    if (s.getTitle().toLowerCase(Locale.ENGLISH).contains("release")) {
+                                    if (s.getTitle()
+                                            .toLowerCase(Locale.ENGLISH)
+                                            .contains("release")) {
                                         title = getString(R.string.btn_changelog);
                                     } else {
                                         title = getString(R.string.btn_view);
@@ -1238,7 +1243,8 @@ public class MainActivity extends BaseActivity
         }
 
 
-        if (!FDroid.isFDroid && Authentication.isLoggedIn && NetworkUtil.isConnected(MainActivity.this))
+        if (!FDroid.isFDroid && Authentication.isLoggedIn && NetworkUtil.isConnected(
+                MainActivity.this))
 
         {
             // Display an snackbar that asks the user to rate the app after this
@@ -1283,11 +1289,10 @@ public class MainActivity extends BaseActivity
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
         intent.setData(Uri.parse("http://ccrama.me/"));
-                List<ResolveInfo> allApps = getPackageManager().queryIntentActivities (intent,
-                        PackageManager.GET_DISABLED_COMPONENTS);
-        for(ResolveInfo i : allApps){
-            if(i.activityInfo.isEnabled())
-                LogUtil.v(i.activityInfo.packageName);
+        List<ResolveInfo> allApps = getPackageManager().queryIntentActivities(intent,
+                PackageManager.GET_DISABLED_COMPONENTS);
+        for (ResolveInfo i : allApps) {
+            if (i.activityInfo.isEnabled()) LogUtil.v(i.activityInfo.packageName);
         }
     }
 
@@ -1304,15 +1309,17 @@ public class MainActivity extends BaseActivity
     public void networkUnavailable() {
     }
 
-    public void checkClipboard(){
+    public void checkClipboard() {
         try {
-            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipboardManager clipboard =
+                    (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
 
             if (clipboard.hasPrimaryClip()) {
                 ClipData data = clipboard.getPrimaryClip();
                 final String s = (String) data.getItemAt(0).getText();
                 if (!s.isEmpty()) {
-                    if (ContentType.getContentType(s) == ContentType.Type.REDDIT && !HasSeen.getSeen(s)) {
+                    if (ContentType.getContentType(s) == ContentType.Type.REDDIT
+                            && !HasSeen.getSeen(s)) {
                         Snackbar snack =
                                 Snackbar.make(mToolbar, "Reddit link found in your clipboard",
                                         Snackbar.LENGTH_LONG);
@@ -1326,7 +1333,7 @@ public class MainActivity extends BaseActivity
                     }
                 }
             }
-        } catch (Exception e){
+        } catch (Exception e) {
         }
     }
 
@@ -1336,7 +1343,7 @@ public class MainActivity extends BaseActivity
         if (Authentication.isLoggedIn && Authentication.didOnline && NetworkUtil.isConnected(
                 MainActivity.this) && headerMain != null && runAfterLoad == null) {
             new AsyncNotificationBadge().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        } else if(Authentication.isLoggedIn && Authentication.name.equalsIgnoreCase("loggedout")) {
+        } else if (Authentication.isLoggedIn && Authentication.name.equalsIgnoreCase("loggedout")) {
             restartTheme(); //force a restart because we should not be here
         }
 
@@ -1673,8 +1680,11 @@ public class MainActivity extends BaseActivity
                                                             if (!s.equalsIgnoreCase(accName)) {
                                                                 d = true;
                                                                 LogUtil.v("Switching to " + s);
-                                                                for(Map.Entry<String, String> e : accounts.entrySet()){
-                                                                    LogUtil.v(e.getKey() + ":" + e.getValue());
+                                                                for (Map.Entry<String, String> e : accounts
+                                                                        .entrySet()) {
+                                                                    LogUtil.v(e.getKey()
+                                                                            + ":"
+                                                                            + e.getValue());
                                                                 }
                                                                 if (accounts.containsKey(s)
                                                                         && !accounts.get(s)
@@ -1741,7 +1751,8 @@ public class MainActivity extends BaseActivity
                 t.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String accName = ((TextView) t.findViewById(R.id.name)).getText().toString();
+                        String accName =
+                                ((TextView) t.findViewById(R.id.name)).getText().toString();
                         LogUtil.v("Found name is " + accName);
                         if (!accName.equalsIgnoreCase(Authentication.name)) {
                             LogUtil.v("Switching to " + accName);
@@ -2343,15 +2354,16 @@ public class MainActivity extends BaseActivity
             for (String s : rawSubs) {
                 try {
                     String[] split = s.split(":");
-                    subThresholds.put(split[0].toLowerCase(Locale.ENGLISH), Integer.valueOf(split[1]));
+                    subThresholds.put(split[0].toLowerCase(Locale.ENGLISH),
+                            Integer.valueOf(split[1]));
                 } catch (Exception ignored) {
                     //do nothing
                 }
             }
 
             //whether or not this subreddit was in the keySet
-            boolean isNotified =
-                    subThresholds.keySet().contains(subreddit.getDisplayName().toLowerCase(Locale.ENGLISH));
+            boolean isNotified = subThresholds.keySet()
+                    .contains(subreddit.getDisplayName().toLowerCase(Locale.ENGLISH));
             ((AppCompatCheckBox) findViewById(R.id.notify_posts_state)).setChecked(isNotified);
         } else {
             findViewById(R.id.sidebar_text).setVisibility(View.GONE);
@@ -2574,7 +2586,8 @@ public class MainActivity extends BaseActivity
         {
             final TextView subscribe = (TextView) findViewById(R.id.subscribe);
             currentlySubbed = (!Authentication.isLoggedIn && usedArray.contains(
-                    subreddit.getDisplayName().toLowerCase(Locale.ENGLISH))) || subreddit.isUserSubscriber();
+                    subreddit.getDisplayName().toLowerCase(Locale.ENGLISH)))
+                    || subreddit.isUserSubscriber();
             doSubscribeButtonText(currentlySubbed, subscribe);
 
             assert subscribe != null;
@@ -2616,9 +2629,8 @@ public class MainActivity extends BaseActivity
                                                                                     View view =
                                                                                             s.getView();
                                                                                     TextView tv =
-                                                                                            view
-                                                                                                    .findViewById(
-                                                                                                            android.support.design.R.id.snackbar_text);
+                                                                                            view.findViewById(
+                                                                                                    android.support.design.R.id.snackbar_text);
                                                                                     tv.setTextColor(
                                                                                             Color.WHITE);
                                                                                     s.show();
@@ -2718,9 +2730,8 @@ public class MainActivity extends BaseActivity
                                                                                     View view =
                                                                                             s.getView();
                                                                                     TextView tv =
-                                                                                            view
-                                                                                                    .findViewById(
-                                                                                                            android.support.design.R.id.snackbar_text);
+                                                                                            view.findViewById(
+                                                                                                    android.support.design.R.id.snackbar_text);
                                                                                     tv.setTextColor(
                                                                                             Color.WHITE);
                                                                                     s.show();
@@ -2904,11 +2915,11 @@ public class MainActivity extends BaseActivity
 
             final TextView sort = dialoglayout.findViewById(R.id.sort);
             Sorting sortingis = Sorting.HOT;
-            if(SettingValues.hasSort(subreddit)) {
+            if (SettingValues.hasSort(subreddit)) {
                 sortingis = SettingValues.getBaseSubmissionSort(subreddit);
-                sort.setText(sortingis.name()
-                        + ((sortingis == Sorting.CONTROVERSIAL || sortingis == Sorting.TOP)?" of "
-                        + SettingValues.getBaseTimePeriod(subreddit).name():""));
+                sort.setText(sortingis.name() + (
+                        (sortingis == Sorting.CONTROVERSIAL || sortingis == Sorting.TOP) ? " of "
+                                + SettingValues.getBaseTimePeriod(subreddit).name() : ""));
             } else {
                 sort.setText("Set default sorting");
 
@@ -2942,37 +2953,50 @@ public class MainActivity extends BaseActivity
                                             return;
                                     }
 
-                                    SettingValues.setSubSorting(sorts,time,subreddit);
-                                    Sorting sortingis = SettingValues.getBaseSubmissionSort(subreddit);
-                                    sort.setText(sortingis.name()
-                                            + ((sortingis == Sorting.CONTROVERSIAL || sortingis == Sorting.TOP)?" of "
-                                            + SettingValues.getBaseTimePeriod(subreddit).name():""));
+                                    SettingValues.setSubSorting(sorts, time, subreddit);
+                                    Sorting sortingis =
+                                            SettingValues.getBaseSubmissionSort(subreddit);
+                                    sort.setText(sortingis.name() + (
+                                            (sortingis == Sorting.CONTROVERSIAL
+                                                    || sortingis == Sorting.TOP) ? " of "
+                                                    + SettingValues.getBaseTimePeriod(subreddit)
+                                                    .name() : ""));
                                     reloadSubs();
                                 }
                             };
                     AlertDialogWrapper.Builder builder =
                             new AlertDialogWrapper.Builder(MainActivity.this);
                     builder.setTitle(R.string.sorting_choose);
-                    builder.setSingleChoiceItems(Reddit.getSortingStrings(getBaseContext()),
-                            sortid, l2);
-                    builder.setNegativeButton("Reset default sorting", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            SettingValues.prefs.edit().remove("defaultSort" + subreddit.toLowerCase(Locale.ENGLISH)).apply();
-                            SettingValues.prefs.edit().remove("defaultTime" + subreddit.toLowerCase(Locale.ENGLISH)).apply();
-                            final TextView sort = dialoglayout.findViewById(R.id.sort);
-                            if(SettingValues.hasSort(subreddit)) {
-                                Sorting sortingis = SettingValues.getBaseSubmissionSort(subreddit);
-                                sort.setText(sortingis.name()
-                                        + ((sortingis == Sorting.CONTROVERSIAL || sortingis == Sorting.TOP)?" of "
-                                        + SettingValues.getBaseTimePeriod(subreddit).name():""));
-                            } else {
-                                sort.setText("Set default sorting");
+                    builder.setSingleChoiceItems(Reddit.getSortingStrings(getBaseContext()), sortid,
+                            l2);
+                    builder.setNegativeButton("Reset default sorting",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    SettingValues.prefs.edit()
+                                            .remove("defaultSort" + subreddit.toLowerCase(
+                                                    Locale.ENGLISH))
+                                            .apply();
+                                    SettingValues.prefs.edit()
+                                            .remove("defaultTime" + subreddit.toLowerCase(
+                                                    Locale.ENGLISH))
+                                            .apply();
+                                    final TextView sort = dialoglayout.findViewById(R.id.sort);
+                                    if (SettingValues.hasSort(subreddit)) {
+                                        Sorting sortingis =
+                                                SettingValues.getBaseSubmissionSort(subreddit);
+                                        sort.setText(sortingis.name() + (
+                                                (sortingis == Sorting.CONTROVERSIAL
+                                                        || sortingis == Sorting.TOP) ? " of "
+                                                        + SettingValues.getBaseTimePeriod(subreddit)
+                                                        .name() : ""));
+                                    } else {
+                                        sort.setText("Set default sorting");
 
-                            }
-                            reloadSubs();
-                        }
-                    });
+                                    }
+                                    reloadSubs();
+                                }
+                            });
                     builder.show();
                 }
             });
@@ -3213,9 +3237,8 @@ public class MainActivity extends BaseActivity
                                                                                                     s.getView();
                                                                                             TextView
                                                                                                     tv =
-                                                                                                    view
-                                                                                                            .findViewById(
-                                                                                                                    android.support.design.R.id.snackbar_text);
+                                                                                                    view.findViewById(
+                                                                                                            android.support.design.R.id.snackbar_text);
                                                                                             tv.setTextColor(
                                                                                                     Color.WHITE);
                                                                                             s.show();
@@ -3336,11 +3359,12 @@ public class MainActivity extends BaseActivity
                 Reddit.setSorting(sub, sort);
                 Reddit.setTime(sub, time);
                 final TextView sort = dialoglayout.findViewById(R.id.sort);
-                if(SettingValues.hasSort(sub)) {
+                if (SettingValues.hasSort(sub)) {
                     Sorting sortingis = SettingValues.getBaseSubmissionSort(sub);
-                    sort.setText(sortingis.name()
-                            + ((sortingis == Sorting.CONTROVERSIAL || sortingis == Sorting.TOP)?" of "
-                            + SettingValues.getBaseTimePeriod(sub).name():""));
+                    sort.setText(sortingis.name() + (
+                            (sortingis == Sorting.CONTROVERSIAL || sortingis == Sorting.TOP) ?
+                                    " of "
+                                            + SettingValues.getBaseTimePeriod(sub).name() : ""));
                 } else {
                     sort.setText("Set default sorting");
                 }
@@ -3389,7 +3413,8 @@ public class MainActivity extends BaseActivity
             ((TextView) findViewById(R.id.post_text)).setTextColor(subColor);
             ((TextView) findViewById(R.id.mods_text)).setTextColor(subColor);
             ((TextView) findViewById(R.id.flair_text)).setTextColor(subColor);
-            ((TextView) drawerLayout.findViewById(R.id.sorting).findViewById(R.id.sort)).setTextColor(subColor);
+            ((TextView) drawerLayout.findViewById(R.id.sorting)
+                    .findViewById(R.id.sort)).setTextColor(subColor);
             ((TextView) findViewById(R.id.sync)).setTextColor(subColor);
 
         } else {
@@ -3945,19 +3970,23 @@ public class MainActivity extends BaseActivity
                                 ((MainActivity.OverviewPagerAdapterComment) adapter).size =
                                         (usedArray.size() + 1);
                                 adapter.notifyDataSetChanged();
-                                if (usedArray.contains(
-                                        drawerSearch.getText().toString().toLowerCase(Locale.ENGLISH))) {
-                                    doPageSelectedComments(usedArray.indexOf(
-                                            drawerSearch.getText().toString().toLowerCase(Locale.ENGLISH)));
+                                if (usedArray.contains(drawerSearch.getText()
+                                        .toString()
+                                        .toLowerCase(Locale.ENGLISH))) {
+                                    doPageSelectedComments(usedArray.indexOf(drawerSearch.getText()
+                                            .toString()
+                                            .toLowerCase(Locale.ENGLISH)));
                                 } else {
                                     doPageSelectedComments(
                                             usedArray.indexOf(sideArrayAdapter.fitems.get(0)));
                                 }
                             }
-                            if (usedArray.contains(
-                                    drawerSearch.getText().toString().toLowerCase(Locale.ENGLISH))) {
-                                pager.setCurrentItem(usedArray.indexOf(
-                                        drawerSearch.getText().toString().toLowerCase(Locale.ENGLISH)));
+                            if (usedArray.contains(drawerSearch.getText()
+                                    .toString()
+                                    .toLowerCase(Locale.ENGLISH))) {
+                                pager.setCurrentItem(usedArray.indexOf(drawerSearch.getText()
+                                        .toString()
+                                        .toLowerCase(Locale.ENGLISH)));
                             } else {
                                 pager.setCurrentItem(
                                         usedArray.indexOf(sideArrayAdapter.fitems.get(0)));
@@ -4258,8 +4287,8 @@ public class MainActivity extends BaseActivity
             UserSubscriptions.addSubreddit(subreddit.getDisplayName().toLowerCase(Locale.ENGLISH),
                     MainActivity.this);
         } else {
-            UserSubscriptions.removeSubreddit(subreddit.getDisplayName().toLowerCase(Locale.ENGLISH),
-                    MainActivity.this);
+            UserSubscriptions.removeSubreddit(
+                    subreddit.getDisplayName().toLowerCase(Locale.ENGLISH), MainActivity.this);
             pager.setCurrentItem(pager.getCurrentItem() - 1);
             restartTheme();
         }
@@ -4514,12 +4543,14 @@ public class MainActivity extends BaseActivity
                                                             if (usedArray.contains(
                                                                     GO_TO_SUB_FIELD.getText()
                                                                             .toString()
-                                                                            .toLowerCase(Locale.ENGLISH))) {
+                                                                            .toLowerCase(
+                                                                                    Locale.ENGLISH))) {
                                                                 doPageSelectedComments(
                                                                         usedArray.indexOf(
                                                                                 GO_TO_SUB_FIELD.getText()
                                                                                         .toString()
-                                                                                        .toLowerCase(Locale.ENGLISH)));
+                                                                                        .toLowerCase(
+                                                                                                Locale.ENGLISH)));
                                                             } else {
                                                                 doPageSelectedComments(
                                                                         usedArray.indexOf(
@@ -4530,11 +4561,13 @@ public class MainActivity extends BaseActivity
                                                         if (usedArray.contains(
                                                                 GO_TO_SUB_FIELD.getText()
                                                                         .toString()
-                                                                        .toLowerCase(Locale.ENGLISH))) {
+                                                                        .toLowerCase(
+                                                                                Locale.ENGLISH))) {
                                                             pager.setCurrentItem(usedArray.indexOf(
                                                                     GO_TO_SUB_FIELD.getText()
                                                                             .toString()
-                                                                            .toLowerCase(Locale.ENGLISH)));
+                                                                            .toLowerCase(
+                                                                                    Locale.ENGLISH)));
                                                         } else {
                                                             pager.setCurrentItem(usedArray.indexOf(
                                                                     sideArrayAdapter.fitems.get(
@@ -5141,8 +5174,10 @@ public class MainActivity extends BaseActivity
                                         .setDuration(180);
                             }
                             pager.setSwipeLeftOnly(true);
-                            themeSystemBars(openingComments.getSubredditName().toLowerCase(Locale.ENGLISH));
-                            setRecentBar(openingComments.getSubredditName().toLowerCase(Locale.ENGLISH));
+                            themeSystemBars(
+                                    openingComments.getSubredditName().toLowerCase(Locale.ENGLISH));
+                            setRecentBar(
+                                    openingComments.getSubredditName().toLowerCase(Locale.ENGLISH));
                         }
                     }
                 }

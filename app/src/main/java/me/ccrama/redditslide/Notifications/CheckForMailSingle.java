@@ -13,8 +13,8 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.text.Html;
 
 import net.dean.jraw.models.Message;
@@ -109,7 +109,9 @@ public class CheckForMailSingle extends BroadcastReceiver {
                                                     1, 1))
                                     .setWhen(System.currentTimeMillis())
                                     .setAutoCancel(true)
-                                    .setChannelId(SettingValues.notifSound ? Reddit.CHANNEL_MAIL_SOUND : Reddit.CHANNEL_MAIL)
+                                    .setChannelId(
+                                            SettingValues.notifSound ? Reddit.CHANNEL_MAIL_SOUND
+                                                    : Reddit.CHANNEL_MAIL)
                                     .setContentTitle(
                                             res.getQuantityString(R.plurals.mail_notification_title,
                                                     1, 1))
@@ -175,7 +177,9 @@ public class CheckForMailSingle extends BroadcastReceiver {
                                     .setWhen(System.currentTimeMillis())
                                     .setAutoCancel(true)
                                     .setContentTitle(contentTitle)
-                                    .setChannelId(SettingValues.notifSound ? Reddit.CHANNEL_MAIL_SOUND : Reddit.CHANNEL_MAIL)
+                                    .setChannelId(
+                                            SettingValues.notifSound ? Reddit.CHANNEL_MAIL_SOUND
+                                                    : Reddit.CHANNEL_MAIL)
                                     .setContentText(Html.fromHtml(StringEscapeUtils.unescapeHtml4(
                                             message.getDataNode().get("body_html").asText())))
                                     .setStyle(notiStyle)

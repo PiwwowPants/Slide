@@ -15,18 +15,17 @@ import me.ccrama.redditslide.Authentication;
 import me.ccrama.redditslide.HasSeen;
 import me.ccrama.redditslide.PostMatch;
 import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.util.LogUtil;
 
 /**
  * Created by ccrama on 9/17/2015.
  */
 public class ContributionPosts extends GeneralPosts {
-    protected final String where;
-    protected final String subreddit;
-    public boolean loading;
-    private UserContributionPaginator paginator;
-    protected SwipeRefreshLayout refreshLayout;
-    protected ContributionAdapter adapter;
+    protected final String                    where;
+    protected final String                    subreddit;
+    public          boolean                   loading;
+    private         UserContributionPaginator paginator;
+    protected       SwipeRefreshLayout        refreshLayout;
+    protected       ContributionAdapter       adapter;
 
     public ContributionPosts(String subreddit, String where) {
         this.subreddit = subreddit;
@@ -110,7 +109,8 @@ public class ContributionPosts extends GeneralPosts {
             ArrayList<Contribution> newData = new ArrayList<>();
             try {
                 if (reset || paginator == null) {
-                    paginator = new UserContributionPaginator(Authentication.reddit, where, subreddit);
+                    paginator =
+                            new UserContributionPaginator(Authentication.reddit, where, subreddit);
 
                     paginator.setSorting(Reddit.getSorting(subreddit, Sorting.NEW));
                     paginator.setTimePeriod(Reddit.getTime(subreddit, TimePeriod.ALL));
