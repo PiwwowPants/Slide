@@ -6,7 +6,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
 
-import net.dean.jraw.models.CommentNode;
+import net.dean.jraw.tree.CommentNode;
 
 import java.util.ArrayList;
 import java.util.List;

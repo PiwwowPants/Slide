@@ -18,8 +18,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import net.dean.jraw.managers.AccountManager;
 import net.dean.jraw.models.Submission;
+import net.dean.jraw.references.UserReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -161,7 +161,7 @@ public class MultiredditAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     } else {
                         Snackbar s = Snackbar.make(holder.itemView, R.string.offline_comments_not_loaded, Snackbar.LENGTH_SHORT);
                         View view = s.getView();
-                        TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                        TextView tv = view.findViewById(android.support.design.R.id.snackbar_text);
                         tv.setTextColor(Color.WHITE);
                         s.show();
 
@@ -237,13 +237,14 @@ public class MultiredditAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         protected Void doInBackground(Submission... submissions) {
             try {
                 if (ActionStates.isSaved(submissions[0])) {
-                    new AccountManager(Authentication.reddit).unsave(submissions[0]);
+                    new UserReference(Authentication.reddit).unsave(submissions[0]);
                     final Snackbar s = Snackbar.make(v, R.string.submission_info_unsaved, Snackbar.LENGTH_SHORT);
                     context.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             View view = s.getView();
-                            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                            TextView tv =
+                                    view.findViewById(android.support.design.R.id.snackbar_text);
                             tv.setTextColor(Color.WHITE);
                             s.show();
                         }
@@ -253,13 +254,14 @@ public class MultiredditAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     submissions[0].saved = false;
                     v = null;
                 } else {
-                    new AccountManager(Authentication.reddit).save(submissions[0]);
+                    new UserReference(Authentication.reddit).save(submissions[0]);
                     final Snackbar s = Snackbar.make(v, R.string.submission_info_saved, Snackbar.LENGTH_SHORT);
                     context.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             View view = s.getView();
-                            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                            TextView tv =
+                                    view.findViewById(android.support.design.R.id.snackbar_text);
                             tv.setTextColor(Color.WHITE);
                             s.show();
                         }

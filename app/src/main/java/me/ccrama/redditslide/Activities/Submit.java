@@ -32,9 +32,9 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import net.dean.jraw.ApiException;
-import net.dean.jraw.managers.AccountManager;
 import net.dean.jraw.models.Submission;
 import net.dean.jraw.models.Subreddit;
+import net.dean.jraw.references.UserReference;
 
 import org.json.JSONObject;
 
@@ -418,14 +418,14 @@ public class Submit extends BaseActivity {
                     final String text =
                             ((EditText) findViewById(R.id.bodytext)).getText().toString();
                     try {
-                        Submission s = new AccountManager(Authentication.reddit).submit(
-                                new AccountManager.SubmissionBuilder(
+                        Submission s = new UserReference(Authentication.reddit).submit(
+                                new UserReference.SubmissionBuilder(
                                         ((EditText) findViewById(R.id.bodytext)).getText()
                                                 .toString(), ((AutoCompleteTextView) findViewById(
                                         R.id.subreddittext)).getText().toString(),
                                         ((EditText) findViewById(R.id.titletext)).getText()
                                                 .toString()));
-                        new AccountManager(Authentication.reddit).sendRepliesToInbox(s,
+                        new UserReference(Authentication.reddit).sendRepliesToInbox(s,
                                 inboxReplies.isChecked());
                         new OpenRedditLink(Submit.this,
                                 "reddit.com/r/" + ((AutoCompleteTextView) findViewById(
@@ -450,14 +450,14 @@ public class Submit extends BaseActivity {
                     }
                 } else if (link.getVisibility() == View.VISIBLE) {
                     try {
-                        Submission s = new AccountManager(Authentication.reddit).submit(
-                                new AccountManager.SubmissionBuilder(
+                        Submission s = new UserReference(Authentication.reddit).submit(
+                                new UserReference.SubmissionBuilder(
                                         new URL(((EditText) findViewById(R.id.urltext)).getText()
                                                 .toString()), ((AutoCompleteTextView) findViewById(
                                         R.id.subreddittext)).getText().toString(),
                                         ((EditText) findViewById(R.id.titletext)).getText()
                                                 .toString()));
-                        new AccountManager(Authentication.reddit).sendRepliesToInbox(s,
+                        new UserReference(Authentication.reddit).sendRepliesToInbox(s,
                                 inboxReplies.isChecked());
                         new OpenRedditLink(Submit.this,
                                 "reddit.com/r/" + ((AutoCompleteTextView) findViewById(
@@ -490,13 +490,13 @@ public class Submit extends BaseActivity {
                     }
                 } else if (image.getVisibility() == View.VISIBLE) {
                     try {
-                        Submission s = new AccountManager(Authentication.reddit).submit(
-                                new AccountManager.SubmissionBuilder(new URL(URL),
+                        Submission s = new UserReference(Authentication.reddit).submit(
+                                new UserReference.SubmissionBuilder(new URL(URL),
                                         ((AutoCompleteTextView) findViewById(
                                                 R.id.subreddittext)).getText().toString(),
                                         ((EditText) findViewById(R.id.titletext)).getText()
                                                 .toString()));
-                        new AccountManager(Authentication.reddit).sendRepliesToInbox(s,
+                        new UserReference(Authentication.reddit).sendRepliesToInbox(s,
                                 inboxReplies.isChecked());
                         new OpenRedditLink(Submit.this,
                                 "reddit.com/r/" + ((AutoCompleteTextView) findViewById(
@@ -855,7 +855,7 @@ public class Submit extends BaseActivity {
                             }
 
                             @Override
-                            public void writeTo(BufferedSink sink) throws IOException {
+                            public void writeTo(BufferedSink sink) {
 
                             }
                         })

@@ -9,9 +9,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import net.dean.jraw.ApiException;
-import net.dean.jraw.managers.AccountManager;
 import net.dean.jraw.models.PublicContribution;
 import net.dean.jraw.models.VoteDirection;
+import net.dean.jraw.references.UserReference;
 
 /**
  * Created by ccrama on 9/19/2015.
@@ -44,7 +44,7 @@ public class Vote extends AsyncTask<PublicContribution, Void, Void> {
 
         if (Authentication.isLoggedIn) {
             try {
-                new AccountManager(Authentication.reddit).vote(sub[0], direction);
+                new UserReference(Authentication.reddit).vote(sub[0], direction);
             } catch (ApiException | RuntimeException e) {
                 ((Activity) c).runOnUiThread(new Runnable() {
                     public void run() {
@@ -52,7 +52,8 @@ public class Vote extends AsyncTask<PublicContribution, Void, Void> {
                             if (v != null && c != null && v.getContext() != null) {
                                 Snackbar s = Snackbar.make(v, R.string.vote_err, Snackbar.LENGTH_SHORT);
                                 View view = s.getView();
-                                TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                                TextView tv = view.findViewById(
+                                        android.support.design.R.id.snackbar_text);
                                 tv.setTextColor(Color.WHITE);
                                 s.show();
                             }
@@ -72,7 +73,8 @@ public class Vote extends AsyncTask<PublicContribution, Void, Void> {
                         if (v != null && c != null && v.getContext() != null) {
                             Snackbar s = Snackbar.make(v, R.string.vote_err_login, Snackbar.LENGTH_SHORT);
                             View view = s.getView();
-                            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                            TextView tv =
+                                    view.findViewById(android.support.design.R.id.snackbar_text);
                             tv.setTextColor(Color.WHITE);
                             s.show();
 

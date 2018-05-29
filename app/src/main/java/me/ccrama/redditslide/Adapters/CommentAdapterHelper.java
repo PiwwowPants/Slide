@@ -46,14 +46,14 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.cocosw.bottomsheet.BottomSheet;
 
 import net.dean.jraw.ApiException;
-import net.dean.jraw.http.oauth.InvalidScopeException;
-import net.dean.jraw.managers.AccountManager;
 import net.dean.jraw.managers.ModerationManager;
 import net.dean.jraw.models.Comment;
-import net.dean.jraw.models.CommentNode;
 import net.dean.jraw.models.DistinguishedStatus;
 import net.dean.jraw.models.Submission;
 import net.dean.jraw.models.VoteDirection;
+import net.dean.jraw.oauth.InvalidScopeException;
+import net.dean.jraw.references.UserReference;
+import net.dean.jraw.tree.CommentNode;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -282,7 +282,8 @@ public class CommentAdapterHelper {
             @Override
             protected Void doInBackground(Void... params) {
                 try {
-                    new AccountManager(Authentication.reddit).sendRepliesToInbox(comment, showReplies);
+                    new UserReference(Authentication.reddit).sendRepliesToInbox(comment,
+                            showReplies);
 
                 } catch (ApiException e) {
                     e.printStackTrace();
@@ -347,10 +348,10 @@ public class CommentAdapterHelper {
             protected Void doInBackground(Void... params) {
                 try {
                     if (ActionStates.isSaved(comment)) {
-                        new AccountManager(Authentication.reddit).unsave(comment);
+                        new UserReference(Authentication.reddit).unsave(comment);
                         ActionStates.setSaved(comment, false);
                     } else {
-                        new AccountManager(Authentication.reddit).save(comment);
+                        new UserReference(Authentication.reddit).save(comment);
                         ActionStates.setSaved(comment, true);
                     }
 
@@ -412,7 +413,7 @@ public class CommentAdapterHelper {
             protected List<String> doInBackground(Void... params) {
                 try {
                     List<String> categories = new ArrayList<String>(
-                            new AccountManager(Authentication.reddit).getSavedCategories());
+                            new UserReference(Authentication.reddit).getSavedCategories());
                     categories.add("New category");
                     return categories;
                 } catch (Exception e) {
@@ -462,7 +463,7 @@ public class CommentAdapterHelper {
                                                                     protected Boolean doInBackground(
                                                                             Void... params) {
                                                                         try {
-                                                                            new AccountManager(
+                                                                            new UserReference(
                                                                                     Authentication.reddit)
                                                                                     .save(comment,
                                                                                             flair);
@@ -520,7 +521,7 @@ public class CommentAdapterHelper {
                                             @Override
                                             protected Boolean doInBackground(Void... params) {
                                                 try {
-                                                    new AccountManager(Authentication.reddit).save(
+                                                    new UserReference(Authentication.reddit).save(
                                                             comment, t);
                                                     return true;
                                                 } catch (ApiException e) {
@@ -1431,7 +1432,8 @@ public class CommentAdapterHelper {
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                new AccountManager(Authentication.reddit).updateContribution(baseNode.getComment(),
+                new UserReference(Authentication.reddit).updatePublicContribution(
+                        baseNode.getComment(),
                         text);
                 adapter.currentSelectedItem = baseNode.getComment().getFullName();
                 CommentNode n = baseNode.notifyCommentChanged(Authentication.reddit);
@@ -1534,7 +1536,7 @@ public class CommentAdapterHelper {
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                new AccountManager(Authentication.reddit).report(baseNode.getComment(),
+                new UserReference(Authentication.reddit).report(baseNode.getComment(),
                         reportReason);
             } catch (ApiException e) {
                 e.printStackTrace();

@@ -34,8 +34,8 @@ import android.widget.Filterable;
 import com.devspark.robototextview.RobotoTypefaces;
 
 import net.dean.jraw.models.Comment;
-import net.dean.jraw.models.CommentNode;
 import net.dean.jraw.models.DistinguishedStatus;
+import net.dean.jraw.tree.CommentNode;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;

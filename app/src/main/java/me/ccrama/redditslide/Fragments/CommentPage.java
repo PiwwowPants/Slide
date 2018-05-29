@@ -44,17 +44,17 @@ import com.rey.material.widget.Slider;
 import net.dean.jraw.ApiException;
 import net.dean.jraw.http.MultiRedditUpdateRequest;
 import net.dean.jraw.http.NetworkException;
-import net.dean.jraw.managers.AccountManager;
-import net.dean.jraw.managers.MultiRedditManager;
 import net.dean.jraw.models.CommentSort;
-import net.dean.jraw.models.MultiReddit;
 import net.dean.jraw.models.MultiSubreddit;
+import net.dean.jraw.models.Multireddit;
 import net.dean.jraw.models.Submission;
 import net.dean.jraw.models.Subreddit;
+import net.dean.jraw.models.TimePeriod;
 import net.dean.jraw.models.UserRecord;
 import net.dean.jraw.paginators.Sorting;
-import net.dean.jraw.paginators.TimePeriod;
 import net.dean.jraw.paginators.UserRecordPaginator;
+import net.dean.jraw.references.MultiredditReference;
+import net.dean.jraw.references.UserReference;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -1276,15 +1276,15 @@ public class CommentPage extends Fragment {
                                 @Override
                                 public void onClick(View v) {
                                     new AsyncTask<Void, Void, Void>() {
-                                        HashMap<String, MultiReddit> multis =
-                                                new HashMap<String, MultiReddit>();
+                                        HashMap<String, Multireddit> multis =
+                                                new HashMap<String, Multireddit>();
 
                                         @Override
                                         protected Void doInBackground(Void... params) {
                                             if (UserSubscriptions.multireddits == null) {
                                                 UserSubscriptions.syncMultiReddits(getContext());
                                             }
-                                            for (MultiReddit r : UserSubscriptions.multireddits) {
+                                            for (Multireddit r : UserSubscriptions.multireddits) {
                                                 multis.put(r.getDisplayName(), r);
                                             }
                                             return null;
@@ -1324,7 +1324,7 @@ public class CommentPage extends Fragment {
                                                                                 }
                                                                                 subs.add(
                                                                                         baseSub.getDisplayName());
-                                                                                new MultiRedditManager(
+                                                                                new MultiredditReference(
                                                                                         Authentication.reddit)
                                                                                         .createOrUpdate(
                                                                                                 new MultiRedditUpdateRequest.Builder(
@@ -1485,7 +1485,7 @@ public class CommentPage extends Fragment {
                                                                     protected Boolean doInBackground(
                                                                             Void... params) {
                                                                         try {
-                                                                            new AccountManager(
+                                                                            new UserReference(
                                                                                     Authentication.reddit)
                                                                                     .subscribe(
                                                                                             baseSub);
@@ -1611,7 +1611,7 @@ public class CommentPage extends Fragment {
                                                                     protected Boolean doInBackground(
                                                                             Void... params) {
                                                                         try {
-                                                                            new AccountManager(
+                                                                            new UserReference(
                                                                                     Authentication.reddit)
                                                                                     .unsubscribe(
                                                                                             baseSub);

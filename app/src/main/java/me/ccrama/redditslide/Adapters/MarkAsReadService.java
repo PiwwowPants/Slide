@@ -8,7 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import net.dean.jraw.http.NetworkException;
-import net.dean.jraw.managers.InboxManager;
+import net.dean.jraw.references.InboxReference;
 
 import me.ccrama.redditslide.Authentication;
 import me.ccrama.redditslide.Notifications.CheckForMail;
@@ -41,7 +41,7 @@ public class MarkAsReadService extends IntentService {
         Bundle extras = intent.getExtras();
         if (extras != null) messages = extras.getStringArray(CheckForMail.MESSAGE_EXTRA);
 
-        InboxManager inboxManager = new InboxManager(Authentication.reddit);
+        InboxReference inboxManager = new InboxReference(Authentication.reddit);
 
         if (messages != null && NetworkUtil.isConnected(getBaseContext())) {
             for (String message : messages) {

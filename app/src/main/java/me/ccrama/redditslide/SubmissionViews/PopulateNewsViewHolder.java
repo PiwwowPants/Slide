@@ -34,9 +34,9 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.cocosw.bottomsheet.BottomSheet;
 
 import net.dean.jraw.ApiException;
-import net.dean.jraw.managers.AccountManager;
-import net.dean.jraw.models.Contribution;
+import net.dean.jraw.models.PublicContribution;
 import net.dean.jraw.models.Submission;
+import net.dean.jraw.references.UserReference;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -418,7 +418,7 @@ public class PopulateNewsViewHolder {
         return Palette.ThemeEnum.DARK.getTint();
     }
 
-    public <T extends Contribution> void showBottomSheet(final Activity mContext,
+    public <T extends PublicContribution> void showBottomSheet(final Activity mContext,
             final Submission submission, final NewsViewHolder holder, final List<T> posts,
             final String baseSub, final RecyclerView recyclerview, final boolean full) {
 
@@ -746,9 +746,9 @@ public class PopulateNewsViewHolder {
                                                     PostMatch.domains = null;
                                                     PostMatch.subreddits = null;
                                                     PostMatch.users = null;
-                                                    ArrayList<Contribution> toRemove =
+                                                    ArrayList<PublicContribution> toRemove =
                                                             new ArrayList<>();
-                                                    for (Contribution s : posts) {
+                                                    for (PublicContribution s : posts) {
                                                         if (s instanceof Submission
                                                                 && PostMatch.doesMatch(
                                                                 (Submission) s)) {
@@ -760,7 +760,7 @@ public class PopulateNewsViewHolder {
                                                             OfflineSubreddit.getSubreddit(baseSub,
                                                                     false, mContext);
 
-                                                    for (Contribution remove : toRemove) {
+                                                    for (PublicContribution remove : toRemove) {
                                                         final int pos = posts.indexOf(remove);
                                                         posts.remove(pos);
                                                         if (baseSub != null) {
@@ -885,7 +885,7 @@ public class PopulateNewsViewHolder {
                                             @Override
                                             protected Void doInBackground(Void... params) {
                                                 try {
-                                                    new AccountManager(
+                                                    new UserReference(
                                                             Authentication.reddit).report(
                                                             submission, reportReason);
                                                 } catch (ApiException e) {
@@ -1008,7 +1008,7 @@ public class PopulateNewsViewHolder {
         b.show();
     }
 
-    public <T extends Contribution> void hideSubmission(final Submission submission,
+    public <T extends PublicContribution> void hideSubmission(final Submission submission,
             final List<T> posts, final String baseSub, final RecyclerView recyclerview, Context c) {
         final int pos = posts.indexOf(submission);
         if (pos != -1) {
@@ -1096,7 +1096,7 @@ public class PopulateNewsViewHolder {
 
     }
 
-    public <T extends Contribution> void populateNewsViewHolder(
+    public <T extends PublicContribution> void populateNewsViewHolder(
             final NewsViewHolder holder, final Submission submission, final Activity mContext,
             boolean fullscreen, final boolean full, final List<T> posts,
             final RecyclerView recyclerview, final boolean same, final boolean offline,
@@ -1117,7 +1117,7 @@ public class PopulateNewsViewHolder {
         String scoreRatio =
                 (SettingValues.upvotePercentage && full && submission.getUpvoteRatio() != null) ?
                         "("
-                                + (int) (submission.getUpvoteRatio() * 100)
+                                + submission.getUpvoteRatio() * 100
                                 + "%)" : "";
 
         if (!scoreRatio.isEmpty()) {

@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -22,12 +21,12 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import net.dean.jraw.http.NetworkException;
-import net.dean.jraw.http.oauth.Credentials;
-import net.dean.jraw.http.oauth.OAuthData;
-import net.dean.jraw.http.oauth.OAuthException;
-import net.dean.jraw.http.oauth.OAuthHelper;
 import net.dean.jraw.models.LoggedInAccount;
+import net.dean.jraw.models.OAuthData;
 import net.dean.jraw.models.Subreddit;
+import net.dean.jraw.oauth.Credentials;
+import net.dean.jraw.oauth.OAuthException;
+import net.dean.jraw.oauth.OAuthHelper;
 
 import java.util.ArrayList;
 import java.util.HashSet;

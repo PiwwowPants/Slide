@@ -9,8 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import me.ccrama.redditslide.Adapters.ContributionAdapter;
 import me.ccrama.redditslide.Adapters.HistoryPosts;
+import me.ccrama.redditslide.Adapters.PublicContributionAdapter;
 import me.ccrama.redditslide.Constants;
 import me.ccrama.redditslide.R;
 import me.ccrama.redditslide.Views.CatchStaggeredGridLayoutManager;
@@ -21,24 +21,25 @@ import me.ccrama.redditslide.handler.ToolbarScrollHideHandler;
 public class ReadLaterView extends Fragment {
 
 
-    private int totalItemCount;
-    private int visibleItemCount;
-    private int pastVisiblesItems;
-    private ContributionAdapter adapter;
-    private HistoryPosts posts;
+    private int                       totalItemCount;
+    private int                       visibleItemCount;
+    private int                       pastVisiblesItems;
+    private PublicContributionAdapter adapter;
+    private HistoryPosts              posts;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_verticalcontent, container, false);
 
-        final RecyclerView rv = ((RecyclerView) v.findViewById(R.id.vertical_content));
+        final RecyclerView rv = v.findViewById(R.id.vertical_content);
         final PreCachingLayoutManager mLayoutManager;
 
         mLayoutManager = new PreCachingLayoutManager(getContext());
 
         rv.setLayoutManager(mLayoutManager);
         v.findViewById(R.id.post_floating_action_button).setVisibility(View.GONE);
-        final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.activity_main_swipe_refresh_layout);
+        final SwipeRefreshLayout mSwipeRefreshLayout =
+                v.findViewById(R.id.activity_main_swipe_refresh_layout);
 
         mSwipeRefreshLayout.setColorSchemeColors(Palette.getColors("default", getActivity()));
 
@@ -56,7 +57,7 @@ public class ReadLaterView extends Fragment {
         });
 
         posts = new HistoryPosts("readLater");
-        adapter = new ContributionAdapter(getActivity(), posts, rv);
+        adapter = new PublicContributionAdapter(getActivity(), posts, rv);
         rv.setAdapter(adapter);
 
         posts.bindAdapter(adapter, mSwipeRefreshLayout);

@@ -3,8 +3,8 @@ package me.ccrama.redditslide;
 import android.content.SharedPreferences;
 
 import net.dean.jraw.models.CommentSort;
+import net.dean.jraw.models.TimePeriod;
 import net.dean.jraw.paginators.Sorting;
-import net.dean.jraw.paginators.TimePeriod;
 
 import java.util.Calendar;
 import java.util.Locale;

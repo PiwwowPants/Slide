@@ -35,14 +35,13 @@ import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.cocosw.bottomsheet.BottomSheet;
 
 import net.dean.jraw.ApiException;
-import net.dean.jraw.managers.AccountManager;
 import net.dean.jraw.managers.ModerationManager;
 import net.dean.jraw.models.Comment;
-import net.dean.jraw.models.Contribution;
 import net.dean.jraw.models.DistinguishedStatus;
 import net.dean.jraw.models.PublicContribution;
 import net.dean.jraw.models.Submission;
 import net.dean.jraw.models.VoteDirection;
+import net.dean.jraw.references.UserReference;
 
 import java.util.List;
 import java.util.Locale;
@@ -148,13 +147,14 @@ public class ModeratorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         protected Void doInBackground(Submission... submissions) {
             try {
                 if (ActionStates.isSaved(submissions[0])) {
-                    new AccountManager(Authentication.reddit).unsave(submissions[0]);
+                    new UserReference(Authentication.reddit).unsave(submissions[0]);
                     final Snackbar s = Snackbar.make(v, R.string.submission_info_unsaved, Snackbar.LENGTH_SHORT);
                     mContext.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             View view = s.getView();
-                            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                            TextView tv =
+                                    view.findViewById(android.support.design.R.id.snackbar_text);
                             tv.setTextColor(Color.WHITE);
                             s.show();
                         }
@@ -164,13 +164,14 @@ public class ModeratorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     submissions[0].saved = false;
                     v = null;
                 } else {
-                    new AccountManager(Authentication.reddit).save(submissions[0]);
+                    new UserReference(Authentication.reddit).save(submissions[0]);
                     final Snackbar s = Snackbar.make(v, R.string.submission_info_saved, Snackbar.LENGTH_SHORT);
                     mContext.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             View view = s.getView();
-                            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                            TextView tv =
+                                    view.findViewById(android.support.design.R.id.snackbar_text);
                             tv.setTextColor(Color.WHITE);
                             s.show();
                         }
@@ -202,7 +203,7 @@ public class ModeratorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     LayoutInflater inflater = mContext.getLayoutInflater();
                     final View dialoglayout = inflater.inflate(R.layout.postmenu, null);
                     AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(mContext);
-                    final TextView title = (TextView) dialoglayout.findViewById(R.id.title);
+                    final TextView title = dialoglayout.findViewById(R.id.title);
                     title.setText(Html.fromHtml(submission.getTitle()));
 
                     ((TextView) dialoglayout.findViewById(R.id.userpopup)).setText("/u/" + submission.getAuthor());
@@ -300,7 +301,7 @@ public class ModeratorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         @Override
                         public void onClick(View v) {
                             final int pos = dataSet.posts.indexOf(submission);
-                            final Contribution old = dataSet.posts.get(pos);
+                            final PublicContribution old = dataSet.posts.get(pos);
                             dataSet.posts.remove(submission);
                             notifyItemRemoved(pos + 1);
                             d.dismiss();
@@ -310,14 +311,15 @@ public class ModeratorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             Snackbar s = Snackbar.make(listView, R.string.submission_info_hidden, Snackbar.LENGTH_LONG).setAction(R.string.btn_undo, new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    dataSet.posts.add(pos, (PublicContribution) old);
+                                    dataSet.posts.add(pos, old);
                                     notifyItemInserted(pos + 1);
                                     Hidden.undoHidden(old);
 
                                 }
                             });
                             View view = s.getView();
-                            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                            TextView tv =
+                                    view.findViewById(android.support.design.R.id.snackbar_text);
                             tv.setTextColor(Color.WHITE);
                             s.show();
 
@@ -329,7 +331,7 @@ public class ModeratorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             });
             new PopulateSubmissionViewHolder().populateSubmissionViewHolder(holder, submission, mContext, false, false, dataSet.posts, listView, false, false, null, null);
 
-            final ImageView hideButton = (ImageView) holder.itemView.findViewById(R.id.hide);
+            final ImageView hideButton = holder.itemView.findViewById(R.id.hide);
             if (hideButton != null) {
                 hideButton.setVisibility(View.GONE);
             }
@@ -370,7 +372,7 @@ public class ModeratorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             titleString.append(spacer);
 
             {
-                final ImageView mod = (ImageView) holder.itemView.findViewById(R.id.mod);
+                final ImageView mod = holder.itemView.findViewById(R.id.mod);
                 try {
                     if (UserSubscriptions.modOf.contains(comment.getSubredditName())) {
                         //todo
@@ -635,8 +637,7 @@ public class ModeratorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     Snackbar s = Snackbar.make(holder.itemView, R.string.comment_distinguished,
                             Snackbar.LENGTH_LONG);
                     View view = s.getView();
-                    TextView tv =
-                            (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                    TextView tv = view.findViewById(android.support.design.R.id.snackbar_text);
                     tv.setTextColor(Color.WHITE);
                     s.show();
                 } else {
@@ -671,8 +672,7 @@ public class ModeratorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     Snackbar s = Snackbar.make(holder.itemView, R.string.comment_undistinguished,
                             Snackbar.LENGTH_LONG);
                     View view = s.getView();
-                    TextView tv =
-                            (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                    TextView tv = view.findViewById(android.support.design.R.id.snackbar_text);
                     tv.setTextColor(Color.WHITE);
                     s.show();
                 } else {
@@ -707,8 +707,7 @@ public class ModeratorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     Snackbar s = Snackbar.make(holder.itemView, R.string.comment_removed,
                             Snackbar.LENGTH_LONG);
                     View view = s.getView();
-                    TextView tv =
-                            (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                    TextView tv = view.findViewById(android.support.design.R.id.snackbar_text);
                     tv.setTextColor(Color.WHITE);
                     s.show();
 

@@ -9,7 +9,7 @@ import android.view.View;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
-import net.dean.jraw.models.MultiReddit;
+import net.dean.jraw.models.Multireddit;
 import net.dean.jraw.models.Submission;
 import net.dean.jraw.paginators.MultiRedditPaginator;
 
@@ -252,7 +252,7 @@ public class MultiredditPosts implements PostLoader {
         return posts;
     }
 
-    public MultiReddit multiReddit;
+    public Multireddit multiReddit;
 
     @Override
     public boolean hasMore() {
@@ -265,7 +265,7 @@ public class MultiredditPosts implements PostLoader {
     /**
      * Asynchronous task for loading data
      */
-    private class LoadData extends AsyncTask<MultiReddit, Void, List<Submission>> {
+    private class LoadData extends AsyncTask<Multireddit, Void, List<Submission>> {
         final boolean reset;
         Context context;
         final SubmissionDisplay displayer;
@@ -343,7 +343,7 @@ public class MultiredditPosts implements PostLoader {
         }
 
         @Override
-        protected List<Submission> doInBackground(MultiReddit... subredditPaginators) {
+        protected List<Submission> doInBackground(Multireddit... subredditPaginators) {
             if (!NetworkUtil.isConnected(context)) {
                 offline = true;
                 return null;

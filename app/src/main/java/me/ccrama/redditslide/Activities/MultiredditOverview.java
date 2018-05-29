@@ -35,11 +35,11 @@ import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
-import net.dean.jraw.models.MultiReddit;
 import net.dean.jraw.models.MultiSubreddit;
+import net.dean.jraw.models.Multireddit;
 import net.dean.jraw.models.Submission;
+import net.dean.jraw.models.TimePeriod;
 import net.dean.jraw.paginators.Sorting;
-import net.dean.jraw.paginators.TimePeriod;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,12 +65,12 @@ public class MultiredditOverview extends BaseActivityAnim {
 
     public static final String EXTRA_PROFILE = "profile";
 
-    public static MultiReddit          searchMulti;
+    public static Multireddit          searchMulti;
     public        OverviewPagerAdapter adapter;
     private       ViewPager            pager;
     private       String               profile;
     private       TabLayout            tabs;
-    private       List<MultiReddit>    usedArray;
+    private       List<Multireddit>    usedArray;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -156,7 +156,7 @@ public class MultiredditOverview extends BaseActivityAnim {
 
                 UserSubscriptions.MultiCallback m = new UserSubscriptions.MultiCallback() {
                     @Override
-                    public void onComplete(List<MultiReddit> multireddits) {
+                    public void onComplete(List<Multireddit> multireddits) {
                         if ((multireddits != null) && !multireddits.isEmpty()) {
                             searchMulti = multireddits.get(pager.getCurrentItem());
                             MaterialDialog.Builder builder =
@@ -443,7 +443,7 @@ public class MultiredditOverview extends BaseActivityAnim {
 
         UserSubscriptions.MultiCallback callback = new UserSubscriptions.MultiCallback() {
             @Override
-            public void onComplete(List<MultiReddit> multiReddits) {
+            public void onComplete(List<Multireddit> multiReddits) {
                 if (multiReddits != null && !multiReddits.isEmpty()) {
                     setDataSet(multiReddits);
                 } else {
@@ -610,7 +610,7 @@ public class MultiredditOverview extends BaseActivityAnim {
         pager.setCurrentItem(current);
     }
 
-    private void setDataSet(List<MultiReddit> data) {
+    private void setDataSet(List<Multireddit> data) {
         try {
             usedArray = data;
             if (usedArray.isEmpty()) {
@@ -674,7 +674,7 @@ public class MultiredditOverview extends BaseActivityAnim {
     }
 
     public void doDrawerSubs(int position) {
-        MultiReddit current = usedArray.get(position);
+        Multireddit current = usedArray.get(position);
         LinearLayout l = (LinearLayout) findViewById(R.id.sidebar_scroll);
         l.removeAllViews();
 

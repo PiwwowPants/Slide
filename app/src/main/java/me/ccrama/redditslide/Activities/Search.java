@@ -20,15 +20,15 @@ import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
+import net.dean.jraw.models.TimePeriod;
 import net.dean.jraw.paginators.SubmissionSearchPaginator;
-import net.dean.jraw.paginators.TimePeriod;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Locale;
 
-import me.ccrama.redditslide.Adapters.ContributionAdapter;
+import me.ccrama.redditslide.Adapters.PublicContributionAdapter;
 import me.ccrama.redditslide.Adapters.SubredditSearchPosts;
 import me.ccrama.redditslide.ColorPreferences;
 import me.ccrama.redditslide.Constants;
@@ -53,10 +53,10 @@ public class Search extends BaseActivityAnim {
     public static final String EXTRA_NSFW = "nsfw";
     public static final String EXTRA_AUTHOR = "author";
 
-    private int totalItemCount;
-    private int visibleItemCount;
-    private int pastVisiblesItems;
-    private ContributionAdapter adapter;
+    private int                       totalItemCount;
+    private int                       visibleItemCount;
+    private int                       pastVisiblesItems;
+    private PublicContributionAdapter adapter;
 
     private String where;
     private String subreddit;
@@ -303,7 +303,7 @@ public class Search extends BaseActivityAnim {
         });
 
         posts = new SubredditSearchPosts(subreddit, where.toLowerCase(Locale.ENGLISH), this);
-        adapter = new ContributionAdapter(this, posts, rv);
+        adapter = new PublicContributionAdapter(this, posts, rv);
         rv.setAdapter(adapter);
 
         posts.bindAdapter(adapter, mSwipeRefreshLayout);

@@ -9,14 +9,14 @@ import android.widget.Toast;
 
 import net.dean.jraw.ApiException;
 import net.dean.jraw.http.NetworkException;
-import net.dean.jraw.managers.AccountManager;
-import net.dean.jraw.managers.MultiRedditManager;
-import net.dean.jraw.models.MultiReddit;
 import net.dean.jraw.models.MultiSubreddit;
+import net.dean.jraw.models.Multireddit;
 import net.dean.jraw.models.Subreddit;
 import net.dean.jraw.models.UserRecord;
 import net.dean.jraw.paginators.ImportantUserPaginator;
 import net.dean.jraw.paginators.UserSubredditsPaginator;
+import net.dean.jraw.references.MultiredditReference;
+import net.dean.jraw.references.UserReference;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -285,9 +285,9 @@ public class UserSubscriptions {
     }
 
     public static CaseInsensitiveArrayList modOf;
-    public static ArrayList<MultiReddit>   multireddits;
-    public static HashMap<String, List<MultiReddit>> public_multireddits =
-            new HashMap<String, List<MultiReddit>>();
+    public static ArrayList<Multireddit>   multireddits;
+    public static HashMap<String, List<Multireddit>> public_multireddits =
+            new HashMap<String, List<Multireddit>>();
 
     public static void doOnlineSyncing() {
         if (Authentication.mod) {
@@ -350,8 +350,8 @@ public class UserSubscriptions {
 
     public static void syncMultiReddits(Context c) {
         try {
-            multireddits = new ArrayList<>(new MultiRedditManager(Authentication.reddit).mine());
-            for (MultiReddit multiReddit : multireddits) {
+            multireddits = new ArrayList<>(new MultiredditReference(Authentication.reddit).mine());
+            for (Multireddit multiReddit : multireddits) {
                 if (MainActivity.multiNameToSubsMap.containsKey(
                         ReorderSubreddits.MULTI_REDDIT + multiReddit.getDisplayName())) {
                     StringBuilder concatenatedSubs = new StringBuilder();
@@ -397,23 +397,23 @@ public class UserSubscriptions {
      * @return list of multireddits if they are available, null if could not fetch multireddits
      */
     public static void getMultireddits(final MultiCallback callback) {
-        new AsyncTask<Void, Void, List<MultiReddit>>() {
+        new AsyncTask<Void, Void, List<Multireddit>>() {
 
             @Override
-            protected List<MultiReddit> doInBackground(Void... params) {
+            protected List<Multireddit> doInBackground(Void... params) {
                 loadMultireddits();
                 return multireddits;
             }
 
             @Override
-            protected void onPostExecute(List<MultiReddit> multiReddits) {
+            protected void onPostExecute(List<Multireddit> multiReddits) {
                 callback.onComplete(multiReddits);
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public interface MultiCallback {
-        void onComplete(List<MultiReddit> multis);
+        void onComplete(List<Multireddit> multis);
     }
 
     public static void loadMultireddits() {
@@ -421,7 +421,7 @@ public class UserSubscriptions {
                 || multireddits.isEmpty())) {
             try {
                 multireddits =
-                        new ArrayList<>(new MultiRedditManager(Authentication.reddit).mine());
+                        new ArrayList<>(new MultiredditReference(Authentication.reddit).mine());
             } catch (Exception e) {
                 multireddits = null;
                 e.printStackTrace();
@@ -446,13 +446,14 @@ public class UserSubscriptions {
     }
 
     private static void loadPublicMultireddits(final MultiCallback callback, final String profile) {
-        new AsyncTask<Void, Void, List<MultiReddit>>() {
+        new AsyncTask<Void, Void, List<Multireddit>>() {
 
             @Override
-            protected List<MultiReddit> doInBackground(Void... params) {
+            protected List<Multireddit> doInBackground(Void... params) {
                 try {
                     public_multireddits.put(profile, new ArrayList(
-                            new MultiRedditManager(Authentication.reddit).getPublicMultis(profile)));
+                            new MultiredditReference(Authentication.reddit).getPublicMultis(
+                                    profile)));
                 } catch (Exception e) {
                     public_multireddits.put(profile, null);
                     e.printStackTrace();
@@ -461,7 +462,7 @@ public class UserSubscriptions {
             }
 
             @Override
-            protected void onPostExecute(List<MultiReddit> multiReddits) {
+            protected void onPostExecute(List<Multireddit> multiReddits) {
                 callback.onComplete(multiReddits);
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -518,9 +519,9 @@ public class UserSubscriptions {
         return friends;
     }
 
-    public static MultiReddit getMultiredditByDisplayName(String displayName) {
+    public static Multireddit getMultiredditByDisplayName(String displayName) {
         if (multireddits != null) {
-            for (MultiReddit multiReddit : multireddits) {
+            for (Multireddit multiReddit : multireddits) {
                 if (multiReddit.getDisplayName().equals(displayName)) {
                     return multiReddit;
                 }
@@ -529,14 +530,14 @@ public class UserSubscriptions {
         return null;
     }
 
-    public static MultiReddit getPublicMultiredditByDisplayName(String profile,
+    public static Multireddit getPublicMultiredditByDisplayName(String profile,
             String displayName) {
         if (profile.isEmpty()) {
             return getMultiredditByDisplayName(displayName);
         }
 
         if (public_multireddits.get(profile) != null) {
-            for (MultiReddit multiReddit : public_multireddits.get(profile)) {
+            for (Multireddit multiReddit : public_multireddits.get(profile)) {
                 if (multiReddit.getDisplayName().equals(displayName)) {
                     return multiReddit;
                 }
@@ -785,7 +786,7 @@ public class UserSubscriptions {
 
         @Override
         protected Void doInBackground(String... subreddits) {
-            final AccountManager m = new AccountManager(Authentication.reddit);
+            final UserReference m = new UserReference(Authentication.reddit);
             for (String subreddit : subreddits) {
                 try {
                     m.subscribe(Authentication.reddit.getSubreddit(subreddit));
@@ -800,7 +801,7 @@ public class UserSubscriptions {
     public static class UnsubscribeTask extends AsyncTask<String, Void, Void> {
         @Override
         protected Void doInBackground(String... subreddits) {
-            final AccountManager m = new AccountManager(Authentication.reddit);
+            final UserReference m = new UserReference(Authentication.reddit);
             try {
                 for (String subreddit : subreddits) {
                     m.unsubscribe(Authentication.reddit.getSubreddit(subreddit));

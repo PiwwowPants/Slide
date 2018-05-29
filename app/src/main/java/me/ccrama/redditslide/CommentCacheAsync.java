@@ -14,14 +14,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
+import net.dean.jraw.JrawUtils;
+import net.dean.jraw.http.HttpResponse;
 import net.dean.jraw.http.NetworkException;
-import net.dean.jraw.http.RestResponse;
 import net.dean.jraw.http.SubmissionRequest;
 import net.dean.jraw.models.CommentSort;
 import net.dean.jraw.models.Submission;
 import net.dean.jraw.models.meta.SubmissionSerializer;
 import net.dean.jraw.paginators.SubredditPaginator;
-import net.dean.jraw.util.JrawUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,9 +33,6 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import me.ccrama.redditslide.Activities.CommentsScreenSingle;
-import me.ccrama.redditslide.Autocache.AutoCacheScheduler;
-import me.ccrama.redditslide.Notifications.NotificationJobScheduler;
 import me.ccrama.redditslide.util.GifUtils;
 import me.ccrama.redditslide.util.LogUtil;
 import me.ccrama.redditslide.util.NetworkUtil;
@@ -434,7 +431,7 @@ public class CommentCacheAsync extends AsyncTask {
 
         try {
 
-            RestResponse response = Authentication.reddit.execute(Authentication.reddit.request()
+            HttpResponse response = Authentication.reddit.execute(Authentication.reddit.request()
                     .path(String.format("/comments/%s", request.getId()))
                     .query(args)
                     .build());

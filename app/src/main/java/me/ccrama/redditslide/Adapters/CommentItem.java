@@ -1,6 +1,6 @@
 package me.ccrama.redditslide.Adapters;
 
-import net.dean.jraw.models.CommentNode;
+import net.dean.jraw.tree.CommentNode;
 
 /**
  * Created by carlo_000 on 10/27/2015.

@@ -18,9 +18,9 @@ import android.widget.EditText;
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 
 import net.dean.jraw.ApiException;
-import net.dean.jraw.managers.AccountManager;
 import net.dean.jraw.models.Submission;
 import net.dean.jraw.models.Subreddit;
+import net.dean.jraw.references.UserReference;
 
 import java.util.List;
 
@@ -195,12 +195,12 @@ public class Crosspost extends BaseActivity {
         protected Void doInBackground(Void... voids) {
             try {
                 try {
-                    Submission s = new AccountManager(Authentication.reddit).crosspost(toCrosspost,
+                    Submission s = new UserReference(Authentication.reddit).crosspost(toCrosspost,
                             ((AutoCompleteTextView) findViewById(R.id.subreddittext)).getText()
                                     .toString(),
                             ((EditText) findViewById(R.id.titletext)).getText().toString(), null,
                             "");
-                    new AccountManager(Authentication.reddit).sendRepliesToInbox(s,
+                    new UserReference(Authentication.reddit).sendRepliesToInbox(s,
                             inboxReplies.isChecked());
                     new OpenRedditLink(Crosspost.this,
                             "reddit.com/r/"

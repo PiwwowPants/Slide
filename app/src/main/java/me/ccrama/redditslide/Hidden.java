@@ -2,9 +2,9 @@ package me.ccrama.redditslide;
 
 import android.os.AsyncTask;
 
-import net.dean.jraw.managers.AccountManager;
-import net.dean.jraw.models.Contribution;
+import net.dean.jraw.models.PublicContribution;
 import net.dean.jraw.models.Submission;
+import net.dean.jraw.references.UserReference;
 
 import java.util.ArrayList;
 
@@ -15,14 +15,14 @@ public class Hidden {
    public static final ArrayList<String> id = new ArrayList<>();
 
 
-    public static void setHidden(final Contribution s) {
+    public static void setHidden(final PublicContribution s) {
 
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void[] params) {
                 try {
                     id.add(s.getFullName());
-                    new AccountManager(Authentication.reddit).hide(true, (Submission)s);
+                    new UserReference(Authentication.reddit).hide(true, (Submission) s);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -31,13 +31,13 @@ public class Hidden {
         }.execute();
     }
 
-    public static void undoHidden(final Contribution s) {
+    public static void undoHidden(final PublicContribution s) {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void[] params) {
                 try {
                     id.remove(s.getFullName());
-                    new AccountManager(Authentication.reddit).hide(false, (Submission)s);
+                    new UserReference(Authentication.reddit).hide(false, (Submission) s);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

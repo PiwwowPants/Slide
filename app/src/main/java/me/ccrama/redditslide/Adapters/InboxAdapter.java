@@ -41,10 +41,10 @@ import com.cocosw.bottomsheet.BottomSheet;
 import com.devspark.robototextview.RobotoTypefaces;
 
 import net.dean.jraw.ApiException;
-import net.dean.jraw.managers.InboxManager;
 import net.dean.jraw.models.Captcha;
 import net.dean.jraw.models.Message;
 import net.dean.jraw.models.PrivateMessage;
+import net.dean.jraw.references.InboxReference;
 
 import java.util.List;
 import java.util.Locale;
@@ -132,7 +132,7 @@ public class InboxAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         } else if (i == 5) {
             View v = LayoutInflater.from(viewGroup.getContext())
                     .inflate(R.layout.loadingmore, viewGroup, false);
-            return new ContributionAdapter.EmptyViewHolder(v);
+            return new PublicContributionAdapter.EmptyViewHolder(v);
         } else {
             View v = LayoutInflater.from(viewGroup.getContext())
                     .inflate(R.layout.message_reply, viewGroup, false);
@@ -146,7 +146,7 @@ public class InboxAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, int pos) {
         int i = pos != 0 ? pos - 1 : pos;
 
-        if (!(viewHolder instanceof ContributionAdapter.EmptyViewHolder)
+        if (!(viewHolder instanceof PublicContributionAdapter.EmptyViewHolder)
                 && !(viewHolder instanceof SpacerViewHolder)) {
             final MessageViewHolder messageViewHolder = (MessageViewHolder) viewHolder;
 
@@ -425,7 +425,7 @@ public class InboxAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         final View dialoglayout = inflater.inflate(R.layout.edit_comment, null);
         final AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(mContext);
 
-        final EditText e = (EditText) dialoglayout.findViewById(R.id.entry);
+        final EditText e = dialoglayout.findViewById(R.id.entry);
 
         DoEditorActions.doActions(e, dialoglayout,
                 ((AppCompatActivity) mContext).getSupportFragmentManager(), (Activity) mContext,
@@ -476,7 +476,7 @@ public class InboxAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         public void sendMessage(Captcha captcha, String captchaAttempt) {
             try {
-                new net.dean.jraw.managers.AccountManager(Authentication.reddit).reply(replyTo,
+                new net.dean.jraw.references.UserReference(Authentication.reddit).reply(replyTo,
                         text);
                 sent = true;
             } catch (ApiException e) {
@@ -490,16 +490,14 @@ public class InboxAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             if (sent) {
                 Snackbar s = Snackbar.make(listView, "Reply sent!", Snackbar.LENGTH_LONG);
                 View view = s.getView();
-                TextView tv =
-                        (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                TextView tv = view.findViewById(android.support.design.R.id.snackbar_text);
                 tv.setTextColor(Color.WHITE);
                 s.show();
             } else {
                 Snackbar s = Snackbar.make(listView, "Sending failed! Reply saved as a draft.",
                         Snackbar.LENGTH_LONG);
                 View view = s.getView();
-                TextView tv =
-                        (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                TextView tv = view.findViewById(android.support.design.R.id.snackbar_text);
                 tv.setTextColor(Color.WHITE);
                 s.show();
                 Drafts.addDraft(text);
@@ -566,7 +564,7 @@ public class InboxAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         @Override
         protected Void doInBackground(Message... params) {
-            new InboxManager(Authentication.reddit).setRead(b, params[0]);
+            new InboxReference(Authentication.reddit).setRead(b, params[0]);
             return null;
         }
     }

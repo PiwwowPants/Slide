@@ -40,9 +40,9 @@ import com.lusfold.androidkeyvaluestore.KVStore;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import net.dean.jraw.http.NetworkException;
+import net.dean.jraw.models.TimePeriod;
 import net.dean.jraw.paginators.Sorting;
 import net.dean.jraw.paginators.SubmissionSearchPaginator;
-import net.dean.jraw.paginators.TimePeriod;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 

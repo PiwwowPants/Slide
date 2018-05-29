@@ -18,7 +18,7 @@ import android.view.ViewTreeObserver;
 import android.view.animation.LinearInterpolator;
 import android.view.inputmethod.InputMethodManager;
 
-import net.dean.jraw.managers.InboxManager;
+import net.dean.jraw.references.InboxReference;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -82,7 +82,7 @@ public class Inbox extends BaseActivityAnim {
                     @Override
                     protected Void doInBackground(Void... params) {
                         try {
-                            new InboxManager(Authentication.reddit).setAllRead();
+                            new InboxReference(Authentication.reddit).setAllRead();
                             changed = true;
                         } catch (Exception ignored) {
                             ignored.printStackTrace();

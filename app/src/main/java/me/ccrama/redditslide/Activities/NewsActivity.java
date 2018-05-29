@@ -34,7 +34,7 @@ import android.view.animation.LinearInterpolator;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 
-import net.dean.jraw.managers.AccountManager;
+import net.dean.jraw.references.UserReference;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -116,7 +116,7 @@ public class NewsActivity extends BaseActivity
                             returned[i] = s;
                             i++;
                         }
-                        new AccountManager(Authentication.reddit).storeVisits(returned);
+                        new UserReference(Authentication.reddit).storeVisits(returned);
                         SynccitRead.newVisited = new ArrayList<>();
                     } catch (Exception e) {
                         e.printStackTrace();

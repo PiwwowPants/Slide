@@ -13,11 +13,11 @@ import android.widget.RemoteViewsService;
 
 import net.dean.jraw.models.Submission;
 import net.dean.jraw.models.Thumbnails;
+import net.dean.jraw.models.TimePeriod;
 import net.dean.jraw.paginators.DomainPaginator;
 import net.dean.jraw.paginators.Paginator;
 import net.dean.jraw.paginators.Sorting;
 import net.dean.jraw.paginators.SubredditPaginator;
-import net.dean.jraw.paginators.TimePeriod;
 
 import java.util.ArrayList;
 import java.util.HashSet;

@@ -1,8 +1,13 @@
 package me.ccrama.redditslide.Adapters;
 
-import net.dean.jraw.models.Contribution;
+import android.os.AsyncTask;
+import android.support.v4.widget.SwipeRefreshLayout;
+
+import net.dean.jraw.models.PublicContribution;
 import net.dean.jraw.models.Submission;
-import net.dean.jraw.paginators.UserSavedPaginator;
+import net.dean.jraw.models.TimePeriod;
+import net.dean.jraw.paginators.Sorting;
+import net.dean.jraw.paginators.UserPublicContributionPaginator;
 
 import java.util.ArrayList;
 
@@ -10,34 +15,42 @@ import me.ccrama.redditslide.Authentication;
 import me.ccrama.redditslide.HasSeen;
 import me.ccrama.redditslide.PostMatch;
 import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.SettingValues;
 
 /**
  * Created by ccrama on 9/17/2015.
  */
-public class ContributionPostsSaved extends ContributionPosts {
-    private final String category;
+public class PublicContributionPosts extends GeneralPosts {
+    protected final String                          where;
+    protected final String                          subreddit;
+    public          boolean                         loading;
+    private         UserPublicContributionPaginator paginator;
+    protected       SwipeRefreshLayout              refreshLayout;
+    protected       PublicContributionAdapter       adapter;
 
-    public ContributionPostsSaved(String subreddit, String where, String category) {
-        super(subreddit, where);
-        this.category = category;
+    public PublicContributionPosts(String subreddit, String where) {
+        this.subreddit = subreddit;
+        this.where = where;
     }
 
-    UserSavedPaginator paginator;
+    public void bindAdapter(PublicContributionAdapter a, SwipeRefreshLayout layout) {
+        this.adapter = a;
+        this.refreshLayout = layout;
+        loadMore(a, subreddit, true);
+    }
 
-    @Override
-    public void loadMore(ContributionAdapter adapter, String subreddit, boolean reset) {
+    public void loadMore(PublicContributionAdapter adapter, String subreddit, boolean reset) {
         new LoadData(reset).execute(subreddit);
     }
 
-    public class LoadData extends ContributionPosts.LoadData {
+    public class LoadData extends AsyncTask<String, Void, ArrayList<PublicContribution>> {
+        final boolean reset;
 
         public LoadData(boolean reset) {
-            super(reset);
+            this.reset = reset;
         }
 
         @Override
-        public void onPostExecute(ArrayList<Contribution> submissions) {
+        public void onPostExecute(ArrayList<PublicContribution> submissions) {
             loading = false;
 
             if (submissions != null && !submissions.isEmpty()) {
@@ -48,8 +61,8 @@ public class ContributionPostsSaved extends ContributionPosts {
                     start = posts.size() + 1;
                 }
 
-                ArrayList<Contribution> filteredSubmissions = new ArrayList<>();
-                for (Contribution c : submissions) {
+                ArrayList<PublicContribution> filteredSubmissions = new ArrayList<>();
+                for (PublicContribution c : submissions) {
                     if (c instanceof Submission) {
                         if (!PostMatch.doesMatch((Submission) c)) {
                             filteredSubmissions.add(c);
@@ -92,22 +105,22 @@ public class ContributionPostsSaved extends ContributionPosts {
         }
 
         @Override
-        protected ArrayList<Contribution> doInBackground(String... subredditPaginators) {
-            ArrayList<Contribution> newData = new ArrayList<>();
+        protected ArrayList<PublicContribution> doInBackground(String... subredditPaginators) {
+            ArrayList<PublicContribution> newData = new ArrayList<>();
             try {
                 if (reset || paginator == null) {
-                    paginator = new UserSavedPaginator(Authentication.reddit, where, subreddit);
-                    paginator.setSorting(SettingValues.getSubmissionSort(subreddit));
-                    paginator.setTimePeriod(SettingValues.getSubmissionTimePeriod(subreddit));
-                    if(category != null)
-                        paginator.setCategory(category);
+                    paginator = new UserPublicContributionPaginator(Authentication.reddit, where,
+                            subreddit);
+
+                    paginator.setSorting(Reddit.getSorting(subreddit, Sorting.NEW));
+                    paginator.setTimePeriod(Reddit.getTime(subreddit, TimePeriod.ALL));
                 }
 
                 if (!paginator.hasNext()) {
                     nomore = true;
                     return new ArrayList<>();
                 }
-                for (Contribution c : paginator.next()) {
+                for (PublicContribution c : paginator.next()) {
                     if (c instanceof Submission) {
                         Submission s = (Submission) c;
                         newData.add(s);

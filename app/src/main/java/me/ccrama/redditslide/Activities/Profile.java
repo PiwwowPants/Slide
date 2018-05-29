@@ -37,13 +37,11 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import net.dean.jraw.fluent.FluentRedditClient;
-import net.dean.jraw.managers.AccountManager;
 import net.dean.jraw.models.Account;
+import net.dean.jraw.models.TimePeriod;
 import net.dean.jraw.models.Trophy;
 import net.dean.jraw.paginators.Sorting;
-import net.dean.jraw.paginators.TimePeriod;
-
-import org.ligi.snackengage.snacks.Snack;
+import net.dean.jraw.references.UserReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,8 +51,8 @@ import java.util.Map;
 
 import me.ccrama.redditslide.Authentication;
 import me.ccrama.redditslide.ColorPreferences;
-import me.ccrama.redditslide.Fragments.ContributionsView;
 import me.ccrama.redditslide.Fragments.HistoryView;
+import me.ccrama.redditslide.Fragments.PublicContributionsView;
 import me.ccrama.redditslide.R;
 import me.ccrama.redditslide.Reddit;
 import me.ccrama.redditslide.TimeUtils;
@@ -165,11 +163,7 @@ public class Profile extends BaseActivityAnim {
 
             @Override
             public void onPageSelected(int position) {
-                if (position == 6) {
-                    isSavedView = true;
-                } else {
-                    isSavedView = false;
-                }
+                isSavedView = position == 6;
                 findViewById(R.id.header).animate()
                         .translationY(0)
                         .setInterpolator(new LinearInterpolator())
@@ -211,11 +205,7 @@ public class Profile extends BaseActivityAnim {
         if (getIntent().hasExtra(EXTRA_UPVOTE) && name.equals(Authentication.name)) {
             pager.setCurrentItem(4);
         }
-        if (pager.getCurrentItem() == 6) {
-            isSavedView = true;
-        } else {
-            isSavedView = false;
-        }
+        isSavedView = pager.getCurrentItem() == 6;
         if (pager.getCurrentItem() != 0) {
             scrollToTabAfterLayout(pager.getCurrentItem());
         }
@@ -310,7 +300,7 @@ public class Profile extends BaseActivityAnim {
         public Fragment getItem(int i) {
 
             if (i < 8) {
-                Fragment f = new ContributionsView();
+                Fragment f = new PublicContributionsView();
                 Bundle args = new Bundle();
 
                 args.putString("id", name);
@@ -529,7 +519,8 @@ public class Profile extends BaseActivityAnim {
                     @Override
                     protected List<String> doInBackground(Void... params) {
                         try {
-                            List<String> categories = new ArrayList<>(new AccountManager(Authentication.reddit).getSavedCategories());
+                            List<String> categories = new ArrayList<>(
+                                    new UserReference(Authentication.reddit).getSavedCategories());
                             categories.add(0, "No category");
                             return categories;
                         } catch (Exception e) {
@@ -577,7 +568,7 @@ public class Profile extends BaseActivityAnim {
                     LayoutInflater inflater = getLayoutInflater();
                     final View dialoglayout = inflater.inflate(R.layout.colorprofile, null);
                     AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(Profile.this);
-                    final TextView title = (TextView) dialoglayout.findViewById(R.id.title);
+                    final TextView title = dialoglayout.findViewById(R.id.title);
                     title.setText(name);
 
                     dialoglayout.findViewById(R.id.share).setOnClickListener(new View.OnClickListener() {
@@ -609,7 +600,7 @@ public class Profile extends BaseActivityAnim {
                     }
 
                     ((TextView) dialoglayout.findViewById(R.id.tagged)).setText(tag);
-                    LinearLayout l = (LinearLayout) dialoglayout.findViewById(R.id.trophies_inner);
+                    LinearLayout l = dialoglayout.findViewById(R.id.trophies_inner);
 
                     dialoglayout.findViewById(R.id.tag).setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -698,14 +689,16 @@ public class Profile extends BaseActivityAnim {
                                     protected Void doInBackground(Void... params) {
                                         if (friend) {
                                             try {
-                                                new AccountManager(Authentication.reddit).deleteFriend(name);
+                                                new UserReference(
+                                                        Authentication.reddit).deleteFriend(name);
                                             } catch (Exception ignored) {
                                                 //Will throw java.lang.IllegalStateException: No Content-Type header was found, but it still works.
                                             }
                                             friend = false;
 
                                         } else {
-                                            new AccountManager(Authentication.reddit).updateFriend(name);
+                                            new UserReference(Authentication.reddit).updateFriend(
+                                                    name);
                                             friend = true;
 
 
@@ -793,8 +786,8 @@ public class Profile extends BaseActivityAnim {
                         }
                     });
 
-                    LineColorPicker colorPicker = (LineColorPicker) dialoglayout.findViewById(R.id.picker);
-                    final LineColorPicker colorPicker2 = (LineColorPicker) dialoglayout.findViewById(R.id.picker2);
+                    LineColorPicker colorPicker = dialoglayout.findViewById(R.id.picker);
+                    final LineColorPicker colorPicker2 = dialoglayout.findViewById(R.id.picker2);
 
                     colorPicker.setColors(ColorPreferences.getBaseColors(Profile.this));
 
@@ -833,7 +826,7 @@ public class Profile extends BaseActivityAnim {
                     });
 
                     {
-                        TextView dialogButton = (TextView) dialoglayout.findViewById(R.id.ok);
+                        TextView dialogButton = dialoglayout.findViewById(R.id.ok);
 
                         // if button is clicked, close the custom dialog
                         dialogButton.setOnClickListener(new View.OnClickListener() {
@@ -870,7 +863,7 @@ public class Profile extends BaseActivityAnim {
 
                     }
                     {
-                        final TextView dialogButton = (TextView) dialoglayout.findViewById(R.id.reset);
+                        final TextView dialogButton = dialoglayout.findViewById(R.id.reset);
 
                         // if button is clicked, close the custom dialog
                         dialogButton.setOnClickListener(new View.OnClickListener() {

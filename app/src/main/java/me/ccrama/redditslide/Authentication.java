@@ -15,10 +15,10 @@ import net.dean.jraw.http.LoggingMode;
 import net.dean.jraw.http.NetworkException;
 import net.dean.jraw.http.OkHttpAdapter;
 import net.dean.jraw.http.UserAgent;
-import net.dean.jraw.http.oauth.Credentials;
-import net.dean.jraw.http.oauth.OAuthData;
-import net.dean.jraw.http.oauth.OAuthHelper;
 import net.dean.jraw.models.LoggedInAccount;
+import net.dean.jraw.models.OAuthData;
+import net.dean.jraw.oauth.Credentials;
+import net.dean.jraw.oauth.OAuthHelper;
 
 import java.util.Calendar;
 import java.util.HashSet;

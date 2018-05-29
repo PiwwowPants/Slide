@@ -9,14 +9,13 @@ import android.widget.TextView;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import net.dean.jraw.http.RestResponse;
+import net.dean.jraw.JrawUtils;
+import net.dean.jraw.http.HttpResponse;
 import net.dean.jraw.http.SubmissionRequest;
-import net.dean.jraw.models.Comment;
-import net.dean.jraw.models.CommentNode;
 import net.dean.jraw.models.CommentSort;
 import net.dean.jraw.models.Submission;
 import net.dean.jraw.models.meta.SubmissionSerializer;
-import net.dean.jraw.util.JrawUtils;
+import net.dean.jraw.tree.CommentNode;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,7 +28,6 @@ import java.util.TreeMap;
 import me.ccrama.redditslide.Authentication;
 import me.ccrama.redditslide.Fragments.CommentPage;
 import me.ccrama.redditslide.LastComments;
-import me.ccrama.redditslide.util.LogUtil;
 import me.ccrama.redditslide.util.NetworkUtil;
 
 /**
@@ -160,7 +158,7 @@ public class SubmissionComments {
         if (context == null || context.isEmpty()) {
             Snackbar s = Snackbar.make(page.rv, "Comment submitted", Snackbar.LENGTH_SHORT);
             View view = s.getView();
-            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+            TextView tv = view.findViewById(android.support.design.R.id.snackbar_text);
             tv.setTextColor(Color.WHITE);
             s.show();
         }
@@ -197,7 +195,7 @@ public class SubmissionComments {
             sort = CommentSort.CONFIDENCE;
         args.put("sort", sort.name().toLowerCase(Locale.ENGLISH));
 
-        RestResponse response = Authentication.reddit.execute(Authentication.reddit.request()
+        HttpResponse response = Authentication.reddit.execute(Authentication.reddit.request()
                 .path(String.format("/comments/%s", request.getId()))
                 .query(args)
                 .build());

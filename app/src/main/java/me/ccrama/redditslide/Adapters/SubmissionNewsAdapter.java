@@ -20,8 +20,8 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 
-import net.dean.jraw.managers.AccountManager;
 import net.dean.jraw.models.Submission;
+import net.dean.jraw.references.UserReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -325,7 +325,7 @@ public class SubmissionNewsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                                 }
                             });
                             View view = s.getView();
-                            TextView tv = (TextView) view.findViewById(
+                            TextView tv = view.findViewById(
                                     android.support.design.R.id.snackbar_text);
                             tv.setTextColor(Color.WHITE);
                             s.show();
@@ -428,14 +428,14 @@ public class SubmissionNewsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         protected Void doInBackground(Submission... submissions) {
             try {
                 if (ActionStates.isSaved(submissions[0])) {
-                    new AccountManager(Authentication.reddit).unsave(submissions[0]);
+                    new UserReference(Authentication.reddit).unsave(submissions[0]);
                     final Snackbar s = Snackbar.make(v, R.string.submission_info_unsaved,
                             Snackbar.LENGTH_SHORT);
                     context.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             View view = s.getView();
-                            TextView tv = (TextView) view.findViewById(
+                            TextView tv = view.findViewById(
                                     android.support.design.R.id.snackbar_text);
                             tv.setTextColor(Color.WHITE);
                             s.show();
@@ -446,14 +446,14 @@ public class SubmissionNewsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     submissions[0].saved = false;
                     v = null;
                 } else {
-                    new AccountManager(Authentication.reddit).save(submissions[0]);
+                    new UserReference(Authentication.reddit).save(submissions[0]);
                     final Snackbar s =
                             Snackbar.make(v, R.string.submission_info_saved, Snackbar.LENGTH_SHORT);
                     context.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             View view = s.getView();
-                            TextView tv = (TextView) view.findViewById(
+                            TextView tv = view.findViewById(
                                     android.support.design.R.id.snackbar_text);
                             tv.setTextColor(Color.WHITE);
                             s.show();

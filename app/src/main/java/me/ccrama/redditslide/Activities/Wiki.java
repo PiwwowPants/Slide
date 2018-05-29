@@ -11,7 +11,7 @@ import android.support.v4.view.ViewPager;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 
-import net.dean.jraw.managers.WikiManager;
+import net.dean.jraw.references.WikiReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,13 +67,14 @@ public class Wiki extends BaseActivityAnim {
 
         new AsyncGetWiki().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
-    public WikiManager wiki;
+
+    public WikiReference wiki;
     private class AsyncGetWiki extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... params) {
 
-           wiki = new WikiManager(Authentication.reddit);
+            wiki = new WikiReference(Authentication.reddit);
             try {
                 pages = wiki.getPages(subreddit);
 

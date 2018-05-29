@@ -41,10 +41,10 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import net.dean.jraw.ApiException;
 import net.dean.jraw.http.MultiRedditUpdateRequest;
 import net.dean.jraw.http.NetworkException;
-import net.dean.jraw.managers.MultiRedditManager;
-import net.dean.jraw.models.MultiReddit;
 import net.dean.jraw.models.MultiSubreddit;
+import net.dean.jraw.models.Multireddit;
 import net.dean.jraw.models.Subreddit;
+import net.dean.jraw.references.MultiredditReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,8 +99,8 @@ public class CreateMulti extends BaseActivityAnim {
             title.setText(multi.replace("%20", " "));
             UserSubscriptions.getMultireddits(new UserSubscriptions.MultiCallback() {
                 @Override
-                public void onComplete(List<MultiReddit> multis) {
-                    for (MultiReddit multiReddit : multis) {
+                public void onComplete(List<Multireddit> multis) {
+                    for (Multireddit multiReddit : multis) {
                         if (multiReddit.getDisplayName().equals(multi)) {
                             for (MultiSubreddit sub : multiReddit.getSubreddits()) {
                                 subs.add(sub.getDisplayName().toLowerCase(Locale.ENGLISH));
@@ -319,7 +319,7 @@ public class CreateMulti extends BaseActivityAnim {
             public ViewHolder(View itemView) {
                 super(itemView);
 
-                text = (TextView) itemView.findViewById(R.id.name);
+                text = itemView.findViewById(R.id.name);
 
 
             }
@@ -343,14 +343,16 @@ public class CreateMulti extends BaseActivityAnim {
                 }
                 if (delete) {
                     Log.v(LogUtil.getTag(), "Deleting");
-                    new MultiRedditManager(Authentication.reddit).delete(old);
+                    new MultiredditReference(Authentication.reddit).delete(old);
                 } else {
                     if (old != null && !old.isEmpty() && !old.replace(" ", "").equals(multiName)) {
                         Log.v(LogUtil.getTag(), "Renaming");
-                        new MultiRedditManager(Authentication.reddit).rename(old, multiName);
+                        new MultiredditReference(Authentication.reddit).rename(old, multiName);
                     }
                     Log.v(LogUtil.getTag(), "Create or Update, Name: " + multiName);
-                    new MultiRedditManager(Authentication.reddit).createOrUpdate(new MultiRedditUpdateRequest.Builder(Authentication.name, multiName).subreddits(subs).build());
+                    new MultiredditReference(Authentication.reddit).createOrUpdate(
+                            new MultiRedditUpdateRequest.Builder(Authentication.name,
+                                    multiName).subreddits(subs).build());
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -434,7 +436,8 @@ public class CreateMulti extends BaseActivityAnim {
                                     @Override
                                     protected Void doInBackground(Void... params) {
                                         try {
-                                            new MultiRedditManager(Authentication.reddit).delete(old);
+                                            new MultiredditReference(Authentication.reddit).delete(
+                                                    old);
                                             runOnUiThread(new Runnable() {
                                                 @Override
                                                 public void run() {

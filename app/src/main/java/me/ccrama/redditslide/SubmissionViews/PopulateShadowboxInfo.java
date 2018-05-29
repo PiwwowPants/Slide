@@ -32,12 +32,12 @@ import com.cocosw.bottomsheet.BottomSheet;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import net.dean.jraw.ApiException;
-import net.dean.jraw.managers.AccountManager;
 import net.dean.jraw.models.Comment;
-import net.dean.jraw.models.CommentNode;
 import net.dean.jraw.models.DistinguishedStatus;
 import net.dean.jraw.models.Submission;
 import net.dean.jraw.models.VoteDirection;
+import net.dean.jraw.references.UserReference;
+import net.dean.jraw.tree.CommentNode;
 
 import java.util.Locale;
 
@@ -148,10 +148,10 @@ public class PopulateShadowboxInfo {
                                 protected Void doInBackground(Void... params) {
                                     try {
                                         if (ActionStates.isSaved(s)) {
-                                            new AccountManager(Authentication.reddit).unsave(s);
+                                            new UserReference(Authentication.reddit).unsave(s);
                                             ActionStates.setSaved(s, false);
                                         } else {
-                                            new AccountManager(Authentication.reddit).save(s);
+                                            new UserReference(Authentication.reddit).save(s);
                                             ActionStates.setSaved(s, true);
                                         }
                                     } catch (ApiException e) {
@@ -373,10 +373,10 @@ public class PopulateShadowboxInfo {
                                 protected Void doInBackground(Void... params) {
                                     try {
                                         if (ActionStates.isSaved(s)) {
-                                            new AccountManager(Authentication.reddit).unsave(s);
+                                            new UserReference(Authentication.reddit).unsave(s);
                                             ActionStates.setSaved(s, false);
                                         } else {
-                                            new AccountManager(Authentication.reddit).save(s);
+                                            new UserReference(Authentication.reddit).save(s);
                                             ActionStates.setSaved(s, true);
                                         }
                                     } catch (ApiException e) {
@@ -564,7 +564,9 @@ public class PopulateShadowboxInfo {
                                                     @Override
                                                     protected Void doInBackground(Void... params) {
                                                         try {
-                                                            new AccountManager(Authentication.reddit).report(submission, reportReason);
+                                                            new UserReference(Authentication.reddit)
+                                                                    .report(submission,
+                                                                            reportReason);
                                                         } catch (ApiException e) {
                                                             e.printStackTrace();
                                                         }

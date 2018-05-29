@@ -24,8 +24,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.mikepenz.itemanimators.AlphaInAnimator;
 import com.mikepenz.itemanimators.SlideUpAlphaAnimator;
 
-import net.dean.jraw.models.MultiReddit;
 import net.dean.jraw.models.MultiSubreddit;
+import net.dean.jraw.models.Multireddit;
 import net.dean.jraw.models.Submission;
 
 import java.util.ArrayList;
@@ -203,7 +203,7 @@ public class MultiredditView extends Fragment implements SubmissionDisplay {
             refreshLayout.setLayoutParams(params);
         }
 
-        List<MultiReddit> multireddits;
+        List<Multireddit> multireddits;
         if (profile.isEmpty()) {
             multireddits = UserSubscriptions.multireddits;
         } else {

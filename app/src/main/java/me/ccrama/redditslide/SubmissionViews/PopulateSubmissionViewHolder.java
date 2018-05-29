@@ -46,15 +46,15 @@ import com.devspark.robototextview.RobotoTypefaces;
 import net.dean.jraw.ApiException;
 import net.dean.jraw.fluent.FlairReference;
 import net.dean.jraw.fluent.FluentRedditClient;
-import net.dean.jraw.http.oauth.InvalidScopeException;
-import net.dean.jraw.managers.AccountManager;
 import net.dean.jraw.managers.ModerationManager;
-import net.dean.jraw.models.Contribution;
 import net.dean.jraw.models.DistinguishedStatus;
 import net.dean.jraw.models.FlairTemplate;
+import net.dean.jraw.models.PublicContribution;
 import net.dean.jraw.models.Submission;
 import net.dean.jraw.models.Thing;
 import net.dean.jraw.models.VoteDirection;
+import net.dean.jraw.oauth.InvalidScopeException;
+import net.dean.jraw.references.UserReference;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -479,7 +479,7 @@ public class PopulateSubmissionViewHolder {
         return Palette.ThemeEnum.DARK.getTint();
     }
 
-    public <T extends Contribution> void showBottomSheet(final Activity mContext,
+    public <T extends PublicContribution> void showBottomSheet(final Activity mContext,
             final Submission submission, final SubmissionViewHolder holder, final List<T> posts,
             final String baseSub, final RecyclerView recyclerview, final boolean full) {
 
@@ -811,9 +811,9 @@ public class PopulateSubmissionViewHolder {
                                                     PostMatch.domains = null;
                                                     PostMatch.subreddits = null;
                                                     PostMatch.users = null;
-                                                    ArrayList<Contribution> toRemove =
+                                                    ArrayList<PublicContribution> toRemove =
                                                             new ArrayList<>();
-                                                    for (Contribution s : posts) {
+                                                    for (PublicContribution s : posts) {
                                                         if (s instanceof Submission
                                                                 && PostMatch.doesMatch(
                                                                 (Submission) s)) {
@@ -825,7 +825,7 @@ public class PopulateSubmissionViewHolder {
                                                             OfflineSubreddit.getSubreddit(baseSub,
                                                                     false, mContext);
 
-                                                    for (Contribution remove : toRemove) {
+                                                    for (PublicContribution remove : toRemove) {
                                                         final int pos = posts.indexOf(remove);
                                                         posts.remove(pos);
                                                         if (baseSub != null) {
@@ -956,7 +956,7 @@ public class PopulateSubmissionViewHolder {
                                             @Override
                                             protected Void doInBackground(Void... params) {
                                                 try {
-                                                    new AccountManager(
+                                                    new UserReference(
                                                             Authentication.reddit).report(
                                                             submission, reportReason);
                                                 } catch (ApiException e) {
@@ -1089,10 +1089,10 @@ public class PopulateSubmissionViewHolder {
             protected Void doInBackground(Void... params) {
                 try {
                     if (ActionStates.isSaved(submission)) {
-                        new AccountManager(Authentication.reddit).unsave(submission);
+                        new UserReference(Authentication.reddit).unsave(submission);
                         ActionStates.setSaved(submission, false);
                     } else {
-                        new AccountManager(Authentication.reddit).save(submission);
+                        new UserReference(Authentication.reddit).save(submission);
                         ActionStates.setSaved(submission, true);
                     }
 
@@ -1163,7 +1163,7 @@ public class PopulateSubmissionViewHolder {
             protected List<String> doInBackground(Void... params) {
                 try {
                     List<String> categories = new ArrayList<String>(
-                            new AccountManager(Authentication.reddit).getSavedCategories());
+                            new UserReference(Authentication.reddit).getSavedCategories());
                     categories.add("New category");
                     return categories;
                 } catch (Exception e) {
@@ -1214,7 +1214,7 @@ public class PopulateSubmissionViewHolder {
                                                                     protected Boolean doInBackground(
                                                                             Void... params) {
                                                                         try {
-                                                                            new AccountManager(
+                                                                            new UserReference(
                                                                                     Authentication.reddit)
                                                                                     .save(submission,
                                                                                             flair);
@@ -1273,7 +1273,7 @@ public class PopulateSubmissionViewHolder {
                                             @Override
                                             protected Boolean doInBackground(Void... params) {
                                                 try {
-                                                    new AccountManager(Authentication.reddit).save(
+                                                    new UserReference(Authentication.reddit).save(
                                                             submission, t);
                                                     return true;
                                                 } catch (ApiException e) {
@@ -1324,7 +1324,7 @@ public class PopulateSubmissionViewHolder {
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    public <T extends Contribution> void hideSubmission(final Submission submission,
+    public <T extends PublicContribution> void hideSubmission(final Submission submission,
             final List<T> posts, final String baseSub, final RecyclerView recyclerview, Context c) {
         final int pos = posts.indexOf(submission);
         if (pos != -1) {
@@ -1382,7 +1382,7 @@ public class PopulateSubmissionViewHolder {
         }
     }
 
-    public <T extends Contribution> void showModBottomSheet(final Activity mContext,
+    public <T extends PublicContribution> void showModBottomSheet(final Activity mContext,
             final Submission submission, final List<T> posts, final SubmissionViewHolder holder,
             final RecyclerView recyclerview, final Map<String, Integer> reports,
             final Map<String, String> reports2) {
@@ -1614,7 +1614,7 @@ public class PopulateSubmissionViewHolder {
         b.show();
     }
 
-    private <T extends Contribution> void doRemoveSubmissionReason(final Activity mContext,
+    private <T extends PublicContribution> void doRemoveSubmissionReason(final Activity mContext,
             final Submission submission, final List<T> posts, final RecyclerView recyclerview,
             final SubmissionViewHolder holder) {
         reason = "";
@@ -1652,7 +1652,7 @@ public class PopulateSubmissionViewHolder {
                 .show();
     }
 
-    private <T extends Contribution> void removeSubmissionReason(final Submission submission,
+    private <T extends PublicContribution> void removeSubmissionReason(final Submission submission,
             final Activity mContext, final List<T> posts, final String reason,
             final SubmissionViewHolder holder, final RecyclerView recyclerview) {
         new AsyncTask<Void, Void, Boolean>() {
@@ -1696,7 +1696,7 @@ public class PopulateSubmissionViewHolder {
             @Override
             protected Boolean doInBackground(Void... params) {
                 try {
-                    new AccountManager(Authentication.reddit).reply(submission, reason);
+                    new UserReference(Authentication.reddit).reply(submission, reason);
                     new ModerationManager(Authentication.reddit).remove(submission, false);
                     new ModerationManager(Authentication.reddit).setDistinguishedStatus(
                             Authentication.reddit.get(submission.getFullName()).get(0),
@@ -1711,7 +1711,7 @@ public class PopulateSubmissionViewHolder {
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    private <T extends Contribution> void removeSubmission(final Activity mContext,
+    private <T extends PublicContribution> void removeSubmission(final Activity mContext,
             final Submission submission, final List<T> posts, final RecyclerView recyclerview,
             final SubmissionViewHolder holder, final boolean spam) {
         new AsyncTask<Void, Void, Boolean>() {
@@ -2515,7 +2515,7 @@ public class PopulateSubmissionViewHolder {
     }
 
 
-    public <T extends Contribution> void populateSubmissionViewHolder(
+    public <T extends PublicContribution> void populateSubmissionViewHolder(
             final SubmissionViewHolder holder, final Submission submission, final Activity mContext,
             boolean fullscreen, final boolean full, final List<T> posts,
             final RecyclerView recyclerview, final boolean same, final boolean offline,
@@ -2570,7 +2570,7 @@ public class PopulateSubmissionViewHolder {
         String scoreRatio =
                 (SettingValues.upvotePercentage && full && submission.getUpvoteRatio() != null) ?
                         "("
-                                + (int) (submission.getUpvoteRatio() * 100)
+                                + submission.getUpvoteRatio() * 100
                                 + "%)" : "";
 
         if (!scoreRatio.isEmpty()) {
@@ -3104,9 +3104,9 @@ public class PopulateSubmissionViewHolder {
                                                                 protected Void doInBackground(
                                                                         Void... params) {
                                                                     try {
-                                                                        new AccountManager(
+                                                                        new UserReference(
                                                                                 Authentication.reddit)
-                                                                                .updateContribution(
+                                                                                .updatePublicContribution(
                                                                                         submission,
                                                                                         text);
                                                                         if (adapter != null) {

@@ -3,17 +3,15 @@ package me.ccrama.redditslide;
 import com.lusfold.androidkeyvaluestore.KVStore;
 import com.lusfold.androidkeyvaluestore.core.KVManger;
 
-import net.dean.jraw.models.Contribution;
+import net.dean.jraw.models.PublicContribution;
 import net.dean.jraw.models.Submission;
 import net.dean.jraw.models.VoteDirection;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
 import me.ccrama.redditslide.Synccit.SynccitRead;
-import me.ccrama.redditslide.util.LogUtil;
 
 import static me.ccrama.redditslide.OpenRedditLink.formatRedditUrl;
 import static me.ccrama.redditslide.OpenRedditLink.getRedditLinkType;
@@ -26,13 +24,13 @@ public class HasSeen {
     public static ArrayList<String>     hasSeen;
     public static HashMap<String, Long> seenTimes;
 
-    public static void setHasSeenContrib(List<Contribution> submissions) {
+    public static void setHasSeenContrib(List<PublicContribution> submissions) {
         if (hasSeen == null) {
             hasSeen = new ArrayList<>();
             seenTimes = new HashMap<>();
         }
         KVManger m = KVStore.getInstance();
-        for (Contribution s : submissions) {
+        for (PublicContribution s : submissions) {
             if (s instanceof Submission) {
                 String fullname = s.getFullName();
                 if (fullname.contains("t3_")) {
@@ -56,7 +54,7 @@ public class HasSeen {
             seenTimes = new HashMap<>();
         }
         KVManger m = KVStore.getInstance();
-        for (Contribution s : submissions) {
+        for (PublicContribution s : submissions) {
             String fullname = s.getFullName();
             if (fullname.contains("t3_")) {
                 fullname = fullname.substring(3, fullname.length());

@@ -46,12 +46,12 @@ import com.nostra13.universalimageloader.utils.DiskCacheUtils;
 import net.dean.jraw.ApiException;
 import net.dean.jraw.RedditClient;
 import net.dean.jraw.http.UserAgent;
-import net.dean.jraw.managers.AccountManager;
 import net.dean.jraw.models.Comment;
-import net.dean.jraw.models.CommentNode;
-import net.dean.jraw.models.Contribution;
+import net.dean.jraw.models.PublicContribution;
 import net.dean.jraw.models.Submission;
 import net.dean.jraw.models.VoteDirection;
+import net.dean.jraw.references.UserReference;
+import net.dean.jraw.tree.CommentNode;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -2399,13 +2399,13 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
 
     public class ReplyTaskComment extends AsyncTask<String, Void, String> {
-        public Contribution sub;
+        public PublicContribution sub;
         CommentNode       node;
         CommentViewHolder holder;
         boolean           isSubmission;
         String            profileName;
 
-        public ReplyTaskComment(Contribution n, CommentNode node, CommentViewHolder holder,
+        public ReplyTaskComment(PublicContribution n, CommentNode node, CommentViewHolder holder,
                 String profileName) {
             sub = n;
             this.holder = holder;
@@ -2413,7 +2413,7 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             this.profileName = profileName;
         }
 
-        public ReplyTaskComment(Contribution n, String profileName) {
+        public ReplyTaskComment(PublicContribution n, String profileName) {
             sub = n;
             isSubmission = true;
             this.profileName = profileName;
@@ -2467,10 +2467,10 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 try {
                     commentBack = comment[0];
                     if (profileName.equals(Authentication.name)) {
-                        return new AccountManager(Authentication.reddit).reply(sub, comment[0]);
+                        return new UserReference(Authentication.reddit).reply(sub, comment[0]);
                     } else {
                         LogUtil.v("Switching to " + profileName);
-                        return new AccountManager(getAuthenticatedClient(profileName)).reply(sub,
+                        return new UserReference(getAuthenticatedClient(profileName)).reply(sub,
                                 comment[0]);
                     }
                 } catch (Exception e) {

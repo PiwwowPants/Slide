@@ -5,13 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 
-import me.ccrama.redditslide.Adapters.ContributionAdapter;
+import me.ccrama.redditslide.Adapters.PublicContributionAdapter;
 import me.ccrama.redditslide.Adapters.SubredditSearchPosts;
 import me.ccrama.redditslide.ColorPreferences;
 import me.ccrama.redditslide.Constants;
@@ -20,7 +18,6 @@ import me.ccrama.redditslide.Views.CatchStaggeredGridLayoutManager;
 import me.ccrama.redditslide.Views.PreCachingLayoutManager;
 import me.ccrama.redditslide.Visuals.Palette;
 import me.ccrama.redditslide.handler.ToolbarScrollHideHandler;
-import me.ccrama.redditslide.util.LogUtil;
 
 public class Related extends BaseActivityAnim {
 
@@ -28,10 +25,10 @@ public class Related extends BaseActivityAnim {
 
     public static final String EXTRA_URL = "url";
 
-    private int totalItemCount;
-    private int visibleItemCount;
-    private int pastVisiblesItems;
-    private ContributionAdapter adapter;
+    private int                       totalItemCount;
+    private int                       visibleItemCount;
+    private int                       pastVisiblesItems;
+    private PublicContributionAdapter adapter;
 
     private SubredditSearchPosts posts;
 
@@ -128,7 +125,7 @@ public class Related extends BaseActivityAnim {
         });
 
         posts = new SubredditSearchPosts("", "url:" + url, this);
-        adapter = new ContributionAdapter(this, posts, rv);
+        adapter = new PublicContributionAdapter(this, posts, rv);
         rv.setAdapter(adapter);
 
         posts.bindAdapter(adapter, mSwipeRefreshLayout);

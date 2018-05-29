@@ -28,8 +28,8 @@ import com.rey.material.widget.Slider;
 
 import net.dean.jraw.models.CommentSort;
 import net.dean.jraw.models.Subreddit;
+import net.dean.jraw.models.TimePeriod;
 import net.dean.jraw.paginators.Sorting;
-import net.dean.jraw.paginators.TimePeriod;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -23,8 +23,8 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
 
 import net.dean.jraw.http.HttpRequest;
+import net.dean.jraw.http.HttpResponse;
 import net.dean.jraw.http.MediaTypes;
-import net.dean.jraw.http.RestResponse;
 
 import java.io.File;
 import java.io.IOException;
@@ -113,7 +113,7 @@ public class ImageFlairs {
                         .path("/r/" + subreddit + "/stylesheet")
                         .expected(MediaTypes.CSS.type())
                         .build();
-                RestResponse response = Authentication.reddit.execute(r);
+                HttpResponse response = Authentication.reddit.execute(r);
                 String stylesheet = response.getRaw();
 
                 ArrayList<String> allImages = new ArrayList<>();
@@ -164,7 +164,7 @@ public class ImageFlairs {
             this.y = y;
         }
 
-        public Bitmap transform(Bitmap bitmap, boolean isPercentage) throws Exception {
+        public Bitmap transform(Bitmap bitmap, boolean isPercentage) {
             int nX, nY;
 
             if (isPercentage) {

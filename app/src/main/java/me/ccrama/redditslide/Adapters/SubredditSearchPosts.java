@@ -6,12 +6,12 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.widget.Toast;
 
 import net.dean.jraw.http.NetworkException;
-import net.dean.jraw.models.Contribution;
+import net.dean.jraw.models.PublicContribution;
 import net.dean.jraw.models.Submission;
+import net.dean.jraw.models.TimePeriod;
 import net.dean.jraw.paginators.Paginator;
 import net.dean.jraw.paginators.SubmissionSearchPaginator;
 import net.dean.jraw.paginators.SubmissionSearchPaginatorMultireddit;
-import net.dean.jraw.paginators.TimePeriod;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -21,7 +21,6 @@ import me.ccrama.redditslide.Authentication;
 import me.ccrama.redditslide.PostMatch;
 import me.ccrama.redditslide.R;
 import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.util.LogUtil;
 
 /**
  * Created by ccrama on 9/17/2015.
@@ -29,10 +28,10 @@ import me.ccrama.redditslide.util.LogUtil;
 public class SubredditSearchPosts extends GeneralPosts {
     private String term;
     private String subreddit = "";
-    public  boolean               loading;
-    private Paginator<Submission> paginator;
-    public  SwipeRefreshLayout    refreshLayout;
-    private ContributionAdapter   adapter;
+    public  boolean                   loading;
+    private Paginator<Submission>     paginator;
+    public  SwipeRefreshLayout        refreshLayout;
+    private PublicContributionAdapter adapter;
 
     public Activity parent;
 
@@ -44,20 +43,21 @@ public class SubredditSearchPosts extends GeneralPosts {
         this.term = term;
     }
 
-    public void bindAdapter(ContributionAdapter a, SwipeRefreshLayout layout) {
+    public void bindAdapter(PublicContributionAdapter a, SwipeRefreshLayout layout) {
         this.adapter = a;
         this.refreshLayout = layout;
         loadMore(a, subreddit, term, true);
     }
 
-    public void loadMore(ContributionAdapter a, String subreddit, String where, boolean reset) {
+    public void loadMore(PublicContributionAdapter a, String subreddit, String where,
+            boolean reset) {
         this.adapter = a;
         this.subreddit = subreddit;
         this.term = where;
         new LoadData(reset).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    public void loadMore(ContributionAdapter a, String subreddit, String where, boolean reset,
+    public void loadMore(PublicContributionAdapter a, String subreddit, String where, boolean reset,
             boolean multi, TimePeriod time) {
         this.adapter = a;
         this.subreddit = subreddit;
@@ -75,7 +75,7 @@ public class SubredditSearchPosts extends GeneralPosts {
         new LoadData(true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    public class LoadData extends AsyncTask<String, Void, ArrayList<Contribution>> {
+    public class LoadData extends AsyncTask<String, Void, ArrayList<PublicContribution>> {
         final boolean reset;
 
         public LoadData(boolean reset) {
@@ -83,7 +83,7 @@ public class SubredditSearchPosts extends GeneralPosts {
         }
 
         @Override
-        public void onPostExecute(ArrayList<Contribution> submissions) {
+        public void onPostExecute(ArrayList<PublicContribution> submissions) {
             loading = false;
 
             if(error != null){
@@ -104,8 +104,8 @@ public class SubredditSearchPosts extends GeneralPosts {
                     start = posts.size() + 1;
                 }
 
-                ArrayList<Contribution> filteredSubmissions = new ArrayList<>();
-                for (Contribution c : submissions) {
+                ArrayList<PublicContribution> filteredSubmissions = new ArrayList<>();
+                for (PublicContribution c : submissions) {
                     if (c instanceof Submission) {
                         if (!PostMatch.doesMatch((Submission) c)) {
                             filteredSubmissions.add(c);
@@ -149,8 +149,8 @@ public class SubredditSearchPosts extends GeneralPosts {
         }
 
         @Override
-        protected ArrayList<Contribution> doInBackground(String... subredditPaginators) {
-            ArrayList<Contribution> newSubmissions = new ArrayList<>();
+        protected ArrayList<PublicContribution> doInBackground(String... subredditPaginators) {
+            ArrayList<PublicContribution> newSubmissions = new ArrayList<>();
             try {
                 if (reset || paginator == null) {
                     if (multireddit) {

@@ -48,8 +48,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
-import net.dean.jraw.models.MultiReddit;
 import net.dean.jraw.models.MultiSubreddit;
+import net.dean.jraw.models.Multireddit;
 import net.dean.jraw.models.Subreddit;
 import net.dean.jraw.paginators.SubredditSearchPaginator;
 import net.dean.jraw.paginators.UserSubredditsPaginator;
@@ -60,7 +60,6 @@ import java.util.List;
 import java.util.Locale;
 
 import me.ccrama.redditslide.Activities.BaseActivityAnim;
-import me.ccrama.redditslide.Activities.SettingsTheme;
 import me.ccrama.redditslide.Authentication;
 import me.ccrama.redditslide.CaseInsensitiveArrayList;
 import me.ccrama.redditslide.ColorPreferences;
@@ -349,7 +348,7 @@ public class ReorderSubreddits extends BaseActivityAnim {
                                                         .multireddits
                                                         .size()];
                                                 int i = 0;
-                                                for (MultiReddit m : UserSubscriptions.multireddits) {
+                                                for (Multireddit m : UserSubscriptions.multireddits) {
                                                     multis[i] = m.getDisplayName();
                                                     i++;
                                                 }
@@ -368,7 +367,7 @@ public class ReorderSubreddits extends BaseActivityAnim {
                                                                             CharSequence text) {
 
                                                                         String name = multis[which];
-                                                                        MultiReddit r =
+                                                                        Multireddit r =
                                                                                 UserSubscriptions.getMultiredditByDisplayName(
                                                                                         name);
                                                                         StringBuilder b =
@@ -1077,8 +1076,8 @@ public class ReorderSubreddits extends BaseActivityAnim {
 
             public ViewHolder(View itemView) {
                 super(itemView);
-                text = (TextView) itemView.findViewById(R.id.name);
-                check = (AppCompatCheckBox) itemView.findViewById(R.id.isSubscribed);
+                text = itemView.findViewById(R.id.name);
+                check = itemView.findViewById(R.id.isSubscribed);
             }
         }
 

@@ -50,18 +50,18 @@ import com.fasterxml.jackson.databind.JsonNode;
 import net.dean.jraw.ApiException;
 import net.dean.jraw.http.MultiRedditUpdateRequest;
 import net.dean.jraw.http.NetworkException;
-import net.dean.jraw.managers.AccountManager;
 import net.dean.jraw.managers.ModerationManager;
-import net.dean.jraw.managers.MultiRedditManager;
 import net.dean.jraw.models.FlairTemplate;
-import net.dean.jraw.models.MultiReddit;
 import net.dean.jraw.models.MultiSubreddit;
+import net.dean.jraw.models.Multireddit;
 import net.dean.jraw.models.Submission;
 import net.dean.jraw.models.Subreddit;
+import net.dean.jraw.models.TimePeriod;
 import net.dean.jraw.models.UserRecord;
 import net.dean.jraw.paginators.Sorting;
-import net.dean.jraw.paginators.TimePeriod;
 import net.dean.jraw.paginators.UserRecordPaginator;
+import net.dean.jraw.references.MultiredditReference;
+import net.dean.jraw.references.UserReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -734,12 +734,12 @@ public class SubredditView extends BaseActivity {
                     List<FlairTemplate> flairs;
                     ArrayList<String> flairText;
                     String current;
-                    AccountManager m;
+                    UserReference m;
 
                     @Override
                     protected View doInBackground(View... params) {
                         try {
-                            m = new AccountManager(Authentication.reddit);
+                            m = new UserReference(Authentication.reddit);
                             JsonNode node = m.getFlairChoicesRootNode(subOverride, null);
                             flairs = m.getFlairChoices(subOverride, node);
 
@@ -1297,15 +1297,15 @@ public class SubredditView extends BaseActivity {
                     @Override
                     public void onClick(View v) {
                         new AsyncTask<Void, Void, Void>() {
-                            HashMap<String, MultiReddit> multis =
-                                    new HashMap<String, MultiReddit>();
+                            HashMap<String, Multireddit> multis =
+                                    new HashMap<String, Multireddit>();
 
                             @Override
                             protected Void doInBackground(Void... params) {
                                 if (UserSubscriptions.multireddits == null) {
                                     UserSubscriptions.syncMultiReddits(SubredditView.this);
                                 }
-                                for (MultiReddit r : UserSubscriptions.multireddits) {
+                                for (Multireddit r : UserSubscriptions.multireddits) {
                                     multis.put(r.getDisplayName(), r);
                                 }
                                 return null;
@@ -1335,7 +1335,7 @@ public class SubredditView extends BaseActivity {
                                                                 subs.add(sub.getDisplayName());
                                                             }
                                                             subs.add(subreddit.getDisplayName());
-                                                            new MultiRedditManager(
+                                                            new MultiredditReference(
                                                                     Authentication.reddit).createOrUpdate(
                                                                     new MultiRedditUpdateRequest.Builder(
                                                                             Authentication.name,
@@ -1485,7 +1485,7 @@ public class SubredditView extends BaseActivity {
                                                         protected Boolean doInBackground(
                                                                 Void... params) {
                                                             try {
-                                                                new AccountManager(
+                                                                new UserReference(
                                                                         Authentication.reddit).subscribe(
                                                                         subreddit);
                                                             } catch (NetworkException e) {
@@ -1602,7 +1602,7 @@ public class SubredditView extends BaseActivity {
                                                         protected Boolean doInBackground(
                                                                 Void... params) {
                                                             try {
-                                                                new AccountManager(
+                                                                new UserReference(
                                                                         Authentication.reddit).unsubscribe(
                                                                         subreddit);
                                                             } catch (NetworkException e) {
