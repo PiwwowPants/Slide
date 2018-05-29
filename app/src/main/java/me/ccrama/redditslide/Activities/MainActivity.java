@@ -404,8 +404,8 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[],
-            int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[],
+            @NonNull int[] grantResults) {
         switch (requestCode) {
             case 1: {
                 // If request is cancelled, the result arrays are empty.
@@ -671,7 +671,8 @@ public class MainActivity extends BaseActivity
                                 .input(getString(R.string.search_msg), "",
                                         new MaterialDialog.InputCallback() {
                                             @Override
-                                            public void onInput(MaterialDialog materialDialog,
+                                            public void onInput(
+                                                    @NonNull MaterialDialog materialDialog,
                                                     CharSequence charSequence) {
                                                 term = charSequence.toString();
                                             }
@@ -1393,19 +1394,21 @@ public class MainActivity extends BaseActivity
             if (SettingsGeneralFragment.searchChanged) {
                 setDrawerSubList();
 
-                if (SettingValues.subredditSearchMethod
-                        == Constants.SUBREDDIT_SEARCH_METHOD_DRAWER) {
-                    mToolbar.setOnLongClickListener(
-                            null); //remove the long click listener from the toolbar
-                    findViewById(R.id.drawer_divider).setVisibility(View.GONE);
-                } else if (SettingValues.subredditSearchMethod
-                        == Constants.SUBREDDIT_SEARCH_METHOD_TOOLBAR) {
-                    setupSubredditSearchToolbar();
-                } else if (SettingValues.subredditSearchMethod
-                        == Constants.SUBREDDIT_SEARCH_METHOD_BOTH) {
-                    findViewById(R.id.drawer_divider).setVisibility(View.GONE);
-                    setupSubredditSearchToolbar();
-                    setDrawerSubList();
+                switch (SettingValues.subredditSearchMethod) {
+                    case Constants.SUBREDDIT_SEARCH_METHOD_DRAWER:
+                        mToolbar.setOnLongClickListener(
+                                null); //remove the long click listener from the toolbar
+
+                        findViewById(R.id.drawer_divider).setVisibility(View.GONE);
+                        break;
+                    case Constants.SUBREDDIT_SEARCH_METHOD_TOOLBAR:
+                        setupSubredditSearchToolbar();
+                        break;
+                    case Constants.SUBREDDIT_SEARCH_METHOD_BOTH:
+                        findViewById(R.id.drawer_divider).setVisibility(View.GONE);
+                        setupSubredditSearchToolbar();
+                        setDrawerSubList();
+                        break;
                 }
                 SettingsGeneralFragment.searchChanged = false;
             }
@@ -1465,7 +1468,7 @@ public class MainActivity extends BaseActivity
         }
     }
 
-    public HashMap<String, String> accounts = new HashMap<>();
+    public final HashMap<String, String> accounts = new HashMap<>();
 
     public void doDrawer() {
         drawerSubList = (ListView) findViewById(R.id.drawerlistview);
@@ -2336,11 +2339,8 @@ public class MainActivity extends BaseActivity
 
     public void doSubOnlyStuff(final Subreddit subreddit) {
         findViewById(R.id.loader).setVisibility(View.GONE);
-        if (subreddit.getSubredditType() != null) {
-            canSubmit = !subreddit.getSubredditType().equals("RESTRICTED");
-        } else {
-            canSubmit = true;
-        }
+        canSubmit = subreddit.getSubredditType() == null || !subreddit.getSubredditType()
+                .equals("RESTRICTED");
         if (subreddit.getSidebar() != null && !subreddit.getSidebar().isEmpty()) {
             findViewById(R.id.sidebar_text).setVisibility(View.VISIBLE);
 
@@ -2375,8 +2375,7 @@ public class MainActivity extends BaseActivity
                     @Override
                     public void onClick(View v) {
                         new AsyncTask<Void, Void, Void>() {
-                            HashMap<String, MultiReddit> multis =
-                                    new HashMap<String, MultiReddit>();
+                            final HashMap<String, MultiReddit> multis = new HashMap<>();
 
                             @Override
                             protected Void doInBackground(Void... params) {
@@ -2407,8 +2406,7 @@ public class MainActivity extends BaseActivity
                                                             final String multiName = multis.keySet()
                                                                     .toArray(
                                                                             new String[multis.size()])[which];
-                                                            List<String> subs =
-                                                                    new ArrayList<String>();
+                                                            List<String> subs = new ArrayList<>();
                                                             for (MultiSubreddit sub : multis.get(
                                                                     multiName).getSubreddits()) {
                                                                 subs.add(sub.getDisplayName());
@@ -3151,7 +3149,7 @@ public class MainActivity extends BaseActivity
                                                                         new MaterialDialog.InputCallback() {
                                                                             @Override
                                                                             public void onInput(
-                                                                                    MaterialDialog dialog,
+                                                                                    @NonNull MaterialDialog dialog,
                                                                                     CharSequence input) {
 
                                                                             }
@@ -3161,8 +3159,8 @@ public class MainActivity extends BaseActivity
                                                                         new MaterialDialog.SingleButtonCallback() {
                                                                             @Override
                                                                             public void onClick(
-                                                                                    MaterialDialog dialog,
-                                                                                    DialogAction which) {
+                                                                                    @NonNull MaterialDialog dialog,
+                                                                                    @NonNull DialogAction which) {
                                                                                 final String flair =
                                                                                         dialog.getInputEditText()
                                                                                                 .getText()
@@ -5291,7 +5289,7 @@ public class MainActivity extends BaseActivity
         }
 
         @Override
-        public int getItemPosition(Object object) {
+        public int getItemPosition(@NonNull Object object) {
             if (object != storedFragment) return POSITION_NONE;
             return POSITION_UNCHANGED;
         }

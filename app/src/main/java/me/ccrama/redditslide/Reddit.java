@@ -793,13 +793,13 @@ public class Reddit extends MultiDexApplication implements Application.ActivityL
     }
 
 
-    public static String CHANNEL_IMG           = "IMG_DOWNLOADS";
-    public static String CHANNEL_COMMENT_CACHE = "POST_SYNC";
-    public static String CHANNEL_MAIL          = "MAIL_NOTIFY";
-    public static String CHANNEL_MAIL_SOUND    = "MAIL_NOTIFY_SOUND";
-    public static String CHANNEL_MODMAIL       = "MODMAIL_NOTIFY";
-    public static String CHANNEL_MODMAIL_SOUND = "MODMAIL_NOTIFY_SOUND";
-    public static String CHANNEL_SUBCHECKING   = "SUB_CHECK_NOTIFY";
+    public static final String CHANNEL_IMG           = "IMG_DOWNLOADS";
+    public static final String CHANNEL_COMMENT_CACHE = "POST_SYNC";
+    public static final String CHANNEL_MAIL          = "MAIL_NOTIFY";
+    public static final String CHANNEL_MAIL_SOUND    = "MAIL_NOTIFY_SOUND";
+    public static final String CHANNEL_MODMAIL       = "MODMAIL_NOTIFY";
+    public static final String CHANNEL_MODMAIL_SOUND = "MODMAIL_NOTIFY_SOUND";
+    public static final String CHANNEL_SUBCHECKING   = "SUB_CHECK_NOTIFY";
 
     public void setupNotificationChannels() {
         if (SDK_INT >= android.os.Build.VERSION_CODES.O) {

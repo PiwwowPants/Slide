@@ -115,30 +115,35 @@ public class SubredditView extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
-        if (requestCode == 2) {
-            // Make sure the request was successful
-            pager.setAdapter(new OverviewPagerAdapter(getSupportFragmentManager()));
-        } else if (requestCode == 1) {
-            restartTheme();
-        } else if (requestCode == 940) {
-            if (adapter != null && adapter.getCurrentFragment() != null) {
-                if (resultCode == RESULT_OK) {
-                    LogUtil.v("Doing hide posts");
-                    ArrayList<Integer> posts = data.getIntegerArrayListExtra("seen");
-                    ((SubmissionsView) adapter.getCurrentFragment()).adapter.refreshView(posts);
-                    if (data.hasExtra("lastPage")
-                            && data.getIntExtra("lastPage", 0) != 0
-                            && ((SubmissionsView) adapter.getCurrentFragment()).rv.getLayoutManager() instanceof LinearLayoutManager) {
-                        ((LinearLayoutManager) ((SubmissionsView) adapter.getCurrentFragment()).rv.getLayoutManager())
-                                .scrollToPositionWithOffset(data.getIntExtra("lastPage", 0) + 1,
-                                        mToolbar.getHeight());
+        switch (requestCode) {
+            case 2:
+                // Make sure the request was successful
+                pager.setAdapter(new OverviewPagerAdapter(getSupportFragmentManager()));
+                break;
+            case 1:
+                restartTheme();
+                break;
+            case 940:
+                if (adapter != null && adapter.getCurrentFragment() != null) {
+                    if (resultCode == RESULT_OK) {
+                        LogUtil.v("Doing hide posts");
+                        ArrayList<Integer> posts = data.getIntegerArrayListExtra("seen");
+                        ((SubmissionsView) adapter.getCurrentFragment()).adapter.refreshView(posts);
+                        if (data.hasExtra("lastPage")
+                                && data.getIntExtra("lastPage", 0) != 0
+                                && ((SubmissionsView) adapter.getCurrentFragment()).rv.getLayoutManager() instanceof LinearLayoutManager) {
+                            ((LinearLayoutManager) ((SubmissionsView) adapter.getCurrentFragment()).rv
+                                    .getLayoutManager()).scrollToPositionWithOffset(
+                                    data.getIntExtra("lastPage", 0) + 1, mToolbar.getHeight());
+                        }
+                    } else {
+                        ((SubmissionsView) adapter.getCurrentFragment()).adapter.refreshView();
                     }
-                } else {
-                    ((SubmissionsView) adapter.getCurrentFragment()).adapter.refreshView();
                 }
-            }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
+                break;
         }
     }
 
@@ -370,7 +375,8 @@ public class SubredditView extends BaseActivity {
                                 .input(getString(R.string.search_msg), "",
                                         new MaterialDialog.InputCallback() {
                                             @Override
-                                            public void onInput(MaterialDialog materialDialog,
+                                            public void onInput(
+                                                    @NonNull MaterialDialog materialDialog,
                                                     CharSequence charSequence) {
                                                 term = charSequence.toString();
                                             }
@@ -811,7 +817,7 @@ public class SubredditView extends BaseActivity {
                                                                         new MaterialDialog.InputCallback() {
                                                                             @Override
                                                                             public void onInput(
-                                                                                    MaterialDialog dialog,
+                                                                                    @NonNull MaterialDialog dialog,
                                                                                     CharSequence input) {
 
                                                                             }
@@ -821,8 +827,8 @@ public class SubredditView extends BaseActivity {
                                                                         new MaterialDialog.SingleButtonCallback() {
                                                                             @Override
                                                                             public void onClick(
-                                                                                    MaterialDialog dialog,
-                                                                                    DialogAction which) {
+                                                                                    @NonNull MaterialDialog dialog,
+                                                                                    @NonNull DialogAction which) {
                                                                                 final String flair =
                                                                                         dialog.getInputEditText()
                                                                                                 .getText()
@@ -1316,8 +1322,7 @@ public class SubredditView extends BaseActivity {
                     @Override
                     public void onClick(View v) {
                         new AsyncTask<Void, Void, Void>() {
-                            HashMap<String, MultiReddit> multis =
-                                    new HashMap<String, MultiReddit>();
+                            final HashMap<String, MultiReddit> multis = new HashMap<>();
 
                             @Override
                             protected Void doInBackground(Void... params) {
@@ -1347,8 +1352,7 @@ public class SubredditView extends BaseActivity {
                                                             final String multiName = multis.keySet()
                                                                     .toArray(
                                                                             new String[multis.size()])[which];
-                                                            List<String> subs =
-                                                                    new ArrayList<String>();
+                                                            List<String> subs = new ArrayList<>();
                                                             for (MultiSubreddit sub : multis.get(
                                                                     multiName).getSubreddits()) {
                                                                 subs.add(sub.getDisplayName());
@@ -2048,7 +2052,7 @@ public class SubredditView extends BaseActivity {
         }
 
         @Override
-        public int getItemPosition(Object object) {
+        public int getItemPosition(@NonNull Object object) {
             if (object != storedFragment) return POSITION_NONE;
             return POSITION_UNCHANGED;
         }
