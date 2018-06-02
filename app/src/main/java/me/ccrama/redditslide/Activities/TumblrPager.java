@@ -4,12 +4,9 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -19,23 +16,9 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.view.*;
+import android.widget.*;
 import com.afollestad.materialdialogs.AlertDialogWrapper;
-import com.cocosw.bottomsheet.BottomSheet;
 import com.devspark.robototextview.RobotoTypefaces;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -44,7 +27,20 @@ import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
-
+import me.ccrama.redditslide.Adapters.ImageGridAdapterTumblr;
+import me.ccrama.redditslide.*;
+import me.ccrama.redditslide.Fragments.BlankFragment;
+import me.ccrama.redditslide.Fragments.FolderChooserDialogCreate;
+import me.ccrama.redditslide.Fragments.SubmissionsView;
+import me.ccrama.redditslide.Notifications.ImageDownloadNotificationService;
+import me.ccrama.redditslide.Tumblr.Photo;
+import me.ccrama.redditslide.Tumblr.TumblrUtils;
+import me.ccrama.redditslide.Views.ImageSource;
+import me.ccrama.redditslide.Views.MediaVideoView;
+import me.ccrama.redditslide.Views.SubsamplingScaleImageView;
+import me.ccrama.redditslide.Views.ToolbarColorizeHelper;
+import me.ccrama.redditslide.Visuals.FontPreferences;
+import me.ccrama.redditslide.util.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -55,30 +51,6 @@ import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import me.ccrama.redditslide.Adapters.ImageGridAdapterTumblr;
-import me.ccrama.redditslide.ColorPreferences;
-import me.ccrama.redditslide.ContentType;
-import me.ccrama.redditslide.Fragments.BlankFragment;
-import me.ccrama.redditslide.Fragments.FolderChooserDialogCreate;
-import me.ccrama.redditslide.Fragments.SubmissionsView;
-import me.ccrama.redditslide.Notifications.ImageDownloadNotificationService;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.SettingValues;
-import me.ccrama.redditslide.SpoilerRobotoTextView;
-import me.ccrama.redditslide.Tumblr.Photo;
-import me.ccrama.redditslide.Tumblr.TumblrUtils;
-import me.ccrama.redditslide.Views.ImageSource;
-import me.ccrama.redditslide.Views.MediaVideoView;
-import me.ccrama.redditslide.Views.SubsamplingScaleImageView;
-import me.ccrama.redditslide.Views.ToolbarColorizeHelper;
-import me.ccrama.redditslide.Visuals.FontPreferences;
-import me.ccrama.redditslide.util.GifUtils;
-import me.ccrama.redditslide.util.LinkUtil;
-import me.ccrama.redditslide.util.NetworkUtil;
-import me.ccrama.redditslide.util.ShareUtil;
-import me.ccrama.redditslide.util.SubmissionParser;
 
 
 /**
@@ -411,54 +383,17 @@ public class TumblrPager extends FullScreenActivity
 
     public void showBottomSheetImage(final String contentUrl, final boolean isGif,
             final int index) {
-
-        int[] attrs = new int[]{R.attr.tintColor};
-        TypedArray ta = obtainStyledAttributes(attrs);
-
-        int color = ta.getColor(0, Color.WHITE);
-        Drawable external = getResources().getDrawable(R.drawable.openexternal);
-        Drawable share = getResources().getDrawable(R.drawable.share);
-        Drawable image = getResources().getDrawable(R.drawable.image);
-        Drawable save = getResources().getDrawable(R.drawable.save);
-
-        external.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-        share.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-        image.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-        save.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-
-        ta.recycle();
-        BottomSheet.Builder b = new BottomSheet.Builder(this).title(contentUrl);
-
-        b.sheet(2, external, getString(R.string.submission_link_extern));
-        b.sheet(5, share, getString(R.string.submission_link_share));
-        if (!isGif) b.sheet(3, image, getString(R.string.share_image));
-        b.sheet(4, save, getString(R.string.submission_save_image));
-        b.listener(new DialogInterface.OnClickListener() {
+        BottomSheetFragmentHelper bottomSheetFragmentHelper = BottomSheetFragmentHelper.Companion.newInstance(contentUrl);
+        bottomSheetFragmentHelper.addOpenExternally(contentUrl);
+        bottomSheetFragmentHelper.addShareText("", contentUrl);
+        bottomSheetFragmentHelper.addShareImage(contentUrl);
+        bottomSheetFragmentHelper.addSaveImage(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case (2): {
-                        LinkUtil.openExternally(contentUrl);
-                    }
-                    break;
-                    case (3): {
-                        ShareUtil.shareImage(contentUrl, TumblrPager.this);
-                    }
-                    break;
-                    case (5): {
-                        Reddit.defaultShareText("", contentUrl, TumblrPager.this);
-                    }
-                    break;
-                    case (4): {
-                        doImageSave(isGif, contentUrl, index);
-                    }
-                    break;
-                }
+            public void onClick(View v) {
+                doImageSave(isGif, contentUrl, index);
             }
         });
-
-        b.show();
-
+        bottomSheetFragmentHelper.show(getSupportFragmentManager(), "TEST");
     }
 
     public void doImageSave(boolean isGif, String contentUrl, int index) {

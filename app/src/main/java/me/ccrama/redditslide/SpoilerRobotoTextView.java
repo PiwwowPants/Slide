@@ -1,38 +1,19 @@
 package me.ccrama.redditslide;
 
 import android.app.Activity;
-import android.content.ClipData;
+import android.content.*;
 import android.content.ClipboardManager;
-import android.content.Context;
-import android.content.ContextWrapper;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.v4.content.ContextCompat;
-import android.text.Html;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.TextPaint;
-import android.text.style.BackgroundColorSpan;
-import android.text.style.CharacterStyle;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.ImageSpan;
-import android.text.style.QuoteSpan;
-import android.text.style.RelativeSizeSpan;
-import android.text.style.StrikethroughSpan;
-import android.text.style.StyleSpan;
-import android.text.style.TypefaceSpan;
-import android.text.style.URLSpan;
+import android.support.v7.app.AppCompatActivity;
+import android.text.*;
+import android.text.style.*;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.HapticFeedbackConstants;
@@ -41,19 +22,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.cocosw.bottomsheet.BottomSheet;
 import com.devspark.robototextview.widget.RobotoTextView;
-
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import me.ccrama.redditslide.Activities.Album;
 import me.ccrama.redditslide.Activities.AlbumPager;
 import me.ccrama.redditslide.Activities.MediaView;
@@ -71,9 +40,18 @@ import me.ccrama.redditslide.Views.CustomQuoteSpan;
 import me.ccrama.redditslide.Views.PeekMediaView;
 import me.ccrama.redditslide.Visuals.Palette;
 import me.ccrama.redditslide.handler.TextViewLinkHandler;
+import me.ccrama.redditslide.util.BottomSheetFragmentHelper;
 import me.ccrama.redditslide.util.GifUtils;
 import me.ccrama.redditslide.util.LinkUtil;
 import me.ccrama.redditslide.util.LogUtil;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by carlo_000 on 1/11/2016.
@@ -587,42 +565,11 @@ public class SpoilerRobotoTextView extends RobotoTextView implements ClickableTe
                         .with(new PeekViewOptions().setFullScreenPeek(true))
                         .show((PeekViewActivity) activity, event);
             } else {
-                BottomSheet.Builder b = new BottomSheet.Builder(activity).title(url).grid();
-                int[] attrs = new int[]{R.attr.tintColor};
-                TypedArray ta = getContext().obtainStyledAttributes(attrs);
-
-                int color = ta.getColor(0, Color.WHITE);
-                Drawable open = getResources().getDrawable(R.drawable.ic_open_in_browser);
-                open.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-                Drawable share = getResources().getDrawable(R.drawable.ic_share);
-                share.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-                Drawable copy = getResources().getDrawable(R.drawable.ic_content_copy);
-                copy.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-
-                ta.recycle();
-
-                b.sheet(R.id.open_link, open,
-                        getResources().getString(R.string.submission_link_extern));
-                b.sheet(R.id.share_link, share, getResources().getString(R.string.share_link));
-                b.sheet(R.id.copy_link, copy,
-                        getResources().getString(R.string.submission_link_copy));
-                final Activity finalActivity = activity;
-                b.listener(new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which) {
-                            case R.id.open_link:
-                                LinkUtil.openExternally(url);
-                                break;
-                            case R.id.share_link:
-                                Reddit.defaultShareText("", url, finalActivity);
-                                break;
-                            case R.id.copy_link:
-                                LinkUtil.copyUrl(url, finalActivity);
-                                break;
-                        }
-                    }
-                }).show();
+                BottomSheetFragmentHelper bottomSheetFragmentHelper = BottomSheetFragmentHelper.Companion.newInstance(url);
+                bottomSheetFragmentHelper.addOpenExternally(url);
+                bottomSheetFragmentHelper.addShareText("", url);
+                bottomSheetFragmentHelper.addCopyUrl(url);
+                bottomSheetFragmentHelper.show(((AppCompatActivity) activity).getSupportFragmentManager(), "TEST");
             }
         }
     }

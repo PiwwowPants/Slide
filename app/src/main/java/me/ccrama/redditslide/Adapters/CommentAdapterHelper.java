@@ -4,33 +4,20 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.Typeface;
+import android.graphics.*;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
-import android.text.Html;
-import android.text.InputType;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.ImageSpan;
-import android.text.style.RelativeSizeSpan;
-import android.text.style.StyleSpan;
-import android.text.style.TypefaceSpan;
+import android.support.v7.app.AppCompatActivity;
+import android.text.*;
+import android.text.style.*;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,48 +25,30 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.cocosw.bottomsheet.BottomSheet;
-
+import me.ccrama.redditslide.*;
+import me.ccrama.redditslide.Activities.Profile;
+import me.ccrama.redditslide.Activities.Reauthenticate;
+import me.ccrama.redditslide.Views.CommentOverflow;
+import me.ccrama.redditslide.Views.DoEditorActions;
+import me.ccrama.redditslide.Views.RoundedBackgroundSpan;
+import me.ccrama.redditslide.Visuals.FontPreferences;
+import me.ccrama.redditslide.Visuals.Palette;
+import me.ccrama.redditslide.util.BottomSheetFragmentHelper;
 import net.dean.jraw.ApiException;
 import net.dean.jraw.http.oauth.InvalidScopeException;
 import net.dean.jraw.managers.AccountManager;
 import net.dean.jraw.managers.ModerationManager;
-import net.dean.jraw.models.Comment;
-import net.dean.jraw.models.CommentNode;
-import net.dean.jraw.models.DistinguishedStatus;
-import net.dean.jraw.models.Submission;
-import net.dean.jraw.models.VoteDirection;
-
+import net.dean.jraw.models.*;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import me.ccrama.redditslide.ActionStates;
-import me.ccrama.redditslide.Activities.Profile;
-import me.ccrama.redditslide.Activities.Reauthenticate;
-import me.ccrama.redditslide.Activities.Website;
-import me.ccrama.redditslide.Authentication;
-import me.ccrama.redditslide.OpenRedditLink;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.SettingValues;
-import me.ccrama.redditslide.SpoilerRobotoTextView;
-import me.ccrama.redditslide.TimeUtils;
-import me.ccrama.redditslide.UserSubscriptions;
-import me.ccrama.redditslide.UserTags;
-import me.ccrama.redditslide.Views.CommentOverflow;
-import me.ccrama.redditslide.Views.DoEditorActions;
-import me.ccrama.redditslide.Views.RoundedBackgroundSpan;
-import me.ccrama.redditslide.Visuals.FontPreferences;
-import me.ccrama.redditslide.Visuals.Palette;
 
 /**
  * Created by Carlos on 8/4/2016.
@@ -89,99 +58,20 @@ public class CommentAdapterHelper {
 
     public static void showOverflowBottomSheet(final CommentAdapter adapter, final Context mContext,
             final CommentViewHolder holder, final CommentNode baseNode) {
-
-        int[] attrs = new int[]{R.attr.tintColor};
         final Comment n = baseNode.getComment();
-        TypedArray ta = mContext.obtainStyledAttributes(attrs);
-
-        int color = ta.getColor(0, Color.WHITE);
-        Drawable profile = mContext.getResources().getDrawable(R.drawable.profile);
-        Drawable saved = mContext.getResources().getDrawable(R.drawable.iconstarfilled);
-        Drawable gild = mContext.getResources().getDrawable(R.drawable.gild);
-        Drawable copy = mContext.getResources().getDrawable(R.drawable.ic_content_copy);
-        Drawable share = mContext.getResources().getDrawable(R.drawable.share);
-        Drawable parent = mContext.getResources().getDrawable(R.drawable.commentchange);
-        Drawable replies = mContext.getResources().getDrawable(R.drawable.notifs);
-        Drawable permalink = mContext.getResources().getDrawable(R.drawable.link);
-        Drawable report = mContext.getResources().getDrawable(R.drawable.report);
-
-        profile.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-        saved.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-        gild.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-        report.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-        copy.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-        share.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-        parent.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-        permalink.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-        replies.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-
-        ta.recycle();
-
-        BottomSheet.Builder b =
-                new BottomSheet.Builder((Activity) mContext).title(Html.fromHtml(n.getBody()));
-
+        BottomSheetFragmentHelper bottomSheetFragmentHelper = BottomSheetFragmentHelper.Companion.newInstance(Html.fromHtml(n.getBody()));
         if (Authentication.didOnline) {
-            b.sheet(1, profile, "/u/" + n.getAuthor());
-            String save = mContext.getString(R.string.btn_save);
-            if (ActionStates.isSaved(n)) {
-                save = mContext.getString(R.string.comment_unsave);
-            }
+            bottomSheetFragmentHelper.addProfile(n.getAuthor());
             if (Authentication.isLoggedIn) {
-                b.sheet(3, saved, save);
-                b.sheet(16, report, mContext.getString(R.string.btn_report));
-            }
-            if(Authentication.name.equalsIgnoreCase(baseNode.getComment().getAuthor())){
-                b.sheet(50, replies, mContext.getString(R.string.disable_replies_comment));
-            }
-        }
-        b.sheet(5, gild, mContext.getString(R.string.comment_gild))
-                .sheet(7, copy, mContext.getString(R.string.misc_copy_text))
-                .sheet(23, permalink, mContext.getString(R.string.comment_permalink))
-                .sheet(4, share, mContext.getString(R.string.comment_share));
-        if (!adapter.currentBaseNode.isTopLevel()) {
-            b.sheet(10, parent, mContext.getString(R.string.comment_parent));
-        }
-        b.listener(new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case 1: {
-                        //Go to author
-                        Intent i = new Intent(mContext, Profile.class);
-                        i.putExtra(Profile.EXTRA_PROFILE, n.getAuthor());
-                        mContext.startActivity(i);
-                    }
-                    break;
-                    case 3:
-                        //Save comment
+                bottomSheetFragmentHelper.addSave(ActionStates.isSaved(n), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
                         saveComment(n, mContext, holder);
-                        break;
-                    case 23: {
-                        //Go to comment permalink
-                        String s = "https://reddit.com"
-                                + adapter.submission.getPermalink()
-                                + n.getFullName().substring(3, n.getFullName().length())
-                                + "?context=3";
-                        new OpenRedditLink(mContext, s);
                     }
-                    break;
-                    case 50: {
-                        setReplies(baseNode.getComment(), holder, !baseNode.getComment().getDataNode().get("send_replies").asBoolean());
-                    }
-                    break;
-                    case 5: {
-                        //Gild comment
-                        Intent i = new Intent(mContext, Website.class);
-                        i.putExtra(Website.EXTRA_URL, "https://reddit.com"
-                                + adapter.submission.getPermalink()
-                                + n.getFullName().substring(3, n.getFullName().length())
-                                + "?context=3&inapp=false");
-                        i.putExtra(Website.EXTRA_COLOR, Palette.getColor(n.getSubredditName()));
-                        mContext.startActivity(i);
-                    }
-                    break;
-                    case 16:
-                        //report
+                });
+                bottomSheetFragmentHelper.addReport(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
                         reportReason = "";
                         new MaterialDialog.Builder(mContext).input(
                                 mContext.getString(R.string.input_reason_for_report), null, true,
@@ -208,73 +98,31 @@ public class CommentAdapterHelper {
                                     }
                                 })
                                 .show();
-                        break;
-                    case 10:
-                        //View comment parent
-                        viewCommentParent(adapter, holder, mContext, baseNode);
-                        break;
-                    case 7:
-                        //Show select and copy text to clipboard
-                        final TextView showText = new TextView(mContext);
-                        showText.setText(StringEscapeUtils.unescapeHtml4(n.getBody()));
-                        showText.setTextIsSelectable(true);
-                        int sixteen = Reddit.dpToPxVertical(24);
-                        showText.setPadding(sixteen, 0, sixteen, 0);
-                        AlertDialogWrapper.Builder builder =
-                                new AlertDialogWrapper.Builder(mContext);
-                        builder.setView(showText)
-                                .setTitle("Select text to copy")
-                                .setCancelable(true)
-                                .setPositiveButton("COPY", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        String selected = showText.getText()
-                                                .toString()
-                                                .substring(showText.getSelectionStart(),
-                                                        showText.getSelectionEnd());
-                                        ClipboardManager clipboard =
-                                                (ClipboardManager) mContext.getSystemService(
-                                                        Context.CLIPBOARD_SERVICE);
-                                        ClipData clip =
-                                                ClipData.newPlainText("Comment text", selected);
-                                        clipboard.setPrimaryClip(clip);
-
-                                        Toast.makeText(mContext, R.string.submission_comment_copied,
-                                                Toast.LENGTH_SHORT).show();
-
-                                    }
-                                })
-                                .setNegativeButton(R.string.btn_cancel, null)
-                                .setNeutralButton("COPY ALL",
-                                        new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                ClipboardManager clipboard =
-                                                        (ClipboardManager) mContext.getSystemService(
-                                                                Context.CLIPBOARD_SERVICE);
-                                                ClipData clip =
-                                                        ClipData.newPlainText("Comment text",
-                                                                Html.fromHtml(n.getBody()));
-                                                clipboard.setPrimaryClip(clip);
-
-                                                Toast.makeText(mContext,
-                                                        R.string.submission_comment_copied,
-                                                        Toast.LENGTH_SHORT).show();
-                                            }
-                                        })
-                                .show();
-                        break;
-                    case 4:
-                        //Share comment
-                        Reddit.defaultShareText(adapter.submission.getTitle(), "https://reddit.com"
-                                + adapter.submission.getPermalink()
-                                + n.getFullName().substring(3, n.getFullName().length())
-                                + "?context=3", mContext);
-                        break;
+                    }
+                });
+                if (Authentication.name.equalsIgnoreCase(baseNode.getComment().getAuthor())) {
+                    bottomSheetFragmentHelper.addDisableReplies(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            setReplies(baseNode.getComment(), holder, !baseNode.getComment().getDataNode().get("send_replies").asBoolean());
+                        }
+                    });
                 }
             }
-        });
-        b.show();
+        }
+        bottomSheetFragmentHelper.addGild(adapter.submission.getPermalink(), n);
+        bottomSheetFragmentHelper.addCopyText(Html.fromHtml(n.getBody()));
+        bottomSheetFragmentHelper.addPermalink(adapter.submission.getPermalink(), n);
+        bottomSheetFragmentHelper.addShareComment(adapter.submission.getPermalink(), n, adapter.submission.getTitle());
+        if (!adapter.currentBaseNode.isTopLevel()) {
+            bottomSheetFragmentHelper.addShowParentComment(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    viewCommentParent(adapter, holder, mContext, baseNode);
+                }
+            });
+        }
+        bottomSheetFragmentHelper.show(((AppCompatActivity) mContext).getSupportFragmentManager(), "TEST");
     }
 
     private static void setReplies(final Comment comment, final CommentViewHolder holder, final boolean showReplies) {
