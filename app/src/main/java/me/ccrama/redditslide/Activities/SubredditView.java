@@ -1,11 +1,7 @@
 package me.ccrama.redditslide.Activities;
 
 import android.app.Dialog;
-import android.content.ActivityNotFoundException;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -28,37 +24,32 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.text.Spannable;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.view.animation.LinearInterpolator;
-import android.widget.CompoundButton;
-import android.widget.HorizontalScrollView;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.widget.*;
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.fasterxml.jackson.databind.JsonNode;
-
+import me.ccrama.redditslide.Adapters.SettingsSubAdapter;
+import me.ccrama.redditslide.*;
+import me.ccrama.redditslide.Fragments.BlankFragment;
+import me.ccrama.redditslide.Fragments.CommentPage;
+import me.ccrama.redditslide.Fragments.SubmissionsView;
+import me.ccrama.redditslide.Notifications.CheckForMail;
+import me.ccrama.redditslide.Views.*;
+import me.ccrama.redditslide.Visuals.Palette;
+import me.ccrama.redditslide.util.LinkUtil;
+import me.ccrama.redditslide.util.LogUtil;
+import me.ccrama.redditslide.util.OnSingleClickListener;
+import me.ccrama.redditslide.util.SubmissionParser;
 import net.dean.jraw.ApiException;
 import net.dean.jraw.http.MultiRedditUpdateRequest;
 import net.dean.jraw.http.NetworkException;
 import net.dean.jraw.managers.AccountManager;
 import net.dean.jraw.managers.ModerationManager;
 import net.dean.jraw.managers.MultiRedditManager;
-import net.dean.jraw.models.FlairTemplate;
-import net.dean.jraw.models.MultiReddit;
-import net.dean.jraw.models.MultiSubreddit;
-import net.dean.jraw.models.Submission;
-import net.dean.jraw.models.Subreddit;
-import net.dean.jraw.models.UserRecord;
+import net.dean.jraw.models.*;
 import net.dean.jraw.paginators.Sorting;
 import net.dean.jraw.paginators.TimePeriod;
 import net.dean.jraw.paginators.UserRecordPaginator;
@@ -67,32 +58,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-
-import me.ccrama.redditslide.Adapters.SettingsSubAdapter;
-import me.ccrama.redditslide.Authentication;
-import me.ccrama.redditslide.ColorPreferences;
-import me.ccrama.redditslide.Constants;
-import me.ccrama.redditslide.Fragments.BlankFragment;
-import me.ccrama.redditslide.Fragments.CommentPage;
-import me.ccrama.redditslide.Fragments.SubmissionsView;
-import me.ccrama.redditslide.ImageFlairs;
-import me.ccrama.redditslide.Notifications.CheckForMail;
-import me.ccrama.redditslide.OfflineSubreddit;
-import me.ccrama.redditslide.PostMatch;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.SettingValues;
-import me.ccrama.redditslide.SpoilerRobotoTextView;
-import me.ccrama.redditslide.UserSubscriptions;
-import me.ccrama.redditslide.Views.CatchStaggeredGridLayoutManager;
-import me.ccrama.redditslide.Views.CommentOverflow;
-import me.ccrama.redditslide.Views.PreCachingLayoutManager;
-import me.ccrama.redditslide.Views.SidebarLayout;
-import me.ccrama.redditslide.Views.ToggleSwipeViewPager;
-import me.ccrama.redditslide.Visuals.Palette;
-import me.ccrama.redditslide.util.LogUtil;
-import me.ccrama.redditslide.util.OnSingleClickListener;
-import me.ccrama.redditslide.util.SubmissionParser;
 
 public class SubredditView extends BaseActivity {
 
@@ -547,9 +512,7 @@ public class SubredditView extends BaseActivity {
             dialoglayout.findViewById(R.id.wiki).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent i = new Intent(SubredditView.this, Wiki.class);
-                    i.putExtra(Wiki.EXTRA_SUBREDDIT, subOverride);
-                    startActivity(i);
+                    LinkUtil.openUrl(LinkUtil.getWikiUrl(subOverride), Palette.getDefaultColor(), SubredditView.this);
                 }
             });
             dialoglayout.findViewById(R.id.syncflair)

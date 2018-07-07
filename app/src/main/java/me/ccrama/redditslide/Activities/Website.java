@@ -2,25 +2,19 @@ package me.ccrama.redditslide.Activities;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
-import android.webkit.DownloadListener;
-import android.webkit.ValueCallback;
-import android.webkit.WebChromeClient;
-import android.webkit.WebResourceResponse;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+import android.view.*;
+import android.webkit.*;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+import me.ccrama.redditslide.*;
+import me.ccrama.redditslide.Fragments.SubmissionsView;
+import me.ccrama.redditslide.Visuals.Palette;
+import me.ccrama.redditslide.util.AdBlocker;
+import me.ccrama.redditslide.util.LinkUtil;
+import me.ccrama.redditslide.util.LogUtil;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -28,31 +22,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import me.ccrama.redditslide.ColorPreferences;
-import me.ccrama.redditslide.ContentType;
-import me.ccrama.redditslide.Fragments.SubmissionsView;
-import me.ccrama.redditslide.OpenRedditLink;
-import me.ccrama.redditslide.PostMatch;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.SettingValues;
-import me.ccrama.redditslide.Visuals.Palette;
-import me.ccrama.redditslide.util.AdBlocker;
-import me.ccrama.redditslide.util.LinkUtil;
-import me.ccrama.redditslide.util.LogUtil;
-
 public class Website extends BaseActivityAnim {
 
-    public static final String EXTRA_URL        = "url";
-    public static final String EXTRA_COLOR      = "color";
+    public static final String EXTRA_URL = "url";
+    public static final String EXTRA_COLOR = "color";
     public static final String ADAPTER_POSITION = "adapter_position";
 
-    WebView              v;
-    String               url;
-    int                  subredditColor;
-    MyWebViewClient      client;
+    WebView v;
+    String url;
+    int subredditColor;
+    MyWebViewClient client;
     AdBlockWebViewClient webClient;
-    ProgressBar          p;
+    ProgressBar p;
 
     public static String getDomainName(String url) {
         URI uri;
@@ -60,7 +41,7 @@ public class Website extends BaseActivityAnim {
             uri = new URI(url);
 
             String domain = uri.getHost();
-            if(domain == null)
+            if (domain == null)
                 return "";
             return domain.startsWith("www.") ? domain.substring(4) : domain;
         } catch (URISyntaxException e) {
@@ -195,7 +176,7 @@ public class Website extends BaseActivityAnim {
                 cookieManager.removeAllCookies(null);
                 CookieManager.getInstance().flush();
                 cookieManager.setAcceptCookie(false);
-            } catch(NoSuchMethodError e){
+            } catch (NoSuchMethodError e) {
                 //Although these were added in api 12, some devices don't have this method
             }
             WebSettings ws = v.getSettings();
@@ -241,13 +222,16 @@ public class Website extends BaseActivityAnim {
         v.getSettings().setUseWideViewPort(true);
         v.setDownloadListener(new DownloadListener() {
             public void onDownloadStart(String url, String userAgent, String contentDisposition,
-                    String mimetype, long contentLength) {
+                                        String mimetype, long contentLength) {
                 //Downloads using download manager on default browser
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(url));
                 startActivity(i);
             }
         });
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            WebView.setWebContentsDebuggingEnabled(BuildConfig.DEBUG);
+        }
         v.loadUrl(url);
     }
 
@@ -357,6 +341,16 @@ public class Website extends BaseActivityAnim {
         }
 
         @Override
+        public void onLoadResource(WebView view, String url) {
+            // Redirect RedditWebClient URLs to the appropriate in-app page
+            Uri uri = Uri.parse(url);
+            if (uri.getHost().equalsIgnoreCase("www.reddit.com") && uri.getPath().endsWith(".json")) {
+                shouldOverrideUrlLoading(view, url.split("\\.json")[0]);
+            }
+            super.onLoadResource(view, url);
+        }
+
+        @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             ContentType.Type type = ContentType.getContentType(url);
 
@@ -377,7 +371,7 @@ public class Website extends BaseActivityAnim {
                         }
                         return super.shouldOverrideUrlLoading(view, url);
                     case REDDIT:
-                        if(!url.contains("inapp=false")) {
+                        if (!url.contains("inapp=false")) {
                             boolean opened = OpenRedditLink.openUrl(view.getContext(), url, false);
                             if (!opened) {
                                 return super.shouldOverrideUrlLoading(view, url);

@@ -4,22 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-
-import java.util.Arrays;
-
-import me.ccrama.redditslide.Activities.CommentsScreenSingle;
-import me.ccrama.redditslide.Activities.LiveThread;
-import me.ccrama.redditslide.Activities.MainActivity;
-import me.ccrama.redditslide.Activities.OpenContent;
-import me.ccrama.redditslide.Activities.Profile;
-import me.ccrama.redditslide.Activities.Search;
-import me.ccrama.redditslide.Activities.SendMessage;
-import me.ccrama.redditslide.Activities.SubredditView;
-import me.ccrama.redditslide.Activities.Website;
-import me.ccrama.redditslide.Activities.Wiki;
+import me.ccrama.redditslide.Activities.*;
 import me.ccrama.redditslide.Visuals.Palette;
 import me.ccrama.redditslide.util.LinkUtil;
 import me.ccrama.redditslide.util.LogUtil;
+
+import java.util.Arrays;
 
 public class OpenRedditLink {
 
@@ -68,19 +58,6 @@ public class OpenRedditLink {
             case LIVE: {
                 i = new Intent(context, LiveThread.class);
                 i.putExtra(LiveThread.EXTRA_LIVEURL, parts[2]);
-                break;
-            }
-            case WIKI: {
-                i = new Intent(context, Wiki.class);
-                i.putExtra(Wiki.EXTRA_SUBREDDIT, parts[2]);
-                String page;
-                if (parts.length >= 5) {
-                    page = parts[4];
-                    if (page.contains("#")) {
-                        page = page.substring(0, page.indexOf("#"));
-                    }
-                    i.putExtra(Wiki.EXTRA_PAGE, page);
-                }
                 break;
             }
             case SEARCH: {
@@ -198,6 +175,7 @@ public class OpenRedditLink {
                 i = new Intent(context, MainActivity.class);
                 break;
             }
+            case WIKI:
             case OTHER: {
                 if (openIfOther) {
                     if (context instanceof Activity) {
