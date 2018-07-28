@@ -29,10 +29,7 @@ import me.ccrama.redditslide.*;
 import me.ccrama.redditslide.Views.CommentOverflow;
 import me.ccrama.redditslide.Views.SidebarLayout;
 import me.ccrama.redditslide.Visuals.Palette;
-import me.ccrama.redditslide.util.HttpUtil;
-import me.ccrama.redditslide.util.LogUtil;
-import me.ccrama.redditslide.util.SubmissionParser;
-import me.ccrama.redditslide.util.TwitterObject;
+import me.ccrama.redditslide.util.*;
 import net.dean.jraw.managers.LiveThreadManager;
 import net.dean.jraw.models.LiveUpdate;
 import net.dean.jraw.paginators.LiveThreadPaginator;
@@ -221,8 +218,7 @@ public class LiveThread extends BaseActivityAnim {
                             }
 
                             @Override
-                            public void onFrame(com.neovisionaries.ws.client.WebSocket websocket,
-                                                WebSocketFrame frame) {
+                            public void onFrame(com.neovisionaries.ws.client.WebSocket websocket, WebSocketFrame frame) {
 
                             }
 
@@ -344,8 +340,7 @@ public class LiveThread extends BaseActivityAnim {
                             }
 
                             @Override
-                            public void onError(com.neovisionaries.ws.client.WebSocket websocket,
-                                                WebSocketException cause) {
+                            public void onError(com.neovisionaries.ws.client.WebSocket websocket, WebSocketException cause) {
 
                             }
 
@@ -469,7 +464,7 @@ public class LiveThread extends BaseActivityAnim {
                     @Override
                     public void onClick(View v) {
                         Intent i = new Intent(LiveThread.this, Website.class);
-                        i.putExtra(Website.EXTRA_URL, url);
+                        i.putExtra(LinkUtil.EXTRA_URL, url);
                         startActivity(i);
                     }
                 });

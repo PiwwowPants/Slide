@@ -171,7 +171,7 @@ public class TumblrPager extends FullScreenActivity
         @Override
         public void onError() {
             Intent i = new Intent(TumblrPager.this, Website.class);
-            i.putExtra(Website.EXTRA_URL, url);
+            i.putExtra(LinkUtil.EXTRA_URL, url);
             startActivity(i);
             finish();
         }

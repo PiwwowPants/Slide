@@ -42,6 +42,7 @@ import me.ccrama.redditslide.Views.CatchStaggeredGridLayoutManager;
 import me.ccrama.redditslide.Views.CreateCardView;
 import me.ccrama.redditslide.Visuals.FontPreferences;
 import me.ccrama.redditslide.Visuals.Palette;
+import me.ccrama.redditslide.util.LinkUtil;
 import me.ccrama.redditslide.util.SubmissionParser;
 import net.dean.jraw.managers.AccountManager;
 import net.dean.jraw.models.Comment;
@@ -271,7 +272,7 @@ public class ContributionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                                     String urlString =
                                             "https://reddit.com" + submission.getPermalink();
                                     Intent i = new Intent(mContext, Website.class);
-                                    i.putExtra(Website.EXTRA_URL, urlString);
+                                    i.putExtra(LinkUtil.EXTRA_URL, urlString);
                                     mContext.startActivity(i);
                                 }
                             });
@@ -361,8 +362,7 @@ public class ContributionAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                                                                 }
                                                             });
                                     View view = s.getView();
-                                    TextView tv = view.findViewById(
-                                            android.support.design.R.id.snackbar_text);
+                                    TextView tv = view.findViewById(android.support.design.R.id.snackbar_text);
                                     tv.setTextColor(Color.WHITE);
                                     s.show();
 

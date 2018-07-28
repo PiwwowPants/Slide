@@ -40,6 +40,7 @@ import me.ccrama.redditslide.Activities.Website;
 import me.ccrama.redditslide.SubmissionViews.PopulateSubmissionViewHolder;
 import me.ccrama.redditslide.Views.CreateCardView;
 import me.ccrama.redditslide.Visuals.Palette;
+import me.ccrama.redditslide.util.LinkUtil;
 import me.ccrama.redditslide.util.LogUtil;
 import me.ccrama.redditslide.util.OnSingleClickListener;
 import me.ccrama.redditslide.util.SubmissionParser;
@@ -258,7 +259,7 @@ public class ModeratorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                     String urlString =
                                             "https://reddit.com" + submission.getPermalink();
                                     Intent i = new Intent(mContext, Website.class);
-                                    i.putExtra(Website.EXTRA_URL, urlString);
+                                    i.putExtra(LinkUtil.EXTRA_URL, urlString);
                                     mContext.startActivity(i);
                                 }
                             });
@@ -349,8 +350,7 @@ public class ModeratorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                                                                 }
                                                             });
                                     View view = s.getView();
-                                    TextView tv = view.findViewById(
-                                            android.support.design.R.id.snackbar_text);
+                                    TextView tv = view.findViewById(android.support.design.R.id.snackbar_text);
                                     tv.setTextColor(Color.WHITE);
                                     s.show();
 

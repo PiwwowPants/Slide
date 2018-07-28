@@ -424,8 +424,8 @@ public class GifUtils {
                         } else {
                             if (closeIfNull) {
                                 Intent web = new Intent(c, Website.class);
-                                web.putExtra(Website.EXTRA_URL, url);
-                                web.putExtra(Website.EXTRA_COLOR, Color.BLACK);
+                                web.putExtra(LinkUtil.EXTRA_URL, url);
+                                web.putExtra(LinkUtil.EXTRA_COLOR, Color.BLACK);
                                 c.startActivity(web);
                                 c.finish();
                             }
@@ -468,8 +468,8 @@ public class GifUtils {
                         } else {
                             if (closeIfNull) {
                                 Intent web = new Intent(c, Website.class);
-                                web.putExtra(Website.EXTRA_URL, url);
-                                web.putExtra(Website.EXTRA_COLOR, Color.BLACK);
+                                web.putExtra(LinkUtil.EXTRA_URL, url);
+                                web.putExtra(LinkUtil.EXTRA_COLOR, Color.BLACK);
                                 c.startActivity(web);
                                 c.finish();
                             }
@@ -604,8 +604,8 @@ public class GifUtils {
                             onError();
                             if (closeIfNull) {
                                 Intent web = new Intent(c, Website.class);
-                                web.putExtra(Website.EXTRA_URL, url);
-                                web.putExtra(Website.EXTRA_COLOR, Color.BLACK);
+                                web.putExtra(LinkUtil.EXTRA_URL, url);
+                                web.putExtra(LinkUtil.EXTRA_COLOR, Color.BLACK);
                                 c.startActivity(web);
                                 c.finish();
                             }
@@ -632,8 +632,8 @@ public class GifUtils {
                     LogUtil.e("We shouldn't be here!");
                     if (closeIfNull) {
                         Intent web = new Intent(c, Website.class);
-                        web.putExtra(Website.EXTRA_URL, url);
-                        web.putExtra(Website.EXTRA_COLOR, Color.BLACK);
+                        web.putExtra(LinkUtil.EXTRA_URL, url);
+                        web.putExtra(LinkUtil.EXTRA_COLOR, Color.BLACK);
                         c.startActivity(web);
                         c.finish();
                     }

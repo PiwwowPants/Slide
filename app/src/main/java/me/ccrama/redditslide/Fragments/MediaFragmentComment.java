@@ -273,13 +273,13 @@ public class MediaFragmentComment extends Fragment {
                                         });
                             } else {
                                 Intent i = new Intent(getContext(), Website.class);
-                                i.putExtra(Website.EXTRA_URL, finalUrl);
+                                i.putExtra(LinkUtil.EXTRA_URL, finalUrl);
                                 getContext().startActivity(i);
                             }
                         } catch (Exception e2) {
                             e2.printStackTrace();
                             Intent i = new Intent(getContext(), Website.class);
-                            i.putExtra(Website.EXTRA_URL, finalUrl);
+                            i.putExtra(LinkUtil.EXTRA_URL, finalUrl);
                             getContext().startActivity(i);
                         }
                     }
@@ -362,7 +362,7 @@ public class MediaFragmentComment extends Fragment {
                     doLoadImage(url);
                 } else {
                     Intent i = new Intent(getActivity(), Website.class);
-                    i.putExtra(Website.EXTRA_URL, contentUrl);
+                    i.putExtra(LinkUtil.EXTRA_URL, contentUrl);
                     getActivity().startActivity(i);
                 }
             }
@@ -501,7 +501,7 @@ public class MediaFragmentComment extends Fragment {
                                         actuallyLoaded = finalUrl2;
                                     } else if (!imageShown) {
                                         Intent i = new Intent(getActivity(), Website.class);
-                                        i.putExtra(Website.EXTRA_URL, finalUrl2);
+                                        i.putExtra(LinkUtil.EXTRA_URL, finalUrl2);
                                         getActivity().startActivity(i);
                                     }
                                 }

@@ -16,6 +16,7 @@ import me.ccrama.redditslide.R;
 import me.ccrama.redditslide.Reddit;
 import me.ccrama.redditslide.SpoilerRobotoTextView;
 import me.ccrama.redditslide.Visuals.Palette;
+import me.ccrama.redditslide.util.LinkUtil;
 import org.apache.commons.text.StringEscapeUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -30,12 +31,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ReaderMode extends BaseActivityAnim {
-
-    public static final String EXTRA_URL   = "url";
-    public static final String EXTRA_COLOR = "color";
+    private int mSubredditColor;
     public static String html;
     SpoilerRobotoTextView v;
-    String                url;
+    private String url;
 
 
     @Override
@@ -45,13 +44,14 @@ public class ReaderMode extends BaseActivityAnim {
         applyColorTheme("");
         setContentView(R.layout.activity_reader);
 
-        int subredditColor = getIntent().getExtras().getInt(EXTRA_COLOR, Palette.getDefaultColor());
+        mSubredditColor =
+                getIntent().getExtras().getInt(LinkUtil.EXTRA_COLOR, Palette.getDefaultColor());
 
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
-        setupAppBar(R.id.toolbar, "", true, subredditColor, R.id.appbar);
+        setupAppBar(R.id.toolbar, "", true, mSubredditColor, R.id.appbar);
 
         if (getIntent().hasExtra("url")) {
-            url = getIntent().getExtras().getString(EXTRA_URL, "");
+            url = getIntent().getExtras().getString(LinkUtil.EXTRA_URL, "");
             ((Toolbar) findViewById(R.id.toolbar)).setTitle(url);
 
         }
@@ -152,7 +152,7 @@ public class ReaderMode extends BaseActivityAnim {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         Intent i = new Intent(ReaderMode.this, Website.class);
-                                        i.putExtra(Website.EXTRA_URL, url);
+                                        i.putExtra(LinkUtil.EXTRA_URL, url);
                                         startActivity(i);
                                         finish();
                                     }
@@ -187,9 +187,7 @@ public class ReaderMode extends BaseActivityAnim {
                 finish();
                 return true;
             case R.id.web:
-                Intent i = new Intent(this, Website.class);
-                i.putExtra(Website.EXTRA_URL, url);
-                ReaderMode.this.startActivity(i);
+                LinkUtil.openUrl(url, mSubredditColor, this);
                 finish();
                 return true;
             case R.id.share:
