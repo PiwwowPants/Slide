@@ -18,12 +18,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.mikepenz.itemanimators.AlphaInAnimator;
 import com.mikepenz.itemanimators.SlideUpAlphaAnimator;
-
+import me.ccrama.redditslide.Activities.Submit;
+import me.ccrama.redditslide.Adapters.MultiredditAdapter;
+import me.ccrama.redditslide.Adapters.MultiredditPosts;
+import me.ccrama.redditslide.Adapters.SubmissionDisplay;
+import me.ccrama.redditslide.*;
+import me.ccrama.redditslide.Views.CatchStaggeredGridLayoutManager;
+import me.ccrama.redditslide.Views.CreateCardView;
+import me.ccrama.redditslide.Visuals.Palette;
+import me.ccrama.redditslide.handler.ToolbarScrollHideHandler;
 import net.dean.jraw.models.MultiReddit;
 import net.dean.jraw.models.MultiSubreddit;
 import net.dean.jraw.models.Submission;
@@ -31,23 +38,6 @@ import net.dean.jraw.models.Submission;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-import me.ccrama.redditslide.Activities.Submit;
-import me.ccrama.redditslide.Adapters.MultiredditAdapter;
-import me.ccrama.redditslide.Adapters.MultiredditPosts;
-import me.ccrama.redditslide.Adapters.SubmissionDisplay;
-import me.ccrama.redditslide.Constants;
-import me.ccrama.redditslide.HasSeen;
-import me.ccrama.redditslide.Hidden;
-import me.ccrama.redditslide.OfflineSubreddit;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.SettingValues;
-import me.ccrama.redditslide.UserSubscriptions;
-import me.ccrama.redditslide.Views.CatchStaggeredGridLayoutManager;
-import me.ccrama.redditslide.Views.CreateCardView;
-import me.ccrama.redditslide.Visuals.Palette;
-import me.ccrama.redditslide.handler.ToolbarScrollHideHandler;
 
 public class MultiredditView extends Fragment implements SubmissionDisplay {
 
@@ -76,7 +66,7 @@ public class MultiredditView extends Fragment implements SubmissionDisplay {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             singleColumnMultiWindow = getActivity().isInMultiWindowMode() && SettingValues.singleColumnMultiWindow;
         }
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE && SettingValues.tabletUI && !singleColumnMultiWindow) {
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE && SettingValues.isPro && !singleColumnMultiWindow) {
             numColumns = Reddit.dpWidth;
         } else if (orientation == Configuration.ORIENTATION_PORTRAIT && SettingValues.dualPortrait) {
             numColumns = 2;

@@ -15,30 +15,22 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-
-import net.dean.jraw.paginators.SubmissionSearchPaginator;
-import net.dean.jraw.paginators.TimePeriod;
-
-import org.apache.commons.text.StringEscapeUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.Locale;
-
 import me.ccrama.redditslide.Adapters.ContributionAdapter;
 import me.ccrama.redditslide.Adapters.SubredditSearchPosts;
-import me.ccrama.redditslide.ColorPreferences;
-import me.ccrama.redditslide.Constants;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.SettingValues;
+import me.ccrama.redditslide.*;
 import me.ccrama.redditslide.Views.CatchStaggeredGridLayoutManager;
 import me.ccrama.redditslide.Views.PreCachingLayoutManager;
 import me.ccrama.redditslide.Visuals.Palette;
 import me.ccrama.redditslide.handler.ToolbarScrollHideHandler;
+import net.dean.jraw.paginators.SubmissionSearchPaginator;
+import net.dean.jraw.paginators.TimePeriod;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
+
+import java.util.Locale;
 
 public class Search extends BaseActivityAnim {
 
@@ -341,7 +333,7 @@ public class Search extends BaseActivityAnim {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             singleColumnMultiWindow = ((Activity)context).isInMultiWindowMode() && SettingValues.singleColumnMultiWindow;
         }
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE && SettingValues.tabletUI && !singleColumnMultiWindow) {
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE && SettingValues.isPro && !singleColumnMultiWindow) {
             numColumns = Reddit.dpWidth;
         } else if (orientation == Configuration.ORIENTATION_PORTRAIT
                 && SettingValues.dualPortrait) {

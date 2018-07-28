@@ -2,16 +2,14 @@ package me.ccrama.redditslide;
 
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-
+import me.ccrama.redditslide.Views.CreateCardView;
+import me.ccrama.redditslide.Visuals.Palette;
 import net.dean.jraw.models.CommentSort;
 import net.dean.jraw.paginators.Sorting;
 import net.dean.jraw.paginators.TimePeriod;
 
 import java.util.Calendar;
 import java.util.Locale;
-
-import me.ccrama.redditslide.Views.CreateCardView;
-import me.ccrama.redditslide.Visuals.Palette;
 
 /**
  * Created by ccrama on 9/19/2015.
@@ -206,7 +204,7 @@ public class SettingValues {
     public static boolean fab     = true;
     public static int     fabType = Constants.FAB_POST;
     public static boolean hideButton;
-    public static boolean tabletUI;
+    public static boolean isPro;
     public static boolean customtabs;
     public static boolean titleTop;
     public static boolean dualPortrait;
@@ -475,7 +473,7 @@ public class SettingValues {
 
 
     public static boolean isNight() {
-        if (tabletUI && nightMode) {
+        if (isPro && nightMode) {
             if (Reddit.isNightModeAuto) {
                 return (Reddit.getAppContext().getResources().getConfiguration().uiMode
                         & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;

@@ -7,35 +7,20 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.NotificationManager;
-import android.content.ActivityNotFoundException;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Path;
-import android.graphics.Point;
+import android.graphics.*;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
 import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Parcelable;
+import android.os.*;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -53,9 +38,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.ViewDragHelper;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.view.ContextThemeWrapper;
-import android.support.v7.widget.AppCompatCheckBox;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.*;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -64,58 +47,42 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Pair;
 import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewStub;
-import android.view.ViewTreeObserver;
-import android.view.Window;
-import android.view.WindowManager;
+import android.view.*;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AutoCompleteTextView;
-import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.HorizontalScrollView;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.widget.*;
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.lusfold.androidkeyvaluestore.KVStore;
 import com.lusfold.androidkeyvaluestore.core.KVManger;
-
+import me.ccrama.redditslide.Adapters.SettingsSubAdapter;
+import me.ccrama.redditslide.Adapters.SideArrayAdapter;
+import me.ccrama.redditslide.Adapters.SubredditPosts;
+import me.ccrama.redditslide.*;
+import me.ccrama.redditslide.Autocache.AutoCacheScheduler;
+import me.ccrama.redditslide.Fragments.*;
+import me.ccrama.redditslide.Notifications.CheckForMail;
+import me.ccrama.redditslide.Notifications.NotificationJobScheduler;
+import me.ccrama.redditslide.Synccit.MySynccitUpdateTask;
+import me.ccrama.redditslide.Synccit.SynccitRead;
+import me.ccrama.redditslide.Views.*;
+import me.ccrama.redditslide.Visuals.Palette;
+import me.ccrama.redditslide.util.*;
 import net.dean.jraw.ApiException;
 import net.dean.jraw.http.MultiRedditUpdateRequest;
 import net.dean.jraw.http.NetworkException;
 import net.dean.jraw.managers.AccountManager;
 import net.dean.jraw.managers.ModerationManager;
 import net.dean.jraw.managers.MultiRedditManager;
-import net.dean.jraw.models.FlairTemplate;
-import net.dean.jraw.models.LoggedInAccount;
-import net.dean.jraw.models.MultiReddit;
-import net.dean.jraw.models.MultiSubreddit;
-import net.dean.jraw.models.Submission;
-import net.dean.jraw.models.Subreddit;
-import net.dean.jraw.models.UserRecord;
+import net.dean.jraw.models.*;
 import net.dean.jraw.paginators.Sorting;
 import net.dean.jraw.paginators.SubredditPaginator;
 import net.dean.jraw.paginators.TimePeriod;
 import net.dean.jraw.paginators.UserRecordPaginator;
-
 import org.ligi.snackengage.SnackEngage;
 import org.ligi.snackengage.conditions.AfterNumberOfOpportunities;
 import org.ligi.snackengage.conditions.NeverAgainWhenClickedOnce;
@@ -124,61 +91,9 @@ import org.ligi.snackengage.snacks.BaseSnack;
 import org.ligi.snackengage.snacks.RateSnack;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import me.ccrama.redditslide.Adapters.SettingsSubAdapter;
-import me.ccrama.redditslide.Adapters.SideArrayAdapter;
-import me.ccrama.redditslide.Adapters.SubredditPosts;
-import me.ccrama.redditslide.Authentication;
-import me.ccrama.redditslide.Autocache.AutoCacheScheduler;
-import me.ccrama.redditslide.BuildConfig;
-import me.ccrama.redditslide.CaseInsensitiveArrayList;
-import me.ccrama.redditslide.ColorPreferences;
-import me.ccrama.redditslide.CommentCacheAsync;
-import me.ccrama.redditslide.Constants;
-import me.ccrama.redditslide.ContentType;
-import me.ccrama.redditslide.FDroid;
-import me.ccrama.redditslide.Fragments.CommentPage;
-import me.ccrama.redditslide.Fragments.DrawerItemsDialog;
-import me.ccrama.redditslide.Fragments.SettingsGeneralFragment;
-import me.ccrama.redditslide.Fragments.SettingsThemeFragment;
-import me.ccrama.redditslide.Fragments.SubmissionsView;
-import me.ccrama.redditslide.HasSeen;
-import me.ccrama.redditslide.ImageFlairs;
-import me.ccrama.redditslide.Notifications.CheckForMail;
-import me.ccrama.redditslide.Notifications.NotificationJobScheduler;
-import me.ccrama.redditslide.OpenRedditLink;
-import me.ccrama.redditslide.PostMatch;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.SettingValues;
-import me.ccrama.redditslide.SpoilerRobotoTextView;
-import me.ccrama.redditslide.Synccit.MySynccitUpdateTask;
-import me.ccrama.redditslide.Synccit.SynccitRead;
-import me.ccrama.redditslide.TimeUtils;
-import me.ccrama.redditslide.UserSubscriptions;
-import me.ccrama.redditslide.Views.CatchStaggeredGridLayoutManager;
-import me.ccrama.redditslide.Views.CommentOverflow;
-import me.ccrama.redditslide.Views.PreCachingLayoutManager;
-import me.ccrama.redditslide.Views.SidebarLayout;
-import me.ccrama.redditslide.Views.ToggleSwipeViewPager;
-import me.ccrama.redditslide.Visuals.Palette;
-import me.ccrama.redditslide.util.EditTextValidator;
-import me.ccrama.redditslide.util.LogUtil;
-import me.ccrama.redditslide.util.NetworkStateReceiver;
-import me.ccrama.redditslide.util.NetworkUtil;
-import me.ccrama.redditslide.util.OnSingleClickListener;
-import me.ccrama.redditslide.util.SubmissionParser;
 
 import static me.ccrama.redditslide.UserSubscriptions.modOf;
 
@@ -511,8 +426,8 @@ public class MainActivity extends BaseActivity
             } else {
                 inflater.inflate(R.menu.menu_subreddit_overview, menu);
             }
-            //Only show the "Share Slide" menu item if the user doesn't have Pro installed
-            if (SettingValues.tabletUI) {
+            // Hide the "Share Slide" menu if the user has Pro installed
+            if (SettingValues.isPro) {
                 menu.findItem(R.id.share).setVisible(false);
             }
             if (SettingValues.fab && SettingValues.fabType == Constants.FAB_DISMISS) {
@@ -744,7 +659,7 @@ public class MainActivity extends BaseActivity
             }
             return true;
             case R.id.gallery:
-                if (SettingValues.tabletUI) {
+                if (SettingValues.isPro) {
                     List<Submission> posts =
                             ((SubmissionsView) adapter.getCurrentFragment()).posts.posts;
                     if (posts != null && !posts.isEmpty()) {
@@ -819,7 +734,7 @@ public class MainActivity extends BaseActivity
                 }
                 return true;
             case R.id.action_shadowbox:
-                if (SettingValues.tabletUI) {
+                if (SettingValues.isPro) {
                     List<Submission> posts =
                             ((SubmissionsView) adapter.getCurrentFragment()).posts.posts;
                     if (posts != null && !posts.isEmpty()) {
@@ -1017,7 +932,7 @@ public class MainActivity extends BaseActivity
                                                 && s.getSubmissionFlair()
                                                 .getText()
                                                 .equalsIgnoreCase("PRO")
-                                                && !SettingValues.tabletUI
+                                                && !SettingValues.isPro
                                                 && !Reddit.appRestart.contains(
                                                 "announcement" + s.getFullName())) {
                                             Reddit.appRestart.edit()
@@ -2021,7 +1936,7 @@ public class MainActivity extends BaseActivity
         if (Authentication.didOnline) {
             View support = header.findViewById(R.id.support);
 
-            if (SettingValues.tabletUI) {
+            if (SettingValues.isPro) {
                 support.setVisibility(View.GONE);
             } else {
                 header.findViewById(R.id.support).setOnClickListener(new OnSingleClickListener() {

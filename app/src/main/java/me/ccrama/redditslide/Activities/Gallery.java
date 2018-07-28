@@ -9,28 +9,20 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-
-import net.dean.jraw.models.Submission;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import me.ccrama.redditslide.Adapters.GalleryView;
 import me.ccrama.redditslide.Adapters.MultiredditPosts;
 import me.ccrama.redditslide.Adapters.SubmissionDisplay;
 import me.ccrama.redditslide.Adapters.SubredditPosts;
-import me.ccrama.redditslide.Authentication;
-import me.ccrama.redditslide.ContentType;
+import me.ccrama.redditslide.*;
 import me.ccrama.redditslide.Fragments.AlbumFull;
 import me.ccrama.redditslide.Fragments.MediaFragment;
 import me.ccrama.redditslide.Fragments.SelftextFull;
 import me.ccrama.redditslide.Fragments.TitleFull;
-import me.ccrama.redditslide.OfflineSubreddit;
-import me.ccrama.redditslide.PostLoader;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.SettingValues;
 import me.ccrama.redditslide.Views.CatchStaggeredGridLayoutManager;
+import net.dean.jraw.models.Submission;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ccrama on 9/17/2015.
@@ -206,7 +198,7 @@ public class Gallery extends FullScreenActivity implements SubmissionDisplay {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             singleColumnMultiWindow = Gallery.this.isInMultiWindowMode() && SettingValues.singleColumnMultiWindow;
         }
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE && SettingValues.tabletUI && !singleColumnMultiWindow) {
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE && SettingValues.isPro && !singleColumnMultiWindow) {
             numColumns = Reddit.dpWidth;
         } else if (orientation == Configuration.ORIENTATION_PORTRAIT
                 && SettingValues.dualPortrait) {

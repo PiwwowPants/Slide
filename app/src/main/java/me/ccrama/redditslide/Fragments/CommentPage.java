@@ -2,11 +2,7 @@ package me.ccrama.redditslide.Fragments;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.ActivityNotFoundException;
-import android.content.Context;
-import android.content.ContextWrapper;
-import android.content.DialogInterface;
-import android.content.Intent;
+import android.content.*;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -23,87 +19,17 @@ import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.view.*;
+import android.widget.*;
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rey.material.widget.Slider;
-
-import net.dean.jraw.ApiException;
-import net.dean.jraw.http.MultiRedditUpdateRequest;
-import net.dean.jraw.http.NetworkException;
-import net.dean.jraw.managers.AccountManager;
-import net.dean.jraw.managers.MultiRedditManager;
-import net.dean.jraw.models.CommentSort;
-import net.dean.jraw.models.MultiReddit;
-import net.dean.jraw.models.MultiSubreddit;
-import net.dean.jraw.models.Submission;
-import net.dean.jraw.models.Subreddit;
-import net.dean.jraw.models.UserRecord;
-import net.dean.jraw.paginators.Sorting;
-import net.dean.jraw.paginators.TimePeriod;
-import net.dean.jraw.paginators.UserRecordPaginator;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-
-import me.ccrama.redditslide.Activities.Album;
-import me.ccrama.redditslide.Activities.AlbumPager;
-import me.ccrama.redditslide.Activities.CommentSearch;
-import me.ccrama.redditslide.Activities.CommentsScreen;
-import me.ccrama.redditslide.Activities.FullscreenVideo;
-import me.ccrama.redditslide.Activities.MainActivity;
-import me.ccrama.redditslide.Activities.MediaView;
-import me.ccrama.redditslide.Activities.Profile;
-import me.ccrama.redditslide.Activities.Related;
-import me.ccrama.redditslide.Activities.SendMessage;
-import me.ccrama.redditslide.Activities.ShadowboxComments;
-import me.ccrama.redditslide.Activities.Submit;
-import me.ccrama.redditslide.Activities.SubredditView;
-import me.ccrama.redditslide.Activities.Tumblr;
-import me.ccrama.redditslide.Activities.TumblrPager;
-import me.ccrama.redditslide.Activities.Wiki;
-import me.ccrama.redditslide.Adapters.CommentAdapter;
-import me.ccrama.redditslide.Adapters.CommentItem;
-import me.ccrama.redditslide.Adapters.CommentNavType;
-import me.ccrama.redditslide.Adapters.CommentObject;
-import me.ccrama.redditslide.Adapters.CommentUrlObject;
-import me.ccrama.redditslide.Adapters.MoreChildItem;
-import me.ccrama.redditslide.Adapters.SettingsSubAdapter;
-import me.ccrama.redditslide.Adapters.SubmissionComments;
-import me.ccrama.redditslide.Authentication;
-import me.ccrama.redditslide.ColorPreferences;
-import me.ccrama.redditslide.Constants;
-import me.ccrama.redditslide.ContentType;
-import me.ccrama.redditslide.DataShare;
-import me.ccrama.redditslide.Drafts;
-import me.ccrama.redditslide.ImageFlairs;
-import me.ccrama.redditslide.OfflineSubreddit;
-import me.ccrama.redditslide.PostMatch;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.SettingValues;
-import me.ccrama.redditslide.SpoilerRobotoTextView;
+import me.ccrama.redditslide.Activities.*;
+import me.ccrama.redditslide.Adapters.*;
+import me.ccrama.redditslide.*;
 import me.ccrama.redditslide.SubmissionViews.PopulateSubmissionViewHolder;
-import me.ccrama.redditslide.TimeUtils;
-import me.ccrama.redditslide.UserSubscriptions;
 import me.ccrama.redditslide.Views.CommentOverflow;
 import me.ccrama.redditslide.Views.DoEditorActions;
 import me.ccrama.redditslide.Views.PreCachingLayoutManagerComments;
@@ -113,6 +39,18 @@ import me.ccrama.redditslide.util.LinkUtil;
 import me.ccrama.redditslide.util.NetworkUtil;
 import me.ccrama.redditslide.util.OnSingleClickListener;
 import me.ccrama.redditslide.util.SubmissionParser;
+import net.dean.jraw.ApiException;
+import net.dean.jraw.http.MultiRedditUpdateRequest;
+import net.dean.jraw.http.NetworkException;
+import net.dean.jraw.managers.AccountManager;
+import net.dean.jraw.managers.MultiRedditManager;
+import net.dean.jraw.models.*;
+import net.dean.jraw.paginators.Sorting;
+import net.dean.jraw.paginators.TimePeriod;
+import net.dean.jraw.paginators.UserRecordPaginator;
+
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Fragment which displays comment trees.
@@ -728,7 +666,7 @@ public class CommentPage extends Fragment {
                         }
                         return true;
                     case R.id.shadowbox:
-                        if (SettingValues.tabletUI) {
+                        if (SettingValues.isPro) {
                             if (comments.comments != null && comments.submission != null) {
                                 ShadowboxComments.comments = new ArrayList<>();
                                 for (CommentObject c : comments.comments) {

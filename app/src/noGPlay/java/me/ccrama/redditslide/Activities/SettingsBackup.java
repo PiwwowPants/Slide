@@ -11,28 +11,17 @@ import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.jakewharton.processphoenix.ProcessPhoenix;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
 import me.ccrama.redditslide.R;
 import me.ccrama.redditslide.SettingValues;
 import me.ccrama.redditslide.util.FileUtil;
 import me.ccrama.redditslide.util.LogUtil;
+
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 
 /**
@@ -175,7 +164,7 @@ public class SettingsBackup extends BaseActivityAnim {
         setContentView(R.layout.activity_settings_sync);
         setupAppBar(R.id.toolbar, R.string.settings_title_backup, true, true);
 
-        if (SettingValues.tabletUI) {
+        if (SettingValues.isPro) {
 
             findViewById(R.id.backfile).setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -16,20 +16,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.Spinner;
-import android.widget.TextView;
-
+import android.widget.*;
 import com.afollestad.materialdialogs.AlertDialogWrapper;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import me.ccrama.redditslide.Activities.BaseActivity;
 import me.ccrama.redditslide.Activities.Slide;
 import me.ccrama.redditslide.ColorPreferences;
@@ -41,6 +29,9 @@ import me.ccrama.redditslide.util.LogUtil;
 import me.ccrama.redditslide.util.OnSingleClickListener;
 import uz.shift.colorpicker.LineColorPicker;
 import uz.shift.colorpicker.OnColorChangedListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class SettingsThemeFragment<ActivityType extends BaseActivity & SettingsFragment.RestartActivity> {
@@ -385,7 +376,7 @@ public class SettingsThemeFragment<ActivityType extends BaseActivity & SettingsF
         nightMode.setOnClickListener(new OnSingleClickListener() {
             @Override
             public void onSingleClick(View view) {
-                if (SettingValues.tabletUI) {
+                if (SettingValues.isPro) {
                     LayoutInflater inflater = context.getLayoutInflater();
                     final View dialoglayout = inflater.inflate(R.layout.nightmode, null);
                     final AlertDialogWrapper.Builder builder =

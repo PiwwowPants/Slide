@@ -19,22 +19,19 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.text.Spannable;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
+import android.view.*;
 import android.view.animation.LinearInterpolator;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-
+import me.ccrama.redditslide.*;
+import me.ccrama.redditslide.Fragments.MultiredditView;
+import me.ccrama.redditslide.Views.CatchStaggeredGridLayoutManager;
+import me.ccrama.redditslide.Views.PreCachingLayoutManager;
+import me.ccrama.redditslide.Visuals.Palette;
+import me.ccrama.redditslide.util.LogUtil;
 import net.dean.jraw.models.MultiReddit;
 import net.dean.jraw.models.MultiSubreddit;
 import net.dean.jraw.models.Submission;
@@ -44,19 +41,6 @@ import net.dean.jraw.paginators.TimePeriod;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-import me.ccrama.redditslide.Authentication;
-import me.ccrama.redditslide.CaseInsensitiveArrayList;
-import me.ccrama.redditslide.ColorPreferences;
-import me.ccrama.redditslide.Fragments.MultiredditView;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.SettingValues;
-import me.ccrama.redditslide.UserSubscriptions;
-import me.ccrama.redditslide.Views.CatchStaggeredGridLayoutManager;
-import me.ccrama.redditslide.Views.PreCachingLayoutManager;
-import me.ccrama.redditslide.Visuals.Palette;
-import me.ccrama.redditslide.util.LogUtil;
 
 /**
  * Created by ccrama on 9/17/2015.
@@ -214,7 +198,7 @@ public class MultiredditOverview extends BaseActivityAnim {
                 ((DrawerLayout) findViewById(R.id.drawer_layout)).openDrawer(Gravity.RIGHT);
                 return true;
             case R.id.gallery:
-                if (SettingValues.tabletUI) {
+                if (SettingValues.isPro) {
                     List<Submission> posts =
                             ((MultiredditView) adapter.getCurrentFragment()).posts.posts;
                     if (posts != null && !posts.isEmpty()) {
@@ -282,7 +266,7 @@ public class MultiredditOverview extends BaseActivityAnim {
                 }
                 return true;
             case R.id.action_shadowbox:
-                if (SettingValues.tabletUI) {
+                if (SettingValues.isPro) {
                     List<Submission> posts =
                             ((MultiredditView) adapter.getCurrentFragment()).posts.posts;
                     if (posts != null && !posts.isEmpty()) {

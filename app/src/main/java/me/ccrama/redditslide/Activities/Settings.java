@@ -12,48 +12,21 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.SwitchCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.SeekBar;
-import android.widget.TextView;
-
+import android.view.*;
+import android.widget.*;
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.google.common.base.Strings;
+import me.ccrama.redditslide.*;
+import me.ccrama.redditslide.DragSort.ReorderSubreddits;
+import me.ccrama.redditslide.Fragments.*;
+import me.ccrama.redditslide.Visuals.Palette;
+import me.ccrama.redditslide.util.NetworkUtil;
+import me.ccrama.redditslide.util.OnSingleClickListener;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import me.ccrama.redditslide.Authentication;
-import me.ccrama.redditslide.DragSort.ReorderSubreddits;
-import me.ccrama.redditslide.FDroid;
-import me.ccrama.redditslide.Fragments.FolderChooserDialogCreate;
-import me.ccrama.redditslide.Fragments.ManageOfflineContentFragment;
-import me.ccrama.redditslide.Fragments.SettingsCommentsFragment;
-import me.ccrama.redditslide.Fragments.SettingsDataFragment;
-import me.ccrama.redditslide.Fragments.SettingsFontFragment;
-import me.ccrama.redditslide.Fragments.SettingsFragment;
-import me.ccrama.redditslide.Fragments.SettingsGeneralFragment;
-import me.ccrama.redditslide.Fragments.SettingsHandlingFragment;
-import me.ccrama.redditslide.Fragments.SettingsHistoryFragment;
-import me.ccrama.redditslide.Fragments.SettingsRedditFragment;
-import me.ccrama.redditslide.Fragments.SettingsThemeFragment;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.SettingValues;
-import me.ccrama.redditslide.Visuals.Palette;
-import me.ccrama.redditslide.util.NetworkUtil;
-import me.ccrama.redditslide.util.OnSingleClickListener;
 
 
 /**
@@ -295,7 +268,7 @@ public class Settings extends BaseActivity
 
     private void setSettingItems() {
         View pro = findViewById(R.id.settings_child_pro);
-        if (SettingValues.tabletUI) {
+        if (SettingValues.isPro) {
             pro.setVisibility(View.GONE);
         } else {
             pro.setOnClickListener(new OnSingleClickListener() {
@@ -473,7 +446,7 @@ public class Settings extends BaseActivity
                   /*  Intent inte = new Intent(Overview.this, Overview.class);
                     inte.putExtra("type", UpdateSubreddits.COLLECTIONS);
                     Overview.this.startActivity(inte);*/
-                if (SettingValues.tabletUI) {
+                if (SettingValues.isPro) {
                     LayoutInflater inflater = getLayoutInflater();
                     final View dialoglayout = inflater.inflate(R.layout.tabletui, null);
                     final AlertDialogWrapper.Builder builder =

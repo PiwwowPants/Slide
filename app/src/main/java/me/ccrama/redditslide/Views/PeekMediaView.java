@@ -10,17 +10,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.webkit.DownloadListener;
-import android.webkit.WebChromeClient;
-import android.webkit.WebResourceResponse;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-
+import android.webkit.*;
+import android.widget.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -29,7 +20,14 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
-
+import me.ccrama.redditslide.Adapters.ImageGridAdapter;
+import me.ccrama.redditslide.*;
+import me.ccrama.redditslide.ForceTouch.PeekViewActivity;
+import me.ccrama.redditslide.ImgurAlbum.AlbumUtils;
+import me.ccrama.redditslide.ImgurAlbum.Image;
+import me.ccrama.redditslide.Tumblr.Photo;
+import me.ccrama.redditslide.Tumblr.TumblrUtils;
+import me.ccrama.redditslide.util.*;
 import org.apache.commons.text.StringEscapeUtils;
 
 import java.io.File;
@@ -40,23 +38,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import me.ccrama.redditslide.Adapters.ImageGridAdapter;
-import me.ccrama.redditslide.ContentType;
-import me.ccrama.redditslide.ForceTouch.PeekViewActivity;
-import me.ccrama.redditslide.ImgurAlbum.AlbumUtils;
-import me.ccrama.redditslide.ImgurAlbum.Image;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.SecretConstants;
-import me.ccrama.redditslide.SettingValues;
-import me.ccrama.redditslide.Tumblr.Photo;
-import me.ccrama.redditslide.Tumblr.TumblrUtils;
-import me.ccrama.redditslide.util.AdBlocker;
-import me.ccrama.redditslide.util.GifUtils;
-import me.ccrama.redditslide.util.HttpUtil;
-import me.ccrama.redditslide.util.LogUtil;
-import me.ccrama.redditslide.util.NetworkUtil;
 
 
 /**
@@ -179,7 +160,7 @@ public class PeekMediaView extends RelativeLayout {
                 images = new ArrayList<>(jsonElements);
                 displayImage(images.get(0).getImageUrl());
                 if (images.size() > 1) {
-                    GridView grid = (GridView) findViewById(R.id.grid_area);
+                    GridView grid = findViewById(R.id.grid_area);
                     grid.setNumColumns(5);
                     grid.setVisibility(VISIBLE);
                     grid.setAdapter(new ImageGridAdapter(getContext(), images));
@@ -208,7 +189,7 @@ public class PeekMediaView extends RelativeLayout {
                 tumblrImages = new ArrayList<>(jsonElements);
                 displayImage(tumblrImages.get(0).getOriginalSize().getUrl());
                 if (tumblrImages.size() > 1) {
-                    GridView grid = (GridView) findViewById(R.id.grid_area);
+                    GridView grid = findViewById(R.id.grid_area);
                     grid.setNumColumns(5);
                     grid.setVisibility(VISIBLE);
                     grid.setAdapter(new ImageGridAdapter(getContext(), tumblrImages, true));
@@ -292,7 +273,7 @@ public class PeekMediaView extends RelativeLayout {
                 } else {
                     ad = loadedUrls.get(url);
                 }
-                return ad && SettingValues.tabletUI ? AdBlocker.createEmptyResource()
+                return ad && SettingValues.isPro ? AdBlocker.createEmptyResource()
                         : super.shouldInterceptRequest(view, url);
             }
 
@@ -318,7 +299,7 @@ public class PeekMediaView extends RelativeLayout {
     }
 
     private void doLoadReddit(String url) {
-        RedditItemView v = (RedditItemView) findViewById(R.id.reddit_item);
+        RedditItemView v = findViewById(R.id.reddit_item);
         v.loadUrl(this, url, progress);
     }
 
@@ -502,7 +483,7 @@ public class PeekMediaView extends RelativeLayout {
     String actuallyLoaded;
 
     public void doLoadGif(final String dat) {
-        videoView = (MediaVideoView) findViewById(R.id.gif);
+        videoView = findViewById(R.id.gif);
         videoView.clearFocus();
         findViewById(R.id.gifarea).setVisibility(View.VISIBLE);
         findViewById(R.id.submission_image).setVisibility(View.GONE);
@@ -524,7 +505,7 @@ public class PeekMediaView extends RelativeLayout {
         if (!imageShown) {
             actuallyLoaded = url;
             final SubsamplingScaleImageView i =
-                    (SubsamplingScaleImageView) findViewById(R.id.submission_image);
+                    findViewById(R.id.submission_image);
 
             i.setMinimumDpi(70);
             i.setMinimumTileDpi(240);
@@ -645,9 +626,9 @@ public class PeekMediaView extends RelativeLayout {
 
     private void init() {
         inflate(getContext(), R.layout.peek_media_view, this);
-        this.image = (SubsamplingScaleImageView) findViewById(R.id.submission_image);
-        this.videoView = (MediaVideoView) findViewById(R.id.gif);
-        this.website = (WebView) findViewById(R.id.website);
-        this.progress = ((ProgressBar) findViewById(R.id.progress));
+        this.image = findViewById(R.id.submission_image);
+        this.videoView = findViewById(R.id.gif);
+        this.website = findViewById(R.id.website);
+        this.progress = findViewById(R.id.progress);
     }
 }
