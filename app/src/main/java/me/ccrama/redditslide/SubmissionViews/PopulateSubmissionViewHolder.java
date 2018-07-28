@@ -3,12 +3,7 @@ package me.ccrama.redditslide.SubmissionViews;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -31,85 +26,34 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.widget.*;
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.cocosw.bottomsheet.BottomSheet;
 import com.devspark.robototextview.RobotoTypefaces;
-
+import me.ccrama.redditslide.*;
+import me.ccrama.redditslide.Activities.*;
+import me.ccrama.redditslide.Adapters.CommentAdapter;
+import me.ccrama.redditslide.Adapters.SubmissionViewHolder;
+import me.ccrama.redditslide.ForceTouch.PeekViewActivity;
+import me.ccrama.redditslide.Fragments.SubmissionsView;
+import me.ccrama.redditslide.Views.AnimateHelper;
+import me.ccrama.redditslide.Views.CreateCardView;
+import me.ccrama.redditslide.Views.DoEditorActions;
+import me.ccrama.redditslide.Visuals.FontPreferences;
+import me.ccrama.redditslide.Visuals.Palette;
+import me.ccrama.redditslide.util.*;
 import net.dean.jraw.ApiException;
 import net.dean.jraw.fluent.FlairReference;
 import net.dean.jraw.fluent.FluentRedditClient;
 import net.dean.jraw.http.oauth.InvalidScopeException;
 import net.dean.jraw.managers.AccountManager;
 import net.dean.jraw.managers.ModerationManager;
-import net.dean.jraw.models.Contribution;
-import net.dean.jraw.models.DistinguishedStatus;
-import net.dean.jraw.models.FlairTemplate;
-import net.dean.jraw.models.Submission;
-import net.dean.jraw.models.Thing;
-import net.dean.jraw.models.VoteDirection;
-
+import net.dean.jraw.models.*;
 import org.apache.commons.text.StringEscapeUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import me.ccrama.redditslide.ActionStates;
-import me.ccrama.redditslide.Activities.Album;
-import me.ccrama.redditslide.Activities.AlbumPager;
-import me.ccrama.redditslide.Activities.FullscreenVideo;
-import me.ccrama.redditslide.Activities.MainActivity;
-import me.ccrama.redditslide.Activities.MediaView;
-import me.ccrama.redditslide.Activities.ModQueue;
-import me.ccrama.redditslide.Activities.MultiredditOverview;
-import me.ccrama.redditslide.Activities.PostReadLater;
-import me.ccrama.redditslide.Activities.Profile;
-import me.ccrama.redditslide.Activities.Reauthenticate;
-import me.ccrama.redditslide.Activities.Search;
-import me.ccrama.redditslide.Activities.SubredditView;
-import me.ccrama.redditslide.Activities.Tumblr;
-import me.ccrama.redditslide.Activities.TumblrPager;
-import me.ccrama.redditslide.Adapters.CommentAdapter;
-import me.ccrama.redditslide.Adapters.SubmissionViewHolder;
-import me.ccrama.redditslide.Authentication;
-import me.ccrama.redditslide.CommentCacheAsync;
-import me.ccrama.redditslide.ContentType;
-import me.ccrama.redditslide.DataShare;
-import me.ccrama.redditslide.ForceTouch.PeekViewActivity;
-import me.ccrama.redditslide.Fragments.SubmissionsView;
-import me.ccrama.redditslide.HasSeen;
-import me.ccrama.redditslide.Hidden;
-import me.ccrama.redditslide.LastComments;
-import me.ccrama.redditslide.OfflineSubreddit;
-import me.ccrama.redditslide.OpenRedditLink;
-import me.ccrama.redditslide.PostMatch;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.ReadLater;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.SettingValues;
-import me.ccrama.redditslide.SubmissionCache;
-import me.ccrama.redditslide.UserSubscriptions;
-import me.ccrama.redditslide.Views.AnimateHelper;
-import me.ccrama.redditslide.Views.CreateCardView;
-import me.ccrama.redditslide.Views.DoEditorActions;
-import me.ccrama.redditslide.Visuals.FontPreferences;
-import me.ccrama.redditslide.Visuals.Palette;
-import me.ccrama.redditslide.Vote;
-import me.ccrama.redditslide.util.GifUtils;
-import me.ccrama.redditslide.util.LinkUtil;
-import me.ccrama.redditslide.util.NetworkUtil;
-import me.ccrama.redditslide.util.OnSingleClickListener;
-import me.ccrama.redditslide.util.SubmissionParser;
+import java.util.*;
 
 /**
  * Created by ccrama on 9/19/2015.
@@ -287,8 +231,7 @@ public class PopulateSubmissionViewHolder {
                         Snackbar s = Snackbar.make(holder.itemView, R.string.go_online_view_content,
                                 Snackbar.LENGTH_SHORT);
                         View view = s.getView();
-                        TextView tv = view.findViewById(
-                                android.support.design.R.id.snackbar_text);
+                        TextView tv = view.findViewById(android.support.design.R.id.snackbar_text);
                         tv.setTextColor(Color.WHITE);
                         s.show();
                     }
@@ -392,7 +335,8 @@ public class PopulateSubmissionViewHolder {
                             .get("fallback_url")
                             .asText()).replace("&amp;", "&"));
                 } else {
-                    new OpenVRedditTask(contextActivity, submission.getSubredditName()).executeOnExecutor(
+                    new OpenVRedditTask(contextActivity,
+                            submission.getSubredditName()).executeOnExecutor(
                             AsyncTask.THREAD_POOL_EXECUTOR, submission.getUrl());
                     return;
 
@@ -866,8 +810,8 @@ public class PopulateSubmissionViewHolder {
                             Snackbar s = Snackbar.make(holder.itemView, "Added to read later!",
                                     Snackbar.LENGTH_SHORT);
                             View view = s.getView();
-                            TextView tv = view.findViewById(
-                                    android.support.design.R.id.snackbar_text);
+                            TextView tv =
+                                    view.findViewById(android.support.design.R.id.snackbar_text);
                             tv.setTextColor(Color.WHITE);
                             s.setAction(R.string.btn_undo, new View.OnClickListener() {
                                 @Override
@@ -883,7 +827,8 @@ public class PopulateSubmissionViewHolder {
                                 }
                             });
                             if (NetworkUtil.isConnected(mContext)) {
-                                new CommentCacheAsync(Arrays.asList(submission), mContext,
+                                new CommentCacheAsync(Collections.singletonList(submission),
+                                        mContext,
                                         CommentCacheAsync.SAVED_SUBMISSIONS,
                                         new boolean[]{true, true}).executeOnExecutor(
                                         AsyncTask.THREAD_POOL_EXECUTOR);
@@ -936,7 +881,8 @@ public class PopulateSubmissionViewHolder {
                                 mContext.getString(R.string.input_reason_for_report), null, true,
                                 new MaterialDialog.InputCallback() {
                                     @Override
-                                    public void onInput(MaterialDialog dialog, CharSequence input) {
+                                    public void onInput(@NonNull MaterialDialog dialog,
+                                                        CharSequence input) {
                                         reportReason = input.toString();
                                     }
                                 })
@@ -951,7 +897,8 @@ public class PopulateSubmissionViewHolder {
                                 .onNegative(null)
                                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                                     @Override
-                                    public void onClick(MaterialDialog dialog, DialogAction which) {
+                                    public void onClick(@NonNull MaterialDialog dialog,
+                                                        @NonNull DialogAction which) {
                                         new AsyncTask<Void, Void, Void>() {
                                             @Override
                                             protected Void doInBackground(Void... params) {
@@ -989,10 +936,12 @@ public class PopulateSubmissionViewHolder {
 
                         break;
                     case 8:
-                        if(SettingValues.shareLongLink){
-                            Reddit.defaultShareText(submission.getTitle(), "https://reddit.com" + submission.getPermalink(), mContext);
+                        if (SettingValues.shareLongLink) {
+                            Reddit.defaultShareText(submission.getTitle(),
+                                    "https://reddit.com" + submission.getPermalink(), mContext);
                         } else {
-                            Reddit.defaultShareText(submission.getTitle(), "https://redd.it/" + submission.getId(), mContext);
+                            Reddit.defaultShareText(submission.getTitle(),
+                                    "https://redd.it/" + submission.getId(), mContext);
                         }
                         break;
                     case 6: {
@@ -1162,7 +1111,7 @@ public class PopulateSubmissionViewHolder {
             @Override
             protected List<String> doInBackground(Void... params) {
                 try {
-                    List<String> categories = new ArrayList<String>(
+                    List<String> categories = new ArrayList<>(
                             new AccountManager(Authentication.reddit).getSavedCategories());
                     categories.add("New category");
                     return categories;
@@ -1193,7 +1142,7 @@ public class PopulateSubmissionViewHolder {
                                                         false, new MaterialDialog.InputCallback() {
                                                             @Override
                                                             public void onInput(
-                                                                    MaterialDialog dialog,
+                                                                    @NonNull MaterialDialog dialog,
                                                                     CharSequence input) {
 
                                                             }
@@ -1203,8 +1152,8 @@ public class PopulateSubmissionViewHolder {
                                                         new MaterialDialog.SingleButtonCallback() {
                                                             @Override
                                                             public void onClick(
-                                                                    MaterialDialog dialog,
-                                                                    DialogAction which) {
+                                                                    @NonNull MaterialDialog dialog,
+                                                                    @NonNull DialogAction which) {
                                                                 final String flair =
                                                                         dialog.getInputEditText()
                                                                                 .getText()
@@ -1625,7 +1574,8 @@ public class PopulateSubmissionViewHolder {
                         mContext.getString(R.string.mod_remove_template), false,
                         new MaterialDialog.InputCallback() {
                             @Override
-                            public void onInput(MaterialDialog dialog, CharSequence input) {
+                            public void onInput(@NonNull MaterialDialog dialog,
+                                                CharSequence input) {
                                 reason = input.toString();
                             }
                         })
@@ -1640,7 +1590,8 @@ public class PopulateSubmissionViewHolder {
                 })
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
-                    public void onClick(final MaterialDialog dialog, DialogAction which) {
+                    public void onClick(@NonNull final MaterialDialog dialog,
+                                        @NonNull DialogAction which) {
 
                         removeSubmissionReason(submission, mContext, posts, reason, holder,
                                 recyclerview);
@@ -1836,14 +1787,16 @@ public class PopulateSubmissionViewHolder {
                 .input(mContext.getString(R.string.mod_flair_hint), t.getText(), true,
                         new MaterialDialog.InputCallback() {
                             @Override
-                            public void onInput(MaterialDialog dialog, CharSequence input) {
+                            public void onInput(@NonNull MaterialDialog dialog,
+                                                CharSequence input) {
 
                             }
                         })
                 .positiveText(R.string.btn_set)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
-                    public void onClick(MaterialDialog dialog, DialogAction which) {
+                    public void onClick(@NonNull MaterialDialog dialog,
+                                        @NonNull DialogAction which) {
                         final String flair = dialog.getInputEditText().getText().toString();
                         setFlair(mContext, flair, submission, t, holder);
                     }
@@ -1921,7 +1874,7 @@ public class PopulateSubmissionViewHolder {
             s.append("\n");
             s.append(t);
         }
-        if(!full && c != null){
+        if (!full && c != null) {
             c.setSpan(new AbsoluteSizeSpan(textSizeI), 0, c.length(), 0);
             s.append("\n");
             s.append(c);
@@ -2322,8 +2275,7 @@ public class PopulateSubmissionViewHolder {
                         Snackbar s = Snackbar.make(holder.itemView, R.string.mod_approved,
                                 Snackbar.LENGTH_LONG);
                         View view = s.getView();
-                        TextView tv = view.findViewById(
-                                android.support.design.R.id.snackbar_text);
+                        TextView tv = view.findViewById(android.support.design.R.id.snackbar_text);
                         tv.setTextColor(Color.WHITE);
                         s.show();
                     } catch (Exception ignored) {
@@ -2744,15 +2696,25 @@ public class PopulateSubmissionViewHolder {
                 && submission.getDataNode().get("crosspost_parent_list") != null
                 && submission.getDataNode().get("crosspost_parent_list").get(0) != null)) {
             holder.itemView.findViewById(R.id.crosspost).setVisibility(View.VISIBLE);
-            ((TextView)holder.itemView.findViewById(R.id.crossinfo)).setText(SubmissionCache.getCrosspostLine(submission, mContext));
+            ((TextView) holder.itemView.findViewById(R.id.crossinfo)).setText(
+                    SubmissionCache.getCrosspostLine(submission, mContext));
             ((Reddit) mContext.getApplicationContext()).getImageLoader()
-                    .displayImage(submission.getDataNode().get("crosspost_parent_list").get(0).get("thumbnail").asText(), ((ImageView)holder.itemView.findViewById(R.id.crossthumb)));
-            holder.itemView.findViewById(R.id.crosspost).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    OpenRedditLink.openUrl(mContext, submission.getDataNode().get("crosspost_parent_list").get(0).get("permalink").asText(), true);
-                }
-            });
+                    .displayImage(submission.getDataNode()
+                            .get("crosspost_parent_list")
+                            .get(0)
+                            .get("thumbnail")
+                            .asText(), ((ImageView) holder.itemView.findViewById(R.id.crossthumb)));
+            holder.itemView.findViewById(R.id.crosspost)
+                    .setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            OpenRedditLink.openUrl(mContext, submission.getDataNode()
+                                    .get("crosspost_parent_list")
+                                    .get(0)
+                                    .get("permalink")
+                                    .asText(), true);
+                        }
+                    });
         }
 
 
@@ -3034,7 +2996,7 @@ public class PopulateSubmissionViewHolder {
                             ta.recycle();
 
                             BottomSheet.Builder b = new BottomSheet.Builder(mContext).title(
-                                            Html.fromHtml(submission.getTitle()));
+                                    Html.fromHtml(submission.getTitle()));
 
                             if (submission.isSelfPost()) {
                                 b.sheet(1, edit_drawable,
@@ -3070,8 +3032,8 @@ public class PopulateSubmissionViewHolder {
                                             final AlertDialogWrapper.Builder builder =
                                                     new AlertDialogWrapper.Builder(mContext);
 
-                                            final EditText e = dialoglayout.findViewById(
-                                                    R.id.entry);
+                                            final EditText e =
+                                                    dialoglayout.findViewById(R.id.entry);
                                             e.setText(StringEscapeUtils.unescapeHtml4(
                                                     submission.getSelftext()));
 
@@ -3255,7 +3217,7 @@ public class PopulateSubmissionViewHolder {
                                                                                         new MaterialDialog.InputCallback() {
                                                                                             @Override
                                                                                             public void onInput(
-                                                                                                    MaterialDialog dialog,
+                                                                                                    @NonNull MaterialDialog dialog,
                                                                                                     CharSequence input) {
 
                                                                                             }
@@ -3266,8 +3228,8 @@ public class PopulateSubmissionViewHolder {
                                                                                         new MaterialDialog.SingleButtonCallback() {
                                                                                             @Override
                                                                                             public void onClick(
-                                                                                                    MaterialDialog dialog,
-                                                                                                    DialogAction which) {
+                                                                                                    @NonNull MaterialDialog dialog,
+                                                                                                    @NonNull DialogAction which) {
                                                                                                 final String
                                                                                                         flair =
                                                                                                         dialog.getInputEditText()
@@ -3336,9 +3298,8 @@ public class PopulateSubmissionViewHolder {
                                                                                                                     s.getView();
                                                                                                             TextView
                                                                                                                     tv =
-                                                                                                                    view
-                                                                                                                            .findViewById(
-                                                                                                                                    android.support.design.R.id.snackbar_text);
+                                                                                                                    view.findViewById(
+                                                                                                                            android.support.design.R.id.snackbar_text);
                                                                                                             tv.setTextColor(
                                                                                                                     Color.WHITE);
                                                                                                             s.show();
@@ -3410,9 +3371,8 @@ public class PopulateSubmissionViewHolder {
                                                                                     View view =
                                                                                             s.getView();
                                                                                     TextView tv =
-                                                                                            view
-                                                                                                    .findViewById(
-                                                                                                            android.support.design.R.id.snackbar_text);
+                                                                                            view.findViewById(
+                                                                                                    android.support.design.R.id.snackbar_text);
                                                                                     tv.setTextColor(
                                                                                             Color.WHITE);
                                                                                     s.show();

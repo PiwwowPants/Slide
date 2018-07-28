@@ -14,7 +14,8 @@ import java.util.Locale;
 public class NavigationUtils {
     public static int getStatusBarHeight(Context context) {
         int result = 0;
-        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        int resourceId =
+                context.getResources().getIdentifier("status_bar_height", "dimen", "android");
 
         if (resourceId > 0) {
             result = context.getResources().getDimensionPixelSize(resourceId);
@@ -25,7 +26,8 @@ public class NavigationUtils {
 
     public static int getNavBarHeight(Context context) {
         int result = 0;
-        int resourceId = context.getResources().getIdentifier("navigation_bar_height", "dimen", "android");
+        int resourceId =
+                context.getResources().getIdentifier("navigation_bar_height", "dimen", "android");
         if (resourceId > 0) {
             result = context.getResources().getDimensionPixelSize(resourceId);
         } else if (hasNavBar(context)) {
@@ -40,17 +42,14 @@ public class NavigationUtils {
         boolean hasHomeKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_HOME);
 
         if (hasBackKey && hasHomeKey) {
-            if (Build.MANUFACTURER.toLowerCase(Locale.ENGLISH).contains("samsung") && !Build.MODEL.toLowerCase(Locale.ENGLISH).contains("nexus")) {
+            if (Build.MANUFACTURER.toLowerCase(Locale.ENGLISH).contains("samsung")
+                    && !Build.MODEL.toLowerCase(Locale.ENGLISH).contains("nexus")) {
                 return false;
             }
 
             Resources resources = context.getResources();
             int id = resources.getIdentifier("config_showNavigationBar", "bool", "android");
-            if (id > 0) {
-                return resources.getBoolean(id);
-            } else {
-                return false;
-            }
+            return id > 0 && resources.getBoolean(id);
         } else {
             return true;
         }

@@ -15,6 +15,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -31,28 +32,12 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
-
 import com.afollestad.materialdialogs.AlertDialogWrapper;
-
-import net.dean.jraw.managers.AccountManager;
-
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import me.ccrama.redditslide.Adapters.SubredditPostsRealm;
-import me.ccrama.redditslide.Authentication;
-import me.ccrama.redditslide.CaseInsensitiveArrayList;
-import me.ccrama.redditslide.ColorPreferences;
+import me.ccrama.redditslide.*;
 import me.ccrama.redditslide.Fragments.NewsView;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.SettingValues;
 import me.ccrama.redditslide.Synccit.MySynccitUpdateTask;
 import me.ccrama.redditslide.Synccit.SynccitRead;
-import me.ccrama.redditslide.UserSubscriptions;
 import me.ccrama.redditslide.Views.CatchStaggeredGridLayoutManager;
 import me.ccrama.redditslide.Views.PreCachingLayoutManager;
 import me.ccrama.redditslide.Views.ToggleSwipeViewPager;
@@ -60,6 +45,13 @@ import me.ccrama.redditslide.Visuals.Palette;
 import me.ccrama.redditslide.util.LogUtil;
 import me.ccrama.redditslide.util.NetworkStateReceiver;
 import me.ccrama.redditslide.util.NetworkUtil;
+import net.dean.jraw.managers.AccountManager;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class NewsActivity extends BaseActivity
         implements NetworkStateReceiver.NetworkStateReceiverListener {
@@ -133,8 +125,8 @@ public class NewsActivity extends BaseActivity
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[],
-            int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
         switch (requestCode) {
             case 1: {
                 // If request is cancelled, the result arrays are empty.

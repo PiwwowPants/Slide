@@ -4,37 +4,16 @@ package me.ccrama.redditslide.ImgurAlbum;
  * Created by carlo_000 on 5/3/2016.
  */
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-        "id",
-        "title",
-        "description",
-        "datetime",
-        "type",
-        "animated",
-        "width",
-        "height",
-        "size",
-        "views",
-        "bandwidth",
-        "vote",
-        "favorite",
-        "nsfw",
-        "section",
-        "account_url",
-        "account_id",
-        "in_gallery",
-        "link"
+        "id", "title", "description", "datetime", "type", "animated", "width", "height", "size",
+        "views", "bandwidth", "vote", "favorite", "nsfw", "section", "account_url", "account_id",
+        "in_gallery", "link"
 })
 public class SingleImage {
 
@@ -77,7 +56,7 @@ public class SingleImage {
     @JsonProperty("link")
     private String link;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<>();
+    private final Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
      * @return The id

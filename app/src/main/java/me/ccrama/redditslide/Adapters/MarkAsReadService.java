@@ -6,13 +6,11 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
-import net.dean.jraw.http.NetworkException;
-import net.dean.jraw.managers.InboxManager;
-
 import me.ccrama.redditslide.Authentication;
 import me.ccrama.redditslide.Notifications.CheckForMail;
 import me.ccrama.redditslide.util.NetworkUtil;
+import net.dean.jraw.http.NetworkException;
+import net.dean.jraw.managers.InboxManager;
 
 /**
  * Created by brent on 1/27/16.
@@ -25,11 +23,13 @@ public class MarkAsReadService extends IntentService {
         super("MarkReadService");
     }
 
-    public static PendingIntent getMarkAsReadIntent(int notificationId, Context context, String[] messageNames) {
+    public static PendingIntent getMarkAsReadIntent(int notificationId, Context context,
+                                                    String[] messageNames) {
         Intent intent = new Intent(context, MarkAsReadService.class);
         intent.putExtra(NOTIFICATION_ID, notificationId - 2);
         intent.putExtra(CheckForMail.MESSAGE_EXTRA, messageNames);
-        return PendingIntent.getService(context, notificationId, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        return PendingIntent.getService(context, notificationId, intent,
+                PendingIntent.FLAG_CANCEL_CURRENT);
     }
 
     @Override

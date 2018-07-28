@@ -22,11 +22,10 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
+import me.ccrama.redditslide.SettingValues;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import me.ccrama.redditslide.SettingValues;
 
 /**
  * Helper class for Custom Tabs.
@@ -44,13 +43,13 @@ public class CustomTabsHelper {
 
     private static String sPackageNameToUse;
 
-    private CustomTabsHelper() {}
+    private CustomTabsHelper() {
+    }
 
     /**
      * Goes through all apps that handle VIEW intents and have a warmup service. Picks
      * the one chosen by the user if there is one, otherwise makes a best effort to return a
      * valid package name.
-     *
      * This is <strong>not</strong> threadsafe.
      *
      * @param context {@link Context} to use for accessing {@link PackageManager}.
@@ -109,15 +108,15 @@ public class CustomTabsHelper {
 
     /**
      * Used to check whether there is a specialized handler for a given intent.
+     *
      * @param intent The intent to check with.
      * @return Whether there is a specialized handler for the given intent.
      */
     private static boolean hasSpecializedHandlerIntents(Context context, Intent intent) {
         try {
             PackageManager pm = context.getPackageManager();
-            List<ResolveInfo> handlers = pm.queryIntentActivities(
-                    intent,
-                    PackageManager.GET_RESOLVED_FILTER);
+            List<ResolveInfo> handlers =
+                    pm.queryIntentActivities(intent, PackageManager.GET_RESOLVED_FILTER);
             if (handlers == null || handlers.isEmpty()) {
                 return false;
             }

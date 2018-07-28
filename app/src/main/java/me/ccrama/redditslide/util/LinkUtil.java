@@ -2,11 +2,7 @@ package me.ccrama.redditslide.util;
 
 import android.app.Activity;
 import android.app.PendingIntent;
-import android.content.ActivityNotFoundException;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
-import android.content.Intent;
+import android.content.*;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -16,23 +12,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.customtabs.CustomTabsCallback;
-import android.support.customtabs.CustomTabsClient;
-import android.support.customtabs.CustomTabsIntent;
-import android.support.customtabs.CustomTabsServiceConnection;
-import android.support.customtabs.CustomTabsSession;
+import android.support.customtabs.*;
 import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.util.Log;
 import android.widget.Toast;
-
-import net.dean.jraw.models.Submission;
-
-import org.apache.commons.text.StringEscapeUtils;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-
 import me.ccrama.redditslide.Activities.Crosspost;
 import me.ccrama.redditslide.Activities.MakeExternal;
 import me.ccrama.redditslide.Activities.ReaderMode;
@@ -41,6 +25,11 @@ import me.ccrama.redditslide.R;
 import me.ccrama.redditslide.Reddit;
 import me.ccrama.redditslide.SettingValues;
 import me.ccrama.redditslide.SubmissionViews.PopulateSubmissionViewHolder;
+import net.dean.jraw.models.Submission;
+import org.apache.commons.text.StringEscapeUtils;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 public class LinkUtil {
 
@@ -224,7 +213,7 @@ public class LinkUtil {
      * Opens the {@code uri} externally or shows an application chooser if it is set to open in this
      * application
      *
-     * @param url     URL to open
+     * @param url URL to open
      */
     public static void openExternally(String url) {
         url = StringEscapeUtils.unescapeHtml4(Html.fromHtml(url).toString());

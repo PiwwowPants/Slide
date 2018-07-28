@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
-
 import me.ccrama.redditslide.R;
 import me.ccrama.redditslide.SwipeLayout.SwipeBackLayout;
 import me.ccrama.redditslide.SwipeLayout.Utils;
@@ -15,7 +14,7 @@ import me.ccrama.redditslide.SwipeLayout.Utils;
  * @author Yrom
  */
 public class SwipeBackActivityHelper {
-    private Activity mActivity;
+    private final Activity mActivity;
 
     private SwipeBackLayout mSwipeBackLayout;
 
@@ -27,8 +26,8 @@ public class SwipeBackActivityHelper {
     public void onActivityCreate() {
         mActivity.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         mActivity.getWindow().getDecorView().setBackgroundDrawable(null);
-        mSwipeBackLayout = (SwipeBackLayout) LayoutInflater.from(mActivity).inflate(
-                R.layout.swipeback_layout, null);
+        mSwipeBackLayout = (SwipeBackLayout) LayoutInflater.from(mActivity)
+                .inflate(R.layout.swipeback_layout, null);
         mSwipeBackLayout.addSwipeListener(new SwipeBackLayout.SwipeListener() {
             @Override
             public void onScrollStateChange(int state, float scrollPercent) {

@@ -23,7 +23,6 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.coremedia.iso.boxes.Container;
 import com.danikula.videocache.CacheListener;
@@ -32,28 +31,8 @@ import com.devbrackets.android.exomedia.listener.OnPreparedListener;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.googlecode.mp4parser.authoring.builder.DefaultMp4Builder;
-import com.googlecode.mp4parser.authoring.builder.Mp4Builder;
 import com.googlecode.mp4parser.authoring.container.mp4.MovieCreator;
 import com.googlecode.mp4parser.authoring.tracks.CroppedTrack;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.ref.WeakReference;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.BufferOverflowException;
-import java.nio.ByteBuffer;
-import java.nio.channels.WritableByteChannel;
-import java.text.DecimalFormat;
-import java.util.UUID;
-
 import me.ccrama.redditslide.Activities.MediaView;
 import me.ccrama.redditslide.Activities.Website;
 import me.ccrama.redditslide.Fragments.FolderChooserDialogCreate;
@@ -64,6 +43,16 @@ import me.ccrama.redditslide.Views.MediaVideoView;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.BufferOverflowException;
+import java.nio.ByteBuffer;
+import java.nio.channels.WritableByteChannel;
+import java.text.DecimalFormat;
+import java.util.UUID;
 
 /**
  * Created by carlo_000 on 1/29/2016.
@@ -226,9 +215,9 @@ public class GifUtils {
         private TextView size;
 
         public AsyncLoadGif(@NotNull Activity c, @NotNull MediaVideoView video,
-                @Nullable ProgressBar p, @Nullable View placeholder, @Nullable Runnable gifSave,
-                @NotNull boolean closeIfNull, @NotNull boolean hideControls, boolean autostart,
-                String subreddit) {
+                            @Nullable ProgressBar p, @Nullable View placeholder, @Nullable Runnable gifSave,
+                            boolean closeIfNull, boolean hideControls, boolean autostart,
+                            String subreddit) {
             this.c = c;
             this.subreddit = subreddit;
             this.video = video;
@@ -241,9 +230,9 @@ public class GifUtils {
         }
 
         public AsyncLoadGif(@NotNull Activity c, @NotNull MediaVideoView video,
-                @Nullable ProgressBar p, @Nullable View placeholder, @Nullable Runnable gifSave,
-                @NotNull boolean closeIfNull, @NotNull boolean hideControls, boolean autostart,
-                TextView size, String subreddit) {
+                            @Nullable ProgressBar p, @Nullable View placeholder, @Nullable Runnable gifSave,
+                            boolean closeIfNull, boolean hideControls, boolean autostart,
+                            TextView size, String subreddit) {
             this.c = c;
             this.video = video;
             this.subreddit = subreddit;
@@ -280,8 +269,8 @@ public class GifUtils {
         }
 
         public AsyncLoadGif(@NotNull Activity c, @NotNull MediaVideoView video,
-                @Nullable ProgressBar p, @Nullable View placeholder, @NotNull boolean closeIfNull,
-                @NotNull boolean hideControls, boolean autostart, String subreddit) {
+                            @Nullable ProgressBar p, @Nullable View placeholder, boolean closeIfNull,
+                            boolean hideControls, boolean autostart, String subreddit) {
             this.c = c;
             this.video = video;
             this.subreddit = subreddit;
@@ -355,7 +344,7 @@ public class GifUtils {
             return VideoType.OTHER;
         }
 
-        OkHttpClient client = Reddit.client;
+        final OkHttpClient client = Reddit.client;
 
         public void loadGfycat(String name, Gson gson) throws Exception {
             showProgressBar(c, progressBar, false);
@@ -695,7 +684,7 @@ public class GifUtils {
         }
 
         public void writeGif(final URL url, final ProgressBar progressBar, final Activity c,
-                final String subreddit) throws Exception {
+                             final String subreddit) {
             if (size != null && c != null && !getProxy().isCached(url.toString())) {
                 getRemoteFileSize(url.toString(), client, size, c);
             }
@@ -782,7 +771,7 @@ public class GifUtils {
         }
 
         public void WriteGifMuxed(final URL url, final ProgressBar progressBar, final Activity c,
-                final String subreddit) throws Exception {
+                                  final String subreddit) {
             if (size != null && c != null && !getProxy().isCached(url.toString())) {
                 getRemoteFileSize(url.toString(), client, size, c);
             }
@@ -1101,7 +1090,7 @@ public class GifUtils {
         }
 
         @Override
-        public int write(ByteBuffer inputBuffer) throws IOException {
+        public int write(ByteBuffer inputBuffer) {
             int inputBytes = inputBuffer.remaining();
 
             if (inputBytes > byteBuffer.remaining()) {
@@ -1124,7 +1113,7 @@ public class GifUtils {
         }
 
         @Override
-        public void close() throws IOException {
+        public void close() {
             dumpToFile();
             isOpen = false;
         }
@@ -1147,7 +1136,7 @@ public class GifUtils {
     public static final int    SAMPLING_RATE                   = 48000;
     public static final int    BUFFER_SIZE                     = 48000;
     public static final int    CODEC_TIMEOUT_IN_MS             = 5000;
-    String   LOGTAG  = "CONVERT AUDIO";
+    final String LOGTAG = "CONVERT AUDIO";
     Runnable convert = new Runnable() {
         @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
         @Override

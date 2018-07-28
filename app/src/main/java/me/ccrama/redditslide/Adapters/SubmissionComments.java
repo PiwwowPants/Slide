@@ -6,31 +6,20 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.TextView;
-
 import com.fasterxml.jackson.databind.JsonNode;
-
+import me.ccrama.redditslide.Authentication;
+import me.ccrama.redditslide.Fragments.CommentPage;
+import me.ccrama.redditslide.LastComments;
+import me.ccrama.redditslide.util.NetworkUtil;
 import net.dean.jraw.http.RestResponse;
 import net.dean.jraw.http.SubmissionRequest;
-import net.dean.jraw.models.Comment;
 import net.dean.jraw.models.CommentNode;
 import net.dean.jraw.models.CommentSort;
 import net.dean.jraw.models.Submission;
 import net.dean.jraw.models.meta.SubmissionSerializer;
 import net.dean.jraw.util.JrawUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TreeMap;
-
-import me.ccrama.redditslide.Authentication;
-import me.ccrama.redditslide.Fragments.CommentPage;
-import me.ccrama.redditslide.LastComments;
-import me.ccrama.redditslide.util.LogUtil;
-import me.ccrama.redditslide.util.NetworkUtil;
+import java.util.*;
 
 /**
  * Created by ccrama on 9/17/2015.
@@ -51,7 +40,8 @@ public class SubmissionComments {
     public boolean online = true;
     int contextNumber = 5;
 
-    public SubmissionComments(String fullName, CommentPage commentPage, SwipeRefreshLayout layout, Submission s) {
+    public SubmissionComments(String fullName, CommentPage commentPage, SwipeRefreshLayout layout,
+                              Submission s) {
         this.fullName = fullName;
         this.page = commentPage;
         online = NetworkUtil.isConnected(page.getActivity());
@@ -111,14 +101,16 @@ public class SubmissionComments {
         this.refreshLayout = layout;
     }
 
-    public SubmissionComments(String fullName, CommentPage commentPage, SwipeRefreshLayout layout, String context) {
+    public SubmissionComments(String fullName, CommentPage commentPage, SwipeRefreshLayout layout,
+                              String context) {
         this.fullName = fullName;
         this.page = commentPage;
         this.context = context;
         this.refreshLayout = layout;
     }
 
-    public SubmissionComments(String fullName, CommentPage commentPage, SwipeRefreshLayout layout, String context, int contextNumber) {
+    public SubmissionComments(String fullName, CommentPage commentPage, SwipeRefreshLayout layout,
+                              String context, int contextNumber) {
         this.fullName = fullName;
         this.page = commentPage;
         this.context = context;
@@ -160,7 +152,7 @@ public class SubmissionComments {
         if (context == null || context.isEmpty()) {
             Snackbar s = Snackbar.make(page.rv, "Comment submitted", Snackbar.LENGTH_SHORT);
             View view = s.getView();
-            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+            TextView tv = view.findViewById(android.support.design.R.id.snackbar_text);
             tv.setTextColor(Color.WHITE);
             s.show();
         }
@@ -176,14 +168,15 @@ public class SubmissionComments {
 
     public JsonNode getSubmissionNode(SubmissionRequest request) {
         Map<String, String> args = new HashMap<>();
-        if (request.getDepth() != null)
-            args.put("depth", Integer.toString(request.getDepth()));
-        if (request.getContext() != null)
+        if (request.getDepth() != null) args.put("depth", Integer.toString(request.getDepth()));
+        if (request.getContext() != null) {
             args.put("context", Integer.toString(request.getContext()));
-        if (request.getLimit() != null)
-            args.put("limit", Integer.toString(request.getLimit()));
-        if (request.getFocus() != null && request.getFocus().length() >= 3 && !JrawUtils.isFullname(request.getFocus()))
+        }
+        if (request.getLimit() != null) args.put("limit", Integer.toString(request.getLimit()));
+        if (request.getFocus() != null && request.getFocus().length() >= 3 && !JrawUtils.isFullname(
+                request.getFocus())) {
             args.put("comment", request.getFocus());
+        }
         args.put("feature", "link_preview");
         args.put("sr_detail", "true");
         args.put("expand_srs", "true");
@@ -193,8 +186,10 @@ public class SubmissionComments {
 
         CommentSort sort = request.getSort();
         if (sort == null)
-            // Reddit sorts by confidence by default
+        // Reddit sorts by confidence by default
+        {
             sort = CommentSort.CONFIDENCE;
+        }
         args.put("sort", sort.name().toLowerCase(Locale.ENGLISH));
 
         RestResponse response = Authentication.reddit.execute(Authentication.reddit.request()
@@ -207,7 +202,8 @@ public class SubmissionComments {
     }
 
     public void reloadSubmission(CommentAdapter commentAdapter) {
-        commentAdapter.submission = Authentication.reddit.getSubmission(submission.getFullName().substring(3, submission.getFullName().length()));
+        commentAdapter.submission = Authentication.reddit.getSubmission(
+                submission.getFullName().substring(3, submission.getFullName().length()));
     }
 
     public boolean forceSorting = false;
@@ -224,8 +220,12 @@ public class SubmissionComments {
             if (page.isVisible() && submission != null) {
                 refreshLayout.setRefreshing(false);
                 page.doRefresh(false);
-                if ((submission.isArchived() && !page.archived) || (submission.isLocked() && !page.locked) || (submission.getDataNode().get("contest_mode").asBoolean() && !page.contest))
+                if ((submission.isArchived() && !page.archived) || (submission.isLocked()
+                        && !page.locked) || (submission.getDataNode()
+                        .get("contest_mode")
+                        .asBoolean() && !page.contest)) {
                     page.doTopBarNotify(submission, adapter);
+                }
 
                 page.doData(reset);
                 LastComments.setComments(submission);
@@ -240,7 +240,9 @@ public class SubmissionComments {
                 builder = new SubmissionRequest.Builder(fullName).sort(defaultSorting);
             } else {
                 single = true;
-                builder = new SubmissionRequest.Builder(fullName).sort(defaultSorting).focus(context).context(contextNumber);
+                builder = new SubmissionRequest.Builder(fullName).sort(defaultSorting)
+                        .focus(context)
+                        .context(contextNumber);
             }
             try {
 
@@ -257,7 +259,7 @@ public class SubmissionComments {
                 String currentOP = "";
 
                 for (CommentNode n : baseComment.walkTree()) {
-                    if(n.getDepth() == 1){
+                    if (n.getDepth() == 1) {
                         currentOP = n.getComment().getAuthor();
                     }
                     commentOPs.put(n.getComment().getId(), currentOP);

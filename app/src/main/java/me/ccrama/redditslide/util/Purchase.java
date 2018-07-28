@@ -33,7 +33,8 @@ public class Purchase {
     private String mToken;
     private String mSignature;
 
-    public Purchase(String itemType, String jsonPurchaseInfo, String signature) throws JSONException {
+    public Purchase(String itemType, String jsonPurchaseInfo, String signature)
+            throws JSONException {
         mItemType = itemType;
         mOriginalJson = jsonPurchaseInfo;
         JSONObject o = new JSONObject(mOriginalJson);

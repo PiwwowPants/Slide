@@ -26,10 +26,9 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import me.ccrama.redditslide.R;
 
 import java.util.ArrayList;
-
-import me.ccrama.redditslide.R;
 
 
 /**
@@ -48,8 +47,10 @@ public class ToolbarColorizeHelper {
      * @param toolbarIconsColor the target color of toolbar icons
      * @param activity          reference to activity needed to register observers
      */
-    public static void colorizeToolbar(Toolbar toolbarView, int toolbarIconsColor, Activity activity) {
-        final PorterDuffColorFilter colorFilter = new PorterDuffColorFilter(toolbarIconsColor, PorterDuff.Mode.MULTIPLY);
+    public static void colorizeToolbar(Toolbar toolbarView, int toolbarIconsColor,
+                                       Activity activity) {
+        final PorterDuffColorFilter colorFilter =
+                new PorterDuffColorFilter(toolbarIconsColor, PorterDuff.Mode.MULTIPLY);
 
         for (int i = 0; i < toolbarView.getChildCount(); i++) {
             final View v = toolbarView.getChildAt(i);
@@ -68,8 +69,11 @@ public class ToolbarColorizeHelper {
                     //Colorize the ActionViews -> all icons that are NOT: back button | overflow menu
                     final View innerView = ((ActionMenuView) v).getChildAt(j);
                     if (innerView instanceof ActionMenuItemView) {
-                        for (int k = 0; k < ((ActionMenuItemView) innerView).getCompoundDrawables().length; k++) {
-                            if (((ActionMenuItemView) innerView).getCompoundDrawables()[k] != null) {
+                        for (int k = 0;
+                             k < ((ActionMenuItemView) innerView).getCompoundDrawables().length;
+                             k++) {
+                            if (((ActionMenuItemView) innerView).getCompoundDrawables()[k]
+                                    != null) {
                                 final int finalK = k;
 
                                 //Important to set the color filter in seperate thread, by adding it to the message queue
@@ -77,7 +81,8 @@ public class ToolbarColorizeHelper {
                                 innerView.post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        ((ActionMenuItemView) innerView).getCompoundDrawables()[finalK].setColorFilter(colorFilter);
+                                        ((ActionMenuItemView) innerView).getCompoundDrawables()[finalK]
+                                                .setColorFilter(colorFilter);
                                     }
                                 });
                             }
@@ -102,8 +107,10 @@ public class ToolbarColorizeHelper {
      * @param activity
      * @param colorFilter
      */
-    private static void setOverflowButtonColor(final Activity activity, final PorterDuffColorFilter colorFilter) {
-        final String overflowDescription = activity.getString(R.string.abc_action_menu_overflow_description);
+    private static void setOverflowButtonColor(final Activity activity,
+                                               final PorterDuffColorFilter colorFilter) {
+        final String overflowDescription =
+                activity.getString(R.string.abc_action_menu_overflow_description);
         final ViewGroup decorView = (ViewGroup) activity.getWindow().getDecorView();
         final ViewTreeObserver viewTreeObserver = decorView.getViewTreeObserver();
         viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -122,7 +129,8 @@ public class ToolbarColorizeHelper {
         });
     }
 
-    private static void removeOnGlobalLayoutListener(View v, ViewTreeObserver.OnGlobalLayoutListener listener) {
+    private static void removeOnGlobalLayoutListener(View v,
+                                                     ViewTreeObserver.OnGlobalLayoutListener listener) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
             v.getViewTreeObserver().removeGlobalOnLayoutListener(listener);
         } else {

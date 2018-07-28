@@ -9,7 +9,6 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.widget.Toast;
-
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.nostra13.universalimageloader.cache.disc.DiskCache;
@@ -21,7 +20,9 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
-
+import me.ccrama.redditslide.Activities.SendMessage;
+import me.ccrama.redditslide.util.LogUtil;
+import me.ccrama.redditslide.util.OkHttpImageDownloader;
 import net.dean.jraw.http.HttpRequest;
 import net.dean.jraw.http.MediaTypes;
 import net.dean.jraw.http.RestResponse;
@@ -34,10 +35,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import me.ccrama.redditslide.Activities.SendMessage;
-import me.ccrama.redditslide.util.LogUtil;
-import me.ccrama.redditslide.util.OkHttpImageDownloader;
 
 /**
  * Created by Carlos on 4/15/2017.
@@ -65,18 +62,21 @@ public class ImageFlairs {
                                     + subreddit
                                     + "'s stylesheet.")
                             .setPositiveButton(R.string.btn_ok, null);
-                    if(Authentication.isLoggedIn){
-                        b.setNeutralButton("Report no flairs", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Toast.makeText(context, "Not all subreddits can be parsed, but send a message to SlideBot and hopefully we can add support for this subreddit :)\n\nPlease, only send one report.", Toast.LENGTH_LONG);
-                                Intent i = new Intent(context, SendMessage.class);
-                                i.putExtra(SendMessage.EXTRA_NAME, "slidebot");
-                                i.putExtra(SendMessage.EXTRA_MESSAGE, "/r/" + subreddit);
-                                i.putExtra(SendMessage.EXTRA_REPLY, "Subreddit flair");
-                                context.startActivity(i);
-                            }
-                        });
+                    if (Authentication.isLoggedIn) {
+                        b.setNeutralButton("Report no flairs",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Toast.makeText(context,
+                                                "Not all subreddits can be parsed, but send a message to SlideBot and hopefully we can add support for this subreddit :)\n\nPlease, only send one report.",
+                                                Toast.LENGTH_LONG);
+                                        Intent i = new Intent(context, SendMessage.class);
+                                        i.putExtra(SendMessage.EXTRA_NAME, "slidebot");
+                                        i.putExtra(SendMessage.EXTRA_MESSAGE, "/r/" + subreddit);
+                                        i.putExtra(SendMessage.EXTRA_REPLY, "Subreddit flair");
+                                        context.startActivity(i);
+                                    }
+                                });
                     }
 
                     d = b.show();
@@ -96,8 +96,8 @@ public class ImageFlairs {
     }
 
     static class StylesheetFetchTask extends AsyncTask<Void, Void, FlairStylesheet> {
-        String  subreddit;
-        Context context;
+        final String subreddit;
+        final Context context;
         Dialog  d;
 
         StylesheetFetchTask(String subreddit, Context context) {
@@ -152,8 +152,11 @@ public class ImageFlairs {
     }
 
     public static class CropTransformation {
-        private int width, height, x, y;
-        private String id;
+        private final int width;
+        private final int height;
+        private final int x;
+        private final int y;
+        private final String id;
 
         public CropTransformation(Context context, String id, int width, int height, int x, int y) {
             super();
@@ -164,7 +167,7 @@ public class ImageFlairs {
             this.y = y;
         }
 
-        public Bitmap transform(Bitmap bitmap, boolean isPercentage) throws Exception {
+        public Bitmap transform(Bitmap bitmap, boolean isPercentage) {
             int nX, nY;
 
             if (isPercentage) {
@@ -186,8 +189,7 @@ public class ImageFlairs {
                     + nHeight
                     + " location: "
                     + nX
-                    + ":"
-                    + nY + " and bit is " + bitmap.getWidth() + ":" + bitmap.getHeight());
+                    + ":" + nY + " and bit is " + bitmap.getWidth() + ":" + bitmap.getHeight());
 
             Bitmap b = Bitmap.createBitmap(bitmap, nX, nY, nWidth, nHeight);
             return b;
@@ -197,7 +199,7 @@ public class ImageFlairs {
 
 
     static class FlairStylesheet {
-        String stylesheetString;
+        final String stylesheetString;
         Dimensions defaultDimension = new Dimensions();
         Location   defaultLocation  = new Location();
         String     defaultURL       = "";
@@ -257,7 +259,8 @@ public class ImageFlairs {
             LogUtil.v("Base is " + baseFlairDef);
             // Attempts to find default dimension, offset and image URL
             defaultDimension = getBackgroundSize(baseFlairDef);
-            LogUtil.v("Default dimens are " + defaultDimension.width + ":" + defaultDimension.height);
+            LogUtil.v(
+                    "Default dimens are " + defaultDimension.width + ":" + defaultDimension.height);
             defaultLocation = getBackgroundPosition(baseFlairDef);
             defaultURL = getBackgroundURL(baseFlairDef);
             count = 0;
@@ -275,16 +278,15 @@ public class ImageFlairs {
                     "(?<! )\\." + className + "(?!-|\\[|[A-Za-z0-9_.])([^\\{]*)*\\{(.+?)\\}");
             Matcher matches = propertyDefinition.matcher(cssDefinitionString);
 
-            String properties = null;
+            StringBuilder properties = null;
 
             while (matches.find()) {
-                if (properties == null) properties = "";
-                properties = matches.group(2)
-                        + ";"
-                        + properties;   // append properties to simulate property overriding
+                if (properties == null) properties = new StringBuilder();
+                properties.insert(0, matches.group(2)
+                        + ";");   // append properties to simulate property overriding
             }
 
-            return properties;
+            return properties.toString();
         }
 
         /**
@@ -295,7 +297,8 @@ public class ImageFlairs {
          * @return
          */
         String getProperty(String classDefinitionsString, String property) {
-            Pattern propertyDefinition = Pattern.compile("(?<!-)" + property + "\\s*:\\s*(.+?)(;|$)");
+            Pattern propertyDefinition =
+                    Pattern.compile("(?<!-)" + property + "\\s*:\\s*(.+?)(;|$)");
             Matcher matches = propertyDefinition.matcher(classDefinitionsString);
 
             if (matches.find()) {
@@ -307,7 +310,8 @@ public class ImageFlairs {
 
         //Attempts to get a real integer value instead of "auto", if possible
         String getPropertyTryNoAuto(String classDefinitionsString, String property) {
-            Pattern propertyDefinition = Pattern.compile("(?<!-)" + property + "\\s*:\\s*(.+?)(;|$)");
+            Pattern propertyDefinition =
+                    Pattern.compile("(?<!-)" + property + "\\s*:\\s*(.+?)(;|$)");
             Matcher matches = propertyDefinition.matcher(classDefinitionsString);
 
             String defaultString;
@@ -317,7 +321,8 @@ public class ImageFlairs {
                 return null;
             }
             LogUtil.v("Has auto");
-            while((defaultString.contains("auto")||(!defaultString.contains("%") || !defaultString.contains("px"))) && matches.find()){
+            while ((defaultString.contains("auto") || (!defaultString.contains("%")
+                    || !defaultString.contains("px"))) && matches.find()) {
                 defaultString = matches.group(1);
             }
             LogUtil.v("Returning " + defaultString);
@@ -347,9 +352,9 @@ public class ImageFlairs {
             String backgroundProperty = getPropertyBackgroundUrl(classDefinitionString);
             if (backgroundProperty != null) {
                 // check "background"
-                    String url = backgroundProperty;
-                    if (url.startsWith("//")) url = "https:" + url;
-                    return url;
+                String url = backgroundProperty;
+                if (url.startsWith("//")) url = "https:" + url;
+                return url;
             }
             // either backgroundProperty is null or url cannot be found
             String backgroundImageProperty = getProperty(classDefinitionString, "background-image");
@@ -487,8 +492,7 @@ public class ImageFlairs {
                 } else {
                     matches = positionDefinitionPercentage.matcher(backgroundPositionProperty);
                     if (matches.find()) {
-                        return new Location(
-                                Integer.parseInt(matches.group(1)),
+                        return new Location(Integer.parseInt(matches.group(1)),
                                 Integer.parseInt(matches.group(3)), true);
                     }
                 }
@@ -499,9 +503,8 @@ public class ImageFlairs {
         }
 
         Dimensions getBackgroundOffset(String classDefinitionString) {
-            Pattern positionDefinitionPx =
-                    Pattern.compile("([+-]?\\d+|0)\\/+([+-]?\\d+|0)(px|)");
-           String backgroundPositionProperty = getProperty(classDefinitionString, "background");
+            Pattern positionDefinitionPx = Pattern.compile("([+-]?\\d+|0)\\/+([+-]?\\d+|0)(px|)");
+            String backgroundPositionProperty = getProperty(classDefinitionString, "background");
             if (backgroundPositionProperty == null) {
                 return new Dimensions();
             }
@@ -523,7 +526,6 @@ public class ImageFlairs {
         /**
          * Request a flair by flair id. `.into` can be chained onto this method call.
          *
-         * @param id
          * @param context
          * @return
          */
@@ -552,14 +554,14 @@ public class ImageFlairs {
                 backScaling = new Dimensions();
                 offset = new Dimensions();
             }
-            if ((!backScaling.missing && !backScaling.scale) || (!offset.missing && !offset.scale)) {
+            if ((!backScaling.missing && !backScaling.scale) || (!offset.missing
+                    && !offset.scale)) {
                 Bitmap loaded = getFlairImageLoader(context).loadImageSync(filename,
                         new ImageSize(backScaling.width, backScaling.height));
                 if (loaded != null) {
                     Bitmap b;
-                    if(backScaling.missing || backScaling.width < offset.width) {
-                        b = Bitmap.createScaledBitmap(loaded, offset.width, offset.height,
-                                false);
+                    if (backScaling.missing || backScaling.width < offset.width) {
+                        b = Bitmap.createScaledBitmap(loaded, offset.width, offset.height, false);
                     } else {
                         b = Bitmap.createScaledBitmap(loaded, backScaling.width, backScaling.height,
                                 false);
@@ -623,7 +625,8 @@ public class ImageFlairs {
                     }
                     try {
                         getFlairImageLoader(context).getDiskCache()
-                                .save(sub.toLowerCase(Locale.ENGLISH) + ":" + id.toLowerCase(Locale.ENGLISH), newBit);
+                                .save(sub.toLowerCase(Locale.ENGLISH) + ":" + id.toLowerCase(
+                                        Locale.ENGLISH), newBit);
                         count += 1;
                     } catch (Exception e) {
                         e.printStackTrace();

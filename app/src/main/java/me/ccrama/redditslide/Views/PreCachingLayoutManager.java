@@ -3,7 +3,6 @@ package me.ccrama.redditslide.Views;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-
 import me.ccrama.redditslide.util.LogUtil;
 
 /**
@@ -19,6 +18,7 @@ public class PreCachingLayoutManager extends LinearLayoutManager {
 
         this.context = context;
     }
+
     @Override
     public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
         try {
@@ -27,6 +27,7 @@ public class PreCachingLayoutManager extends LinearLayoutManager {
             LogUtil.v("Met a IOOBE in RecyclerView");
         }
     }
+
     public PreCachingLayoutManager(Context context, int extraLayoutSpace) {
         super(context);
         this.context = context;

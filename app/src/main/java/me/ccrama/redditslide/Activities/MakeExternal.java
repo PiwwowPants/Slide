@@ -3,14 +3,13 @@ package me.ccrama.redditslide.Activities;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import me.ccrama.redditslide.PostMatch;
+import me.ccrama.redditslide.Reddit;
+import me.ccrama.redditslide.SettingValues;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-
-import me.ccrama.redditslide.PostMatch;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.SettingValues;
 
 /**
  * Created by ccrama on 9/28/2015.
@@ -21,7 +20,7 @@ public class MakeExternal extends Activity {
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         String url = getIntent().getStringExtra("url");
-        if(url != null){
+        if (url != null) {
             try {
                 URL u = new URL(url);
 
@@ -42,7 +41,8 @@ public class MakeExternal extends Activity {
                 e.putString(SettingValues.PREF_ALWAYS_EXTERNAL, Reddit.arrayToString(domains));
                 e.apply();
                 PostMatch.externalDomain = null;
-                SettingValues.alwaysExternal = SettingValues.prefs.getString(SettingValues.PREF_ALWAYS_EXTERNAL, "");
+                SettingValues.alwaysExternal =
+                        SettingValues.prefs.getString(SettingValues.PREF_ALWAYS_EXTERNAL, "");
 
 
             } catch (MalformedURLException e) {

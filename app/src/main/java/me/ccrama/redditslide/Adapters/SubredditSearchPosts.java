@@ -31,7 +31,7 @@ public class SubredditSearchPosts extends GeneralPosts {
     public  SwipeRefreshLayout    refreshLayout;
     private ContributionAdapter   adapter;
 
-    public Activity parent;
+    public final Activity parent;
 
     public SubredditSearchPosts(String subreddit, String term, Activity parent) {
         if (subreddit != null) {
@@ -83,13 +83,19 @@ public class SubredditSearchPosts extends GeneralPosts {
         public void onPostExecute(ArrayList<Contribution> submissions) {
             loading = false;
 
-            if(error != null){
-                if(error instanceof NetworkException){
-                    NetworkException e = (NetworkException)error;
-                    Toast.makeText(adapter.mContext,"Loading failed, " + e.getResponse().getStatusCode() + ": " + ((NetworkException) error).getResponse().getStatusMessage(), Toast.LENGTH_LONG).show();
+            if (error != null) {
+                if (error instanceof NetworkException) {
+                    NetworkException e = (NetworkException) error;
+                    Toast.makeText(adapter.mContext, "Loading failed, "
+                                    + e.getResponse().getStatusCode()
+                                    + ": "
+                                    + ((NetworkException) error).getResponse().getStatusMessage(),
+                            Toast.LENGTH_LONG).show();
                 }
-                if(error.getCause() instanceof UnknownHostException){
-                    Toast.makeText(adapter.mContext,"Loading failed, please check your internet connection", Toast.LENGTH_LONG).show();
+                if (error.getCause() instanceof UnknownHostException) {
+                    Toast.makeText(adapter.mContext,
+                            "Loading failed, please check your internet connection",
+                            Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -136,7 +142,8 @@ public class SubredditSearchPosts extends GeneralPosts {
                 nomore = true;
                 adapter.notifyDataSetChanged();
                 if (reset) {
-                    Toast.makeText(adapter.mContext, R.string.no_posts_found, Toast.LENGTH_LONG).show();
+                    Toast.makeText(adapter.mContext, R.string.no_posts_found, Toast.LENGTH_LONG)
+                            .show();
                 }
             } else if (!nomore) {
                 // error
@@ -179,17 +186,16 @@ public class SubredditSearchPosts extends GeneralPosts {
                     nomore = true;
                     return newSubmissions;
                 }
-                for (Submission s : paginator.next()) {
-                    newSubmissions.add(s);
-                }
+                newSubmissions.addAll(paginator.next());
 
                 return newSubmissions;
             } catch (Exception e) {
-              error = e;
+                error = e;
                 e.printStackTrace();
                 return null;
             }
         }
+
         Exception error;
 
     }

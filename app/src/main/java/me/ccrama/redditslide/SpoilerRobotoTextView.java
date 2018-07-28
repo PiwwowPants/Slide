@@ -42,8 +42,8 @@ import me.ccrama.redditslide.handler.TextViewLinkHandler;
 import me.ccrama.redditslide.util.GifUtils;
 import me.ccrama.redditslide.util.LinkUtil;
 import me.ccrama.redditslide.util.LogUtil;
-import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -55,9 +55,9 @@ import java.util.regex.Pattern;
  * Created by carlo_000 on 1/11/2016.
  */
 public class SpoilerRobotoTextView extends RobotoTextView implements ClickableText {
-    private              List<CharacterStyle> storedSpoilerSpans  = new ArrayList<>();
-    private              List<Integer>        storedSpoilerStarts = new ArrayList<>();
-    private              List<Integer>        storedSpoilerEnds   = new ArrayList<>();
+    private final List<CharacterStyle> storedSpoilerSpans = new ArrayList<>();
+    private final List<Integer> storedSpoilerStarts = new ArrayList<>();
+    private final List<Integer> storedSpoilerEnds = new ArrayList<>();
     private static final Pattern              htmlSpoilerPattern  =
             Pattern.compile("<a href=\"[#/](?:spoiler|sp|s)\">([^<]*)</a>");
     private static final Pattern nativeSpoilerPattern =
@@ -610,14 +610,14 @@ public class SpoilerRobotoTextView extends RobotoTextView implements ClickableTe
     }
 
     private void openVReddit(String url, String subreddit, Activity activity) {
-        new OpenVRedditTask(activity, subreddit).executeOnExecutor(
-                AsyncTask.THREAD_POOL_EXECUTOR, url);
+        new OpenVRedditTask(activity, subreddit).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+                url);
     }
 
 
     private void openGif(String url, String subreddit, Activity activity) {
         if (SettingValues.gif) {
-            if(GifUtils.AsyncLoadGif.getVideoType(url).shouldLoadPreview()){
+            if (GifUtils.AsyncLoadGif.getVideoType(url).shouldLoadPreview()) {
                 LinkUtil.openUrl(url, Palette.getColor(subreddit), activity);
             } else {
                 Intent myIntent = new Intent(getContext(), MediaView.class);

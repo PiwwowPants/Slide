@@ -2,15 +2,11 @@ package me.ccrama.redditslide.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import net.dean.jraw.models.Submission;
-
-import java.util.List;
-
 import me.ccrama.redditslide.Activities.CommentsScreen;
 import me.ccrama.redditslide.Activities.Shadowbox;
 import me.ccrama.redditslide.R;
@@ -18,6 +14,9 @@ import me.ccrama.redditslide.SpoilerRobotoTextView;
 import me.ccrama.redditslide.SubmissionViews.PopulateShadowboxInfo;
 import me.ccrama.redditslide.Views.CommentOverflow;
 import me.ccrama.redditslide.util.SubmissionParser;
+import net.dean.jraw.models.Submission;
+
+import java.util.List;
 
 
 /**
@@ -30,10 +29,10 @@ public class SelftextFull extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ViewGroup rootView = (ViewGroup) inflater.inflate(
-                R.layout.submission_textcard, container, false);
+        ViewGroup rootView =
+                (ViewGroup) inflater.inflate(R.layout.submission_textcard, container, false);
 
         PopulateShadowboxInfo.doActionbar(s, rootView, getActivity(), true);
 
@@ -83,11 +82,12 @@ public class SelftextFull extends Fragment {
 
         int startIndex = 0;
         if (!blocks.get(0).startsWith("<table>") && !blocks.get(0).startsWith("<pre>")) {
-            ((SpoilerRobotoTextView) base.findViewById(R.id.firstTextView)).setTextHtml(blocks.get(0), subredditName);
+            ((SpoilerRobotoTextView) base.findViewById(R.id.firstTextView)).setTextHtml(
+                    blocks.get(0), subredditName);
             startIndex = 1;
         }
 
-        CommentOverflow overflow = (CommentOverflow) base.findViewById(R.id.commentOverflow);
+        CommentOverflow overflow = base.findViewById(R.id.commentOverflow);
         if (blocks.size() > 1) {
             if (startIndex == 0) {
                 overflow.setViews(blocks, subredditName);

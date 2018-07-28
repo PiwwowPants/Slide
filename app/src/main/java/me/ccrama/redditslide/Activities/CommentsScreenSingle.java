@@ -13,27 +13,18 @@ import android.support.v4.view.ViewPager;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
-
 import com.afollestad.materialdialogs.AlertDialogWrapper;
-
+import me.ccrama.redditslide.*;
+import me.ccrama.redditslide.Autocache.AutoCacheScheduler;
+import me.ccrama.redditslide.Fragments.BlankFragment;
+import me.ccrama.redditslide.Fragments.CommentPage;
+import me.ccrama.redditslide.Notifications.NotificationJobScheduler;
+import me.ccrama.redditslide.util.LogUtil;
 import net.dean.jraw.models.Submission;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-
-import me.ccrama.redditslide.Authentication;
-import me.ccrama.redditslide.Autocache.AutoCacheScheduler;
-import me.ccrama.redditslide.Fragments.BlankFragment;
-import me.ccrama.redditslide.Fragments.CommentPage;
-import me.ccrama.redditslide.HasSeen;
-import me.ccrama.redditslide.LastComments;
-import me.ccrama.redditslide.Notifications.NotificationJobScheduler;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.SettingValues;
-import me.ccrama.redditslide.UserSubscriptions;
-import me.ccrama.redditslide.util.LogUtil;
 
 /**
  * Created by ccrama on 9/17/2015.
@@ -59,12 +50,12 @@ public class CommentsScreenSingle extends BaseActivityAnim {
         }
     }
 
-    public static final String EXTRA_SUBREDDIT  = "subreddit";
-    public static final String EXTRA_CONTEXT    = "context";
-    public static final String EXTRA_CONTEXT_NUMBER    = "contextNumber";
+    public static final String EXTRA_SUBREDDIT = "subreddit";
+    public static final String EXTRA_CONTEXT = "context";
+    public static final String EXTRA_CONTEXT_NUMBER = "contextNumber";
     public static final String EXTRA_SUBMISSION = "submission";
-    public static final String EXTRA_NP         = "np";
-    public static final String EXTRA_LOADMORE   = "loadmore";
+    public static final String EXTRA_NP = "np";
+    public static final String EXTRA_LOADMORE = "loadmore";
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
@@ -125,12 +116,14 @@ public class CommentsScreenSingle extends BaseActivityAnim {
                                     .apply();
 
                             if (Reddit.notificationTime != -1) {
-                                Reddit.notifications = new NotificationJobScheduler(CommentsScreenSingle.this);
+                                Reddit.notifications =
+                                        new NotificationJobScheduler(CommentsScreenSingle.this);
                                 Reddit.notifications.start(getApplicationContext());
                             }
 
                             if (Reddit.cachedData.contains("toCache")) {
-                                Reddit.autoCache = new AutoCacheScheduler(CommentsScreenSingle.this);
+                                Reddit.autoCache =
+                                        new AutoCacheScheduler(CommentsScreenSingle.this);
                                 Reddit.autoCache.start(getApplicationContext());
                             }
 
@@ -141,7 +134,8 @@ public class CommentsScreenSingle extends BaseActivityAnim {
 
                             if (Authentication.reddit.isAuthenticated()) {
                                 final Set<String> accounts =
-                                        Authentication.authentication.getStringSet("accounts", new HashSet<String>());
+                                        Authentication.authentication.getStringSet("accounts",
+                                                new HashSet<String>());
                                 if (accounts.contains(name)) { //convert to new system
                                     accounts.remove(name);
                                     accounts.add(name + ":" + Authentication.refresh);
@@ -152,7 +146,7 @@ public class CommentsScreenSingle extends BaseActivityAnim {
                                 Authentication.isLoggedIn = true;
                                 Reddit.notFirst = true;
                             }
-                        } catch (Exception e){
+                        } catch (Exception e) {
                             new Authentication(getApplicationContext());
                         }
                     }
@@ -233,7 +227,7 @@ public class CommentsScreenSingle extends BaseActivityAnim {
                 locked = s.isLocked();
                 archived = s.isArchived();
                 contest = s.getDataNode().get("contest_mode").asBoolean();
-                if(s.getSubredditName() == null){
+                if (s.getSubredditName() == null) {
                     subreddit = "Promoted";
                 } else {
                     subreddit = s.getSubredditName();

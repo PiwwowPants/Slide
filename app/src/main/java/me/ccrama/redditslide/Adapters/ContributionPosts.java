@@ -107,7 +107,8 @@ public class ContributionPosts extends GeneralPosts {
             ArrayList<Contribution> newData = new ArrayList<>();
             try {
                 if (reset || paginator == null) {
-                    paginator = new UserContributionPaginator(Authentication.reddit, where, subreddit);
+                    paginator =
+                            new UserContributionPaginator(Authentication.reddit, where, subreddit);
 
                     paginator.setSorting(SortingUtil.getSorting(subreddit, Sorting.NEW));
                     paginator.setTimePeriod(SortingUtil.getTime(subreddit, TimePeriod.ALL));

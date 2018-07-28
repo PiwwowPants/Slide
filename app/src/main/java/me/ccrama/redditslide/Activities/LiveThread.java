@@ -7,40 +7,36 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.neovisionaries.ws.client.WebSocketException;
-import com.neovisionaries.ws.client.WebSocketFactory;
-import com.neovisionaries.ws.client.WebSocketFrame;
-import com.neovisionaries.ws.client.WebSocketListener;
-import com.neovisionaries.ws.client.WebSocketState;
-
+import com.neovisionaries.ws.client.*;
+import me.ccrama.redditslide.*;
+import me.ccrama.redditslide.Views.CommentOverflow;
+import me.ccrama.redditslide.Views.SidebarLayout;
+import me.ccrama.redditslide.Visuals.Palette;
+import me.ccrama.redditslide.util.HttpUtil;
+import me.ccrama.redditslide.util.LogUtil;
+import me.ccrama.redditslide.util.SubmissionParser;
+import me.ccrama.redditslide.util.TwitterObject;
 import net.dean.jraw.managers.LiveThreadManager;
 import net.dean.jraw.models.LiveUpdate;
 import net.dean.jraw.paginators.LiveThreadPaginator;
-
+import okhttp3.OkHttpClient;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -49,21 +45,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import me.ccrama.redditslide.Authentication;
-import me.ccrama.redditslide.ContentType;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.SpoilerRobotoTextView;
-import me.ccrama.redditslide.TimeUtils;
-import me.ccrama.redditslide.Views.CommentOverflow;
-import me.ccrama.redditslide.Views.SidebarLayout;
-import me.ccrama.redditslide.Visuals.Palette;
-import me.ccrama.redditslide.util.HttpUtil;
-import me.ccrama.redditslide.util.LogUtil;
-import me.ccrama.redditslide.util.SubmissionParser;
-import me.ccrama.redditslide.util.TwitterObject;
-import okhttp3.OkHttpClient;
 
 public class LiveThread extends BaseActivityAnim {
 
@@ -78,7 +59,7 @@ public class LiveThread extends BaseActivityAnim {
                 onBackPressed();
                 return true;
             case R.id.info:
-                ((DrawerLayout) findViewById(R.id.drawer_layout)).openDrawer(Gravity.RIGHT);
+                ((DrawerLayout) findViewById(R.id.drawer_layout)).openDrawer(Gravity.END);
                 return true;
             default:
                 return false;
@@ -120,8 +101,8 @@ public class LiveThread extends BaseActivityAnim {
 
             @Override
             public void onPreExecute() {
-                d = new MaterialDialog.Builder(LiveThread.this)
-                        .title(R.string.livethread_loading_title)
+                d = new MaterialDialog.Builder(LiveThread.this).title(
+                        R.string.livethread_loading_title)
                         .content(R.string.misc_please_wait)
                         .progress(true, 100)
                         .cancelable(false)
@@ -131,8 +112,9 @@ public class LiveThread extends BaseActivityAnim {
             @Override
             protected Void doInBackground(Void... params) {
                 try {
-                    thread = new LiveThreadManager(Authentication.reddit).get(getIntent().getStringExtra(EXTRA_LIVEURL));
-                } catch(Exception e){
+                    thread = new LiveThreadManager(Authentication.reddit).get(
+                            getIntent().getStringExtra(EXTRA_LIVEURL));
+                } catch (Exception e) {
 
                 }
                 return null;
@@ -140,28 +122,34 @@ public class LiveThread extends BaseActivityAnim {
 
             @Override
             public void onPostExecute(Void aVoid) {
-                if(thread == null){
-                    new AlertDialogWrapper.Builder(LiveThread.this)
-                            .setTitle(R.string.livethread_not_found)
+                if (thread == null) {
+                    new AlertDialogWrapper.Builder(LiveThread.this).setTitle(
+                            R.string.livethread_not_found)
                             .setMessage(R.string.misc_please_try_again_soon)
-                            .setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+                            .setPositiveButton(R.string.btn_ok,
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            finish();
+                                        }
+                                    })
+                            .setOnDismissListener(new DialogInterface.OnDismissListener() {
                                 @Override
-                                public void onClick(DialogInterface dialog, int which) {
+                                public void onDismiss(DialogInterface dialog) {
                                     finish();
                                 }
-                            }).setOnDismissListener(new DialogInterface.OnDismissListener() {
-                        @Override
-                        public void onDismiss(DialogInterface dialog) {
-                            finish();
-                        }
-                    }).setCancelable(false).show();
+                            })
+                            .setCancelable(false)
+                            .show();
                 } else {
                     d.dismiss();
                     setupAppBar(R.id.toolbar, thread.getTitle(), true, false);
                     (findViewById(R.id.toolbar)).setBackgroundResource(R.color.md_red_300);
                     (findViewById(R.id.header_sub)).setBackgroundResource(R.color.md_red_300);
-                    themeSystemBars(Palette.getDarkerColor(getResources().getColor(R.color.md_red_300)));
-                    setRecentBar(getString(R.string.livethread_recents_title, thread.getTitle()), getResources().getColor(R.color.md_red_300));
+                    themeSystemBars(
+                            Palette.getDarkerColor(getResources().getColor(R.color.md_red_300)));
+                    setRecentBar(getString(R.string.livethread_recents_title, thread.getTitle()),
+                            getResources().getColor(R.color.md_red_300));
 
                     doPaginator();
                 }
@@ -200,69 +188,94 @@ public class LiveThread extends BaseActivityAnim {
                     final ObjectReader o = new ObjectMapper().reader();
 
                     try {
-                        com.neovisionaries.ws.client.WebSocket ws = new WebSocketFactory().createSocket(thread.getWebsocketUrl());
+                        com.neovisionaries.ws.client.WebSocket ws =
+                                new WebSocketFactory().createSocket(thread.getWebsocketUrl());
                         ws.addListener(new WebSocketListener() {
                             @Override
-                            public void onStateChanged(com.neovisionaries.ws.client.WebSocket websocket, WebSocketState newState) throws Exception {
+                            public void onStateChanged(
+                                    com.neovisionaries.ws.client.WebSocket websocket,
+                                    WebSocketState newState) {
 
                             }
 
                             @Override
-                            public void onConnected(com.neovisionaries.ws.client.WebSocket websocket, Map<String, List<String>> headers) throws Exception {
+                            public void onConnected(
+                                    com.neovisionaries.ws.client.WebSocket websocket,
+                                    Map<String, List<String>> headers) {
 
                             }
 
                             @Override
-                            public void onConnectError(com.neovisionaries.ws.client.WebSocket websocket, WebSocketException cause) throws Exception {
+                            public void onConnectError(
+                                    com.neovisionaries.ws.client.WebSocket websocket,
+                                    WebSocketException cause) {
 
                             }
 
                             @Override
-                            public void onDisconnected(com.neovisionaries.ws.client.WebSocket websocket, WebSocketFrame serverCloseFrame, WebSocketFrame clientCloseFrame, boolean closedByServer) throws Exception {
+                            public void onDisconnected(
+                                    com.neovisionaries.ws.client.WebSocket websocket,
+                                    WebSocketFrame serverCloseFrame,
+                                    WebSocketFrame clientCloseFrame, boolean closedByServer) {
 
                             }
 
                             @Override
-                            public void onFrame(com.neovisionaries.ws.client.WebSocket websocket, WebSocketFrame frame) throws Exception {
+                            public void onFrame(com.neovisionaries.ws.client.WebSocket websocket,
+                                                WebSocketFrame frame) {
 
                             }
 
                             @Override
-                            public void onContinuationFrame(com.neovisionaries.ws.client.WebSocket websocket, WebSocketFrame frame) throws Exception {
+                            public void onContinuationFrame(
+                                    com.neovisionaries.ws.client.WebSocket websocket,
+                                    WebSocketFrame frame) {
 
                             }
 
                             @Override
-                            public void onTextFrame(com.neovisionaries.ws.client.WebSocket websocket, WebSocketFrame frame) throws Exception {
+                            public void onTextFrame(
+                                    com.neovisionaries.ws.client.WebSocket websocket,
+                                    WebSocketFrame frame) {
 
                             }
 
                             @Override
-                            public void onBinaryFrame(com.neovisionaries.ws.client.WebSocket websocket, WebSocketFrame frame) throws Exception {
+                            public void onBinaryFrame(
+                                    com.neovisionaries.ws.client.WebSocket websocket,
+                                    WebSocketFrame frame) {
 
                             }
 
                             @Override
-                            public void onCloseFrame(com.neovisionaries.ws.client.WebSocket websocket, WebSocketFrame frame) throws Exception {
+                            public void onCloseFrame(
+                                    com.neovisionaries.ws.client.WebSocket websocket,
+                                    WebSocketFrame frame) {
 
                             }
 
                             @Override
-                            public void onPingFrame(com.neovisionaries.ws.client.WebSocket websocket, WebSocketFrame frame) throws Exception {
+                            public void onPingFrame(
+                                    com.neovisionaries.ws.client.WebSocket websocket,
+                                    WebSocketFrame frame) {
 
                             }
 
                             @Override
-                            public void onPongFrame(com.neovisionaries.ws.client.WebSocket websocket, WebSocketFrame frame) throws Exception {
+                            public void onPongFrame(
+                                    com.neovisionaries.ws.client.WebSocket websocket,
+                                    WebSocketFrame frame) {
 
                             }
 
                             @Override
-                            public void onTextMessage(com.neovisionaries.ws.client.WebSocket websocket, String s) throws Exception {
+                            public void onTextMessage(
+                                    com.neovisionaries.ws.client.WebSocket websocket, String s) {
                                 LogUtil.v("Recieved" + s);
                                 if (s.contains("\"type\": \"update\"")) {
                                     try {
-                                        LiveUpdate u = new LiveUpdate(o.readTree(s).get("payload").get("data"));
+                                        LiveUpdate u = new LiveUpdate(
+                                                o.readTree(s).get("payload").get("data"));
                                         updates.add(0, u);
                                         runOnUiThread(new Runnable() {
                                             @Override
@@ -278,7 +291,11 @@ public class LiveThread extends BaseActivityAnim {
                                     String node = updates.get(0).getDataNode().toString();
                                     LogUtil.v("Getting");
                                     try {
-                                        node = node.replace("\"embeds\":[]", "\"embeds\":" + o.readTree(s).get("payload").get("media_embeds").toString());
+                                        node = node.replace("\"embeds\":[]",
+                                                "\"embeds\":" + o.readTree(s)
+                                                        .get("payload")
+                                                        .get("media_embeds")
+                                                        .toString());
                                         LiveUpdate u = new LiveUpdate(o.readTree(node));
                                         updates.set(0, u);
                                         runOnUiThread(new Runnable() {
@@ -299,67 +316,92 @@ public class LiveThread extends BaseActivityAnim {
                             }
 
                             @Override
-                            public void onBinaryMessage(com.neovisionaries.ws.client.WebSocket websocket, byte[] binary) throws Exception {
+                            public void onBinaryMessage(
+                                    com.neovisionaries.ws.client.WebSocket websocket,
+                                    byte[] binary) {
 
                             }
 
                             @Override
-                            public void onSendingFrame(com.neovisionaries.ws.client.WebSocket websocket, WebSocketFrame frame) throws Exception {
+                            public void onSendingFrame(
+                                    com.neovisionaries.ws.client.WebSocket websocket,
+                                    WebSocketFrame frame) {
 
                             }
 
                             @Override
-                            public void onFrameSent(com.neovisionaries.ws.client.WebSocket websocket, WebSocketFrame frame) throws Exception {
+                            public void onFrameSent(
+                                    com.neovisionaries.ws.client.WebSocket websocket,
+                                    WebSocketFrame frame) {
 
                             }
 
                             @Override
-                            public void onFrameUnsent(com.neovisionaries.ws.client.WebSocket websocket, WebSocketFrame frame) throws Exception {
+                            public void onFrameUnsent(
+                                    com.neovisionaries.ws.client.WebSocket websocket,
+                                    WebSocketFrame frame) {
 
                             }
 
                             @Override
-                            public void onError(com.neovisionaries.ws.client.WebSocket websocket, WebSocketException cause) throws Exception {
+                            public void onError(com.neovisionaries.ws.client.WebSocket websocket,
+                                                WebSocketException cause) {
 
                             }
 
                             @Override
-                            public void onFrameError(com.neovisionaries.ws.client.WebSocket websocket, WebSocketException cause, WebSocketFrame frame) throws Exception {
+                            public void onFrameError(
+                                    com.neovisionaries.ws.client.WebSocket websocket,
+                                    WebSocketException cause, WebSocketFrame frame) {
 
                             }
 
                             @Override
-                            public void onMessageError(com.neovisionaries.ws.client.WebSocket websocket, WebSocketException cause, List<WebSocketFrame> frames) throws Exception {
+                            public void onMessageError(
+                                    com.neovisionaries.ws.client.WebSocket websocket,
+                                    WebSocketException cause, List<WebSocketFrame> frames) {
 
                             }
 
                             @Override
-                            public void onMessageDecompressionError(com.neovisionaries.ws.client.WebSocket websocket, WebSocketException cause, byte[] compressed) throws Exception {
+                            public void onMessageDecompressionError(
+                                    com.neovisionaries.ws.client.WebSocket websocket,
+                                    WebSocketException cause, byte[] compressed) {
 
                             }
 
                             @Override
-                            public void onTextMessageError(com.neovisionaries.ws.client.WebSocket websocket, WebSocketException cause, byte[] data) throws Exception {
+                            public void onTextMessageError(
+                                    com.neovisionaries.ws.client.WebSocket websocket,
+                                    WebSocketException cause, byte[] data) {
 
                             }
 
                             @Override
-                            public void onSendError(com.neovisionaries.ws.client.WebSocket websocket, WebSocketException cause, WebSocketFrame frame) throws Exception {
+                            public void onSendError(
+                                    com.neovisionaries.ws.client.WebSocket websocket,
+                                    WebSocketException cause, WebSocketFrame frame) {
 
                             }
 
                             @Override
-                            public void onUnexpectedError(com.neovisionaries.ws.client.WebSocket websocket, WebSocketException cause) throws Exception {
+                            public void onUnexpectedError(
+                                    com.neovisionaries.ws.client.WebSocket websocket,
+                                    WebSocketException cause) {
 
                             }
 
                             @Override
-                            public void handleCallbackError(com.neovisionaries.ws.client.WebSocket websocket, Throwable cause) throws Exception {
+                            public void handleCallbackError(
+                                    com.neovisionaries.ws.client.WebSocket websocket,
+                                    Throwable cause) {
 
                             }
 
                             @Override
-                            public void onSendingHandshake(com.neovisionaries.ws.client.WebSocket websocket, String requestLine, List<String[]> headers) throws Exception {
+                            public void onSendingHandshake(
+                                    com.neovisionaries.ws.client.WebSocket websocket,
+                                    String requestLine, List<String[]> headers) {
 
                             }
                         });
@@ -378,28 +420,34 @@ public class LiveThread extends BaseActivityAnim {
 
     public class PaginatorAdapter extends RecyclerView.Adapter<PaginatorAdapter.ItemHolder> {
 
-        private LayoutInflater layoutInflater;
+        private final LayoutInflater layoutInflater;
 
         public PaginatorAdapter(Context context) {
             layoutInflater = LayoutInflater.from(context);
         }
 
+        @NonNull
         @Override
-        public PaginatorAdapter.ItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public PaginatorAdapter.ItemHolder onCreateViewHolder(@NonNull ViewGroup parent,
+                                                              int viewType) {
             View itemView = layoutInflater.inflate(R.layout.live_list_item, parent, false);
             return new ItemHolder(itemView);
         }
 
         @Override
-        public void onBindViewHolder(final PaginatorAdapter.ItemHolder holder, int position) {
+        public void onBindViewHolder(@NonNull final PaginatorAdapter.ItemHolder holder,
+                                     int position) {
             final LiveUpdate u = updates.get(position);
 
-            holder.title.setText("/u/" + u.getAuthor() + " " + TimeUtils.getTimeAgo(u.getCreated().getTime(), LiveThread.this));
+            holder.title.setText(
+                    "/u/" + u.getAuthor() + " " + TimeUtils.getTimeAgo(u.getCreated().getTime(),
+                            LiveThread.this));
             if (u.getBody().isEmpty()) {
                 holder.info.setVisibility(View.GONE);
             } else {
                 holder.info.setVisibility(View.VISIBLE);
-                holder.info.setTextHtml(Html.fromHtml(u.getDataNode().get("body_html").asText()), "NO SUBREDDIT");
+                holder.info.setTextHtml(Html.fromHtml(u.getDataNode().get("body_html").asText()),
+                        "NO SUBREDDIT");
             }
             holder.title.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -436,12 +484,14 @@ public class LiveThread extends BaseActivityAnim {
                             holder.go.callOnClick();
                         }
                     });
-                    ((Reddit) getApplicationContext()).getImageLoader().displayImage(url, holder.imageArea);
+                    ((Reddit) getApplicationContext()).getImageLoader()
+                            .displayImage(url, holder.imageArea);
                 } else if (ContentType.hostContains(host, "twitter.com")) {
                     LogUtil.v("Twitter");
 
                     holder.twitterArea.setVisibility(View.VISIBLE);
-                    new LoadTwitter(holder.twitterArea, url).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    new LoadTwitter(holder.twitterArea, url).executeOnExecutor(
+                            AsyncTask.THREAD_POOL_EXECUTOR);
                 }
             }
 
@@ -449,10 +499,10 @@ public class LiveThread extends BaseActivityAnim {
 
         public class LoadTwitter extends AsyncTask<String, Void, Void> {
 
-            private OkHttpClient client;
-            private Gson gson;
-            String url;
-            private WebView view;
+            private final OkHttpClient client;
+            private final Gson gson;
+            final String url;
+            private final WebView view;
             TwitterObject twitter;
 
             public LoadTwitter(@NotNull WebView view, @NotNull String url) {
@@ -464,7 +514,8 @@ public class LiveThread extends BaseActivityAnim {
 
             public void parseJson() {
                 try {
-                    JsonObject result = HttpUtil.getJsonObject(client, gson, "https://publish.twitter.com/oembed?url=" + url, null);
+                    JsonObject result = HttpUtil.getJsonObject(client, gson,
+                            "https://publish.twitter.com/oembed?url=" + url, null);
                     LogUtil.v("Got " + Html.fromHtml(result.toString()));
                     twitter = new ObjectMapper().readValue(result.toString(), TwitterObject.class);
                 } catch (Exception e) {
@@ -481,7 +532,9 @@ public class LiveThread extends BaseActivityAnim {
             @Override
             public void onPostExecute(Void aVoid) {
                 if (twitter != null && twitter.getHtml() != null) {
-                    view.loadData(twitter.getHtml().replace("//platform.twitter", "https://platform.twitter"), "text/html", "UTF-8");
+                    view.loadData(twitter.getHtml()
+                                    .replace("//platform.twitter", "https://platform.twitter"), "text/html",
+                            "UTF-8");
                 }
             }
 
@@ -496,20 +549,20 @@ public class LiveThread extends BaseActivityAnim {
 
         public class ItemHolder extends RecyclerView.ViewHolder {
 
-            TextView title;
-            SpoilerRobotoTextView info;
-            ImageView imageArea;
-            WebView twitterArea;
-            View go;
+            final TextView title;
+            final SpoilerRobotoTextView info;
+            final ImageView imageArea;
+            final WebView twitterArea;
+            final View go;
 
 
             public ItemHolder(View itemView) {
                 super(itemView);
-                title = (TextView) itemView.findViewById(R.id.title);
-                info = (SpoilerRobotoTextView) itemView.findViewById(R.id.body);
+                title = itemView.findViewById(R.id.title);
+                info = itemView.findViewById(R.id.body);
                 go = itemView.findViewById(R.id.go);
-                imageArea = (ImageView) itemView.findViewById(R.id.image_area);
-                twitterArea = (WebView) itemView.findViewById(R.id.twitter_area);
+                imageArea = itemView.findViewById(R.id.image_area);
+                twitterArea = itemView.findViewById(R.id.twitter_area);
                 twitterArea.setWebChromeClient(new WebChromeClient());
                 twitterArea.getSettings().setJavaScriptEnabled(true);
                 twitterArea.setBackgroundColor(Color.TRANSPARENT);
@@ -527,13 +580,17 @@ public class LiveThread extends BaseActivityAnim {
 
         dialoglayout.findViewById(R.id.sub_stuff).setVisibility(View.GONE);
 
-        ((TextView) dialoglayout.findViewById(R.id.sub_infotitle)).setText((thread.getState() ? "LIVE: " : "") + thread.getTitle());
-        ((TextView) dialoglayout.findViewById(R.id.active_users)).setText(thread.getLocalizedViewerCount() + " viewing");
-        ((TextView) dialoglayout.findViewById(R.id.active_users)).setText(thread.getLocalizedViewerCount());
+        ((TextView) dialoglayout.findViewById(R.id.sub_infotitle)).setText(
+                (thread.getState() ? "LIVE: " : "") + thread.getTitle());
+        ((TextView) dialoglayout.findViewById(R.id.active_users)).setText(
+                thread.getLocalizedViewerCount() + " viewing");
+        ((TextView) dialoglayout.findViewById(R.id.active_users)).setText(
+                thread.getLocalizedViewerCount());
 
         {
             final String text = thread.getDataNode().get("resources_html").asText();
-            final SpoilerRobotoTextView body = (SpoilerRobotoTextView) findViewById(R.id.sidebar_text);
+            final SpoilerRobotoTextView body =
+                    (SpoilerRobotoTextView) findViewById(R.id.sidebar_text);
             CommentOverflow overflow = (CommentOverflow) findViewById(R.id.commentOverflow);
             setViews(text, "none", body, overflow);
         }
@@ -545,7 +602,8 @@ public class LiveThread extends BaseActivityAnim {
         }
     }
 
-    private void setViews(String rawHTML, String subreddit, SpoilerRobotoTextView firstTextView, CommentOverflow commentOverflow) {
+    private void setViews(String rawHTML, String subreddit, SpoilerRobotoTextView firstTextView,
+                          CommentOverflow commentOverflow) {
         if (rawHTML.isEmpty()) {
             return;
         }

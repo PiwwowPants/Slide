@@ -1,21 +1,13 @@
-
 package me.ccrama.redditslide.ImgurAlbum;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "data",
-    "success",
-    "status"
+        "data", "success", "status"
 })
 public class AlbumImage {
 
@@ -26,12 +18,10 @@ public class AlbumImage {
     @JsonProperty("status")
     private Integer status;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<>();
+    private final Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
-     * 
-     * @return
-     *     The data
+     * @return The data
      */
     @JsonProperty("data")
     public Data getData() {
@@ -39,9 +29,7 @@ public class AlbumImage {
     }
 
     /**
-     * 
-     * @param data
-     *     The data
+     * @param data The data
      */
     @JsonProperty("data")
     public void setData(Data data) {
@@ -49,9 +37,7 @@ public class AlbumImage {
     }
 
     /**
-     * 
-     * @return
-     *     The success
+     * @return The success
      */
     @JsonProperty("success")
     public Boolean getSuccess() {
@@ -59,9 +45,7 @@ public class AlbumImage {
     }
 
     /**
-     * 
-     * @param success
-     *     The success
+     * @param success The success
      */
     @JsonProperty("success")
     public void setSuccess(Boolean success) {
@@ -69,9 +53,7 @@ public class AlbumImage {
     }
 
     /**
-     * 
-     * @return
-     *     The status
+     * @return The status
      */
     @JsonProperty("status")
     public Integer getStatus() {
@@ -79,9 +61,7 @@ public class AlbumImage {
     }
 
     /**
-     * 
-     * @param status
-     *     The status
+     * @param status The status
      */
     @JsonProperty("status")
     public void setStatus(Integer status) {

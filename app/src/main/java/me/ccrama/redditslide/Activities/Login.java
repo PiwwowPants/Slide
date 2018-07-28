@@ -11,16 +11,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
-import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-
+import android.webkit.*;
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-
+import me.ccrama.redditslide.*;
+import me.ccrama.redditslide.Visuals.GetClosestColor;
+import me.ccrama.redditslide.Visuals.Palette;
+import me.ccrama.redditslide.util.LogUtil;
 import net.dean.jraw.http.NetworkException;
 import net.dean.jraw.http.oauth.Credentials;
 import net.dean.jraw.http.oauth.OAuthData;
@@ -34,15 +32,6 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
-import me.ccrama.redditslide.Authentication;
-import me.ccrama.redditslide.CaseInsensitiveArrayList;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.UserSubscriptions;
-import me.ccrama.redditslide.Visuals.GetClosestColor;
-import me.ccrama.redditslide.Visuals.Palette;
-import me.ccrama.redditslide.util.LogUtil;
-
 
 /**
  * Created by ccrama on 5/27/2015.
@@ -50,7 +39,7 @@ import me.ccrama.redditslide.util.LogUtil;
 public class Login extends BaseActivityAnim {
     private static final String CLIENT_ID    = "KI2Nl9A_ouG9Qw";
     private static final String REDIRECT_URL = "http://www.ccrama.me";
-    Dialog                           d;
+    Dialog d;
     CaseInsensitiveArrayList subNames;
 
     @Override
@@ -60,7 +49,7 @@ public class Login extends BaseActivityAnim {
         applyColorTheme("");
         try {
             setContentView(R.layout.activity_login);
-        } catch(Exception e){
+        } catch (Exception e) {
             finish();
             return;
         }
@@ -173,8 +162,9 @@ public class Login extends BaseActivityAnim {
                                     .get("key_color")
                                     .asText()
                                     .isEmpty()
-                                    && Palette.getColor(s.getDisplayName().toLowerCase(Locale.ENGLISH)) == Palette
-                                    .getDefaultColor()) {
+                                    && Palette.getColor(
+                                    s.getDisplayName().toLowerCase(Locale.ENGLISH))
+                                    == Palette.getDefaultColor()) {
                                 Palette.setColor(s.getDisplayName().toLowerCase(Locale.ENGLISH),
                                         GetClosestColor.getClosestColor(
                                                 s.getDataNode().get("key_color").asText(),

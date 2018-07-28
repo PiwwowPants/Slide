@@ -76,9 +76,10 @@ public class DoEditorActions {
                     public void onClick(View v) {
                         if (authors.length == 1) {
                             int pos = editText.getSelectionStart();
-                            String author =  "/u/" + authors[0];
+                            String author = "/u/" + authors[0];
                             editText.setText(editText.getText().toString() + author);
-                            editText.setSelection(pos + author.length()); //put the cursor between the symbols
+                            editText.setSelection(
+                                    pos + author.length()); //put the cursor between the symbols
 
                         } else {
                             new AlertDialogWrapper.Builder(a).setTitle(R.string.authors_above)
@@ -86,9 +87,11 @@ public class DoEditorActions {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             int pos = editText.getSelectionStart();
-                                            String author =  "/u/" + authors[which];
-                                            editText.setText(editText.getText().toString() + author);
-                                            editText.setSelection(pos + author.length()); //put the cursor between the symbols
+                                            String author = "/u/" + authors[which];
+                                            editText.setText(
+                                                    editText.getText().toString() + author);
+                                            editText.setSelection(pos
+                                                    + author.length()); //put the cursor between the symbols
                                         }
                                     })
                                     .setNeutralButton(R.string.btn_cancel, null)
@@ -547,7 +550,7 @@ public class DoEditorActions {
         @Override
         public void onActivityResult(int requestCode, int resultCode, final Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
-            if(data != null && data.getData() != null) {
+            if (data != null && data.getData() != null) {
                 handleImageIntent(new ArrayList<Uri>() {{
                     add(data.getData());
                 }}, e, getContext());
@@ -641,12 +644,16 @@ public class DoEditorActions {
             String type = resolver.getType(uri);
             String extension;
 
-            if ("image/png".equals(type)) {
-                extension = ".gif";
-            } else if ("image/png".equals(type)) {
-                extension = ".png";
-            } else {
-                extension = ".jpg";
+            switch (type) {
+                case "image/gif":
+                    extension = ".gif";
+                    break;
+                case "image/png":
+                    extension = ".png";
+                    break;
+                default:
+                    extension = ".jpg";
+                    break;
             }
 
             try {
@@ -850,12 +857,16 @@ public class DoEditorActions {
             String type = resolver.getType(uri);
             String extension;
 
-            if ("image/png".equals(type)) {
-                extension = ".gif";
-            } else if ("image/png".equals(type)) {
-                extension = ".png";
-            } else {
-                extension = ".jpg";
+            switch (type) {
+                case "image/gif":
+                    extension = ".gif";
+                    break;
+                case "image/png":
+                    extension = ".png";
+                    break;
+                default:
+                    extension = ".jpg";
+                    break;
             }
 
             try {
@@ -1105,8 +1116,8 @@ public class DoEditorActions {
 
     public static class ProgressRequestBody extends RequestBody {
 
-        protected RequestBody  mDelegate;
-        protected Listener     mListener;
+        protected final RequestBody mDelegate;
+        protected final Listener mListener;
         protected CountingSink mCountingSink;
 
         public ProgressRequestBody(RequestBody delegate, Listener listener) {

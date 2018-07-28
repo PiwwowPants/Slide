@@ -20,6 +20,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.text.Html;
@@ -27,12 +28,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.widget.*;
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.cocosw.bottomsheet.BottomSheet;
 import com.google.gson.Gson;
@@ -43,41 +39,20 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
-
-import org.apache.commons.text.StringEscapeUtils;
-
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.UUID;
-
-import me.ccrama.redditslide.ColorPreferences;
-import me.ccrama.redditslide.ContentType;
+import me.ccrama.redditslide.*;
 import me.ccrama.redditslide.Fragments.FolderChooserDialogCreate;
 import me.ccrama.redditslide.Fragments.SubmissionsView;
 import me.ccrama.redditslide.Notifications.ImageDownloadNotificationService;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.SecretConstants;
-import me.ccrama.redditslide.SettingValues;
 import me.ccrama.redditslide.SubmissionViews.OpenVRedditTask;
 import me.ccrama.redditslide.Views.ImageSource;
 import me.ccrama.redditslide.Views.MediaVideoView;
 import me.ccrama.redditslide.Views.SubsamplingScaleImageView;
-import me.ccrama.redditslide.util.FileUtil;
-import me.ccrama.redditslide.util.GifUtils;
-import me.ccrama.redditslide.util.HttpUtil;
-import me.ccrama.redditslide.util.LinkUtil;
-import me.ccrama.redditslide.util.LogUtil;
-import me.ccrama.redditslide.util.NetworkUtil;
-import me.ccrama.redditslide.util.ShareUtil;
+import me.ccrama.redditslide.util.*;
+import org.apache.commons.text.StringEscapeUtils;
+
+import java.io.*;
+import java.net.*;
+import java.util.UUID;
 
 import static me.ccrama.redditslide.Activities.AlbumPager.readableFileSize;
 
@@ -613,7 +588,7 @@ public class MediaView extends FullScreenActivity
         final String firstUrl = getIntent().getExtras().getString(EXTRA_DISPLAY_URL, "");
         contentUrl = getIntent().getExtras().getString(EXTRA_URL);
 
-        if(contentUrl == null || contentUrl.isEmpty()){
+        if (contentUrl == null || contentUrl.isEmpty()) {
             finish();
             return;
         }
@@ -758,7 +733,7 @@ public class MediaView extends FullScreenActivity
                 ((TextView) findViewById(R.id.size)), subreddit);
         if (contentType != ContentType.Type.GIF) {
             videoView.mute = findViewById(R.id.mute);
-            if(contentType != ContentType.Type.VREDDIT_DIRECT){
+            if (contentType != ContentType.Type.VREDDIT_DIRECT) {
                 videoView.mute.setVisibility(View.VISIBLE);
             }
             gif.setMute(videoView.mute);
@@ -1328,7 +1303,7 @@ public class MediaView extends FullScreenActivity
     }
 
     @Override
-    public void onFolderSelection(FolderChooserDialogCreate dialog, File folder) {
+    public void onFolderSelection(@NonNull FolderChooserDialogCreate dialog, @NonNull File folder) {
         if (folder != null) {
             Reddit.appRestart.edit().putString("imagelocation", folder.getAbsolutePath()).apply();
             Toast.makeText(this,

@@ -14,18 +14,14 @@
 
 package me.ccrama.redditslide.ForceTouch.builder;
 
-import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
-import android.util.Log;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-
 import me.ccrama.redditslide.ForceTouch.PeekView;
 import me.ccrama.redditslide.ForceTouch.PeekViewActivity;
 import me.ccrama.redditslide.ForceTouch.callback.OnPeek;
@@ -59,7 +55,7 @@ public class Peek {
     private View layout = null;
 
     private PeekViewOptions options = new PeekViewOptions();
-    private OnPeek callbacks;
+    private final OnPeek callbacks;
 
     private Peek(@LayoutRes int layoutRes, @Nullable OnPeek callbacks) {
         this.layoutRes = layoutRes;
@@ -86,7 +82,7 @@ public class Peek {
      * Finish the builder by selecting the base view that you want to show the PeekView from.
      *
      * @param activity the PeekViewActivity that you are on.
-     * @param base the view that you want to touch to apply the peek to.
+     * @param base     the view that you want to touch to apply the peek to.
      */
     public void applyTo(final PeekViewActivity activity, final View base) {
         final GestureDetectorCompat detector =
@@ -129,10 +125,12 @@ public class Peek {
     private void forceRippleAnimation(View view, MotionEvent event) {
         Drawable background = view.getBackground();
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && background instanceof RippleDrawable) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+                && background instanceof RippleDrawable) {
             final RippleDrawable rippleDrawable = (RippleDrawable) background;
 
-            rippleDrawable.setState(new int[]{android.R.attr.state_pressed, android.R.attr.state_enabled});
+            rippleDrawable.setState(
+                    new int[]{android.R.attr.state_pressed, android.R.attr.state_enabled});
             rippleDrawable.setHotspot(event.getX(), event.getY());
 
             new Handler().postDelayed(new Runnable() {

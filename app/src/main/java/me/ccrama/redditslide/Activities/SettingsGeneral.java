@@ -3,12 +3,11 @@ package me.ccrama.redditslide.Activities;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.ViewGroup;
-
-import java.io.File;
-
 import me.ccrama.redditslide.Fragments.FolderChooserDialogCreate;
 import me.ccrama.redditslide.Fragments.SettingsGeneralFragment;
 import me.ccrama.redditslide.R;
+
+import java.io.File;
 
 /**
  * Created by ccrama on 3/5/2015.
@@ -16,7 +15,7 @@ import me.ccrama.redditslide.R;
 public class SettingsGeneral extends BaseActivityAnim
         implements FolderChooserDialogCreate.FolderCallback {
 
-    private SettingsGeneralFragment fragment = new SettingsGeneralFragment(this);
+    private final SettingsGeneralFragment fragment = new SettingsGeneralFragment(this);
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +35,7 @@ public class SettingsGeneral extends BaseActivityAnim
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         SettingsGeneralFragment.doNotifText(this);
     }

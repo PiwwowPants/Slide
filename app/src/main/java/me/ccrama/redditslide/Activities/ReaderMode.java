@@ -9,10 +9,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.wuman.jreadability.Readability;
-
+import me.ccrama.redditslide.Constants;
+import me.ccrama.redditslide.R;
+import me.ccrama.redditslide.Reddit;
+import me.ccrama.redditslide.SpoilerRobotoTextView;
+import me.ccrama.redditslide.Visuals.Palette;
 import org.apache.commons.text.StringEscapeUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -25,12 +28,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import me.ccrama.redditslide.Constants;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.SpoilerRobotoTextView;
-import me.ccrama.redditslide.Visuals.Palette;
 
 public class ReaderMode extends BaseActivityAnim {
 
@@ -107,8 +104,8 @@ public class ReaderMode extends BaseActivityAnim {
                     URLConnection con = url.openConnection();
                     Pattern p = Pattern.compile("text/html;\\s+charset=([^\\s]+)\\s*");
                     Matcher m = p.matcher(con.getContentType());
-/* If Content-Type doesn't match this pre-conception, choose default and
- * hope for the best. */
+                    /* If Content-Type doesn't match this pre-conception, choose default and
+                     * hope for the best. */
                     String charset = m.matches() ? m.group(1) : "ISO-8859-1";
                     Reader r = new InputStreamReader(con.getInputStream(), charset);
                     StringBuilder buf = new StringBuilder();
@@ -137,7 +134,7 @@ public class ReaderMode extends BaseActivityAnim {
         @Override
         protected void onPostExecute(Void aVoid) {
             ((SwipeRefreshLayout) ReaderMode.this.findViewById(R.id.refresh)).setRefreshing(false);
-            ((SwipeRefreshLayout) ReaderMode.this.findViewById(R.id.refresh)).setEnabled(false);
+            ReaderMode.this.findViewById(R.id.refresh).setEnabled(false);
 
             if (articleText != null) {
                 display(title, articleText);

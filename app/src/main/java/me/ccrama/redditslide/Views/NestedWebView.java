@@ -1,12 +1,7 @@
 package me.ccrama.redditslide.Views;
 
 import android.content.Context;
-import android.support.v4.view.MotionEventCompat;
-import android.support.v4.view.NestedScrollingChild;
-import android.support.v4.view.NestedScrollingChildHelper;
-import android.support.v4.view.NestedScrollingParent;
-import android.support.v4.view.VelocityTrackerCompat;
-import android.support.v4.view.ViewCompat;
+import android.support.v4.view.*;
 import android.support.v4.widget.ScrollerCompat;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -18,7 +13,6 @@ import android.webkit.WebView;
 
 /**
  * Copyright (c) Tuenti Technologies. All rights reserved.
- *
  * WebView compatible with CoordinatorLayout.
  * The implementation based on NestedScrollView of design library
  */
@@ -31,7 +25,7 @@ public class NestedWebView extends WebView implements NestedScrollingChild, Nest
     private final int[] mScrollConsumed = new int[2];
 
     private int mLastMotionY;
-    private NestedScrollingChildHelper mChildHelper;
+    private final NestedScrollingChildHelper mChildHelper;
     private boolean mIsBeingDragged = false;
     private VelocityTracker mVelocityTracker;
     private int mTouchSlop;
@@ -82,8 +76,8 @@ public class NestedWebView extends WebView implements NestedScrollingChild, Nest
 
                 final int pointerIndex = ev.findPointerIndex(activePointerId);
                 if (pointerIndex == -1) {
-                    Log.e(TAG, "Invalid pointerId=" + activePointerId
-                            + " in onInterceptTouchEvent");
+                    Log.e(TAG,
+                            "Invalid pointerId=" + activePointerId + " in onInterceptTouchEvent");
                     break;
                 }
 
@@ -302,8 +296,8 @@ public class NestedWebView extends WebView implements NestedScrollingChild, Nest
 
     private void flingWithNestedDispatch(int velocityY) {
         final int scrollY = getScrollY();
-        final boolean canFling = (scrollY > 0 || velocityY > 0)
-                && (scrollY < getScrollRange() || velocityY < 0);
+        final boolean canFling =
+                (scrollY > 0 || velocityY > 0) && (scrollY < getScrollRange() || velocityY < 0);
         if (!dispatchNestedPreFling(0, velocityY)) {
             dispatchNestedFling(0, velocityY, canFling);
             if (canFling) {
@@ -350,9 +344,10 @@ public class NestedWebView extends WebView implements NestedScrollingChild, Nest
     }
 
     @Override
-    public boolean dispatchNestedScroll(int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed,
-            int[] offsetInWindow) {
-        return mChildHelper.dispatchNestedScroll(dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, offsetInWindow);
+    public boolean dispatchNestedScroll(int dxConsumed, int dyConsumed, int dxUnconsumed,
+                                        int dyUnconsumed, int[] offsetInWindow) {
+        return mChildHelper.dispatchNestedScroll(dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed,
+                offsetInWindow);
     }
 
     @Override

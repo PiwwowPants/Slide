@@ -1,27 +1,26 @@
 package me.ccrama.redditslide.Activities;
 
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.MaterialDialog;
-
+import me.ccrama.redditslide.Authentication;
+import me.ccrama.redditslide.DataShare;
+import me.ccrama.redditslide.R;
+import me.ccrama.redditslide.UserSubscriptions;
+import me.ccrama.redditslide.Views.DoEditorActions;
+import me.ccrama.redditslide.Visuals.Palette;
 import net.dean.jraw.ApiException;
-import net.dean.jraw.managers.CaptchaHelper;
 import net.dean.jraw.managers.InboxManager;
 import net.dean.jraw.models.Captcha;
 import net.dean.jraw.models.PrivateMessage;
@@ -29,23 +28,14 @@ import net.dean.jraw.models.PrivateMessage;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import me.ccrama.redditslide.Authentication;
-import me.ccrama.redditslide.DataShare;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.UserSubscriptions;
-import me.ccrama.redditslide.Views.DoEditorActions;
-import me.ccrama.redditslide.Visuals.Palette;
-import me.ccrama.redditslide.util.LogUtil;
-
 /**
  * Created by ccrama on 3/5/2015.
  */
 public class SendMessage extends BaseActivity {
-    public static final String EXTRA_NAME  = "name";
+    public static final String EXTRA_NAME = "name";
     public static final String EXTRA_REPLY = "reply";
-    public static final String EXTRA_MESSAGE  = "message";
-    public static final String EXTRA_SUBJECT  = "subject";
+    public static final String EXTRA_MESSAGE = "message";
+    public static final String EXTRA_SUBJECT = "subject";
 
     public String URL;
     private Boolean reply;
@@ -84,9 +74,10 @@ public class SendMessage extends BaseActivity {
             public void onClick(View v) {
                 ArrayList<String> items = new ArrayList<>();
                 items.add("/u/" + Authentication.name);
-                if(UserSubscriptions.modOf != null && !UserSubscriptions.modOf.isEmpty())
-                for(String s : UserSubscriptions.modOf){
-                    items.add("/r/" + s);
+                if (UserSubscriptions.modOf != null && !UserSubscriptions.modOf.isEmpty()) {
+                    for (String s : UserSubscriptions.modOf) {
+                        items.add("/r/" + s);
+                    }
                 }
                 new MaterialDialog.Builder(SendMessage.this).title("Send message as")
                         .items(items)
@@ -112,8 +103,9 @@ public class SendMessage extends BaseActivity {
             if (reply) {
                 b.setTitle(getString(R.string.mail_reply_to, name));
                 previousMessage = DataShare.sharedMessage;
-                if(previousMessage.getSubject() != null)
-                subject.setText(getString(R.string.mail_re, previousMessage.getSubject()));
+                if (previousMessage.getSubject() != null) {
+                    subject.setText(getString(R.string.mail_re, previousMessage.getSubject()));
+                }
                 subject.setInputType(InputType.TYPE_NULL);
 
                 //Disable if replying to another user, as they are already set
@@ -125,7 +117,8 @@ public class SendMessage extends BaseActivity {
                 oldMSG.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        AlertDialogWrapper.Builder b = new AlertDialogWrapper.Builder(SendMessage.this);
+                        AlertDialogWrapper.Builder b =
+                                new AlertDialogWrapper.Builder(SendMessage.this);
                         b.setTitle(getString(R.string.mail_author_wrote, name));
                         b.setMessage(previousMessage.getBody());
                         b.create().show();
@@ -141,11 +134,11 @@ public class SendMessage extends BaseActivity {
             b.setTitle(R.string.mail_send);
         }
 
-        if(getIntent().hasExtra(EXTRA_MESSAGE)){
+        if (getIntent().hasExtra(EXTRA_MESSAGE)) {
             body.setText(getIntent().getStringExtra(EXTRA_MESSAGE));
         }
 
-        if(getIntent().hasExtra(EXTRA_SUBJECT)){
+        if (getIntent().hasExtra(EXTRA_SUBJECT)) {
             subject.setText(getIntent().getStringExtra(EXTRA_SUBJECT));
         }
 
@@ -157,7 +150,7 @@ public class SendMessage extends BaseActivity {
         setupUserAppBar(R.id.toolbar, null, true, name);
         setRecentBar(b.getTitle().toString(), Palette.getDefaultColor());
 
-        if(reply || UserSubscriptions.modOf == null || UserSubscriptions.modOf.isEmpty()){
+        if (reply || UserSubscriptions.modOf == null || UserSubscriptions.modOf.isEmpty()) {
             sendingAs.setVisibility(View.GONE);
         }
 
@@ -167,20 +160,22 @@ public class SendMessage extends BaseActivity {
                 bodytext = body.getText().toString();
                 totext = to.getText().toString();
                 subjecttext = subject.getText().toString();
-                ((FloatingActionButton)findViewById(R.id.send)).hide();
+                ((FloatingActionButton) findViewById(R.id.send)).hide();
 
                 new AsyncDo(null, null).execute();
             }
         });
-        DoEditorActions.doActions(((EditText) findViewById(R.id.body)), findViewById(R.id.area), getSupportFragmentManager(), SendMessage.this, previousMessage==null?null:previousMessage.getBody(),  null);
+        DoEditorActions.doActions(((EditText) findViewById(R.id.body)), findViewById(R.id.area),
+                getSupportFragmentManager(), SendMessage.this,
+                previousMessage == null ? null : previousMessage.getBody(), null);
     }
 
 
     private class AsyncDo extends AsyncTask<Void, Void, Void> {
-        String tried;
-        Captcha captcha;
+        final String tried;
+        final Captcha captcha;
 
-        public AsyncDo(Captcha captcha, String tried){
+        public AsyncDo(Captcha captcha, String tried) {
             this.captcha = captcha;
             this.tried = tried;
         }
@@ -194,18 +189,20 @@ public class SendMessage extends BaseActivity {
         public void sendMessage(Captcha captcha, String captchaAttempt) {
             if (reply) {
                 try {
-                    new net.dean.jraw.managers.AccountManager(Authentication.reddit).reply(previousMessage, bodytext);
+                    new net.dean.jraw.managers.AccountManager(Authentication.reddit).reply(
+                            previousMessage, bodytext);
                 } catch (ApiException e) {
                     messageSent = false;
                     e.printStackTrace();
                 }
             } else {
                 try {
-                    if (captcha != null)
-                        new InboxManager(Authentication.reddit).compose(totext, subjecttext, bodytext, captcha, captchaAttempt);
-                    else {
+                    if (captcha != null) {
+                        new InboxManager(Authentication.reddit).compose(totext, subjecttext,
+                                bodytext, captcha, captchaAttempt);
+                    } else {
                         String to = author;
-                        if(to.startsWith("/r/")){
+                        if (to.startsWith("/r/")) {
                             to = to.substring(3, to.length());
                             new InboxManager(Authentication.reddit).compose(to, totext, subjecttext,
                                     bodytext);
@@ -222,7 +219,8 @@ public class SendMessage extends BaseActivity {
                     e.printStackTrace();
 
                     //Display a Toast with an error if the user doesn't exist
-                    if (e.getReason().equals("USER_DOESNT_EXIST") || e.getReason().equals("NO_USER")) {
+                    if (e.getReason().equals("USER_DOESNT_EXIST") || e.getReason()
+                            .equals("NO_USER")) {
                         messageSentStatus = getString(R.string.msg_send_user_dne);
                     } else if (e.getReason().toLowerCase(Locale.ENGLISH).contains("captcha")) {
                         messageSentStatus = getString(R.string.misc_captcha_incorrect);
@@ -238,11 +236,11 @@ public class SendMessage extends BaseActivity {
             //If the error wasn't that the user doesn't exist, show a generic failure message
             if (messageSentStatus == null) {
                 messageSentStatus = getString(R.string.msg_sent_failure);
-                ((FloatingActionButton)findViewById(R.id.send)).show();
+                ((FloatingActionButton) findViewById(R.id.send)).show();
             }
 
-            final String MESSAGE_SENT = (messageSent)
-                    ? getString(R.string.msg_sent_success) : messageSentStatus;
+            final String MESSAGE_SENT =
+                    (messageSent) ? getString(R.string.msg_sent_success) : messageSentStatus;
 
             Toast.makeText(SendMessage.this, MESSAGE_SENT, Toast.LENGTH_SHORT).show();
 
@@ -250,7 +248,7 @@ public class SendMessage extends BaseActivity {
             if (messageSent) {
                 finish();
             } else {
-                ((FloatingActionButton)findViewById(R.id.send)).show();
+                ((FloatingActionButton) findViewById(R.id.send)).show();
                 messageSent = true;
             }
         }

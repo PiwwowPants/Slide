@@ -18,9 +18,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-
-import java.util.Locale;
-
 import me.ccrama.redditslide.ColorPreferences;
 import me.ccrama.redditslide.ForceTouch.PeekViewActivity;
 import me.ccrama.redditslide.R;
@@ -32,6 +29,8 @@ import me.ccrama.redditslide.SwipeLayout.app.SwipeBackActivityBase;
 import me.ccrama.redditslide.SwipeLayout.app.SwipeBackActivityHelper;
 import me.ccrama.redditslide.Visuals.FontPreferences;
 import me.ccrama.redditslide.Visuals.Palette;
+
+import java.util.Locale;
 
 /**
  * This is an activity which is the base for most of Slide's activities. It has support for handling
@@ -63,7 +62,7 @@ public class BaseActivity extends PeekViewActivity
         }
     }
 
-    public void hideDecor(){
+    public void hideDecor() {
         try {
             if (SettingValues.immersiveMode) {
                 final View decorView = getWindow().getDecorView();
@@ -73,23 +72,27 @@ public class BaseActivity extends PeekViewActivity
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-                decorView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
-                    @Override
-                    public void onSystemUiVisibilityChange(int visibility) {
-                        if ((visibility) == 0) {
-                            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_FULLSCREEN);
-                        } else {
-                            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                                    | View.SYSTEM_UI_FLAG_FULLSCREEN
-                                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-                        }
-                    }
-                });
+                decorView.setOnSystemUiVisibilityChangeListener(
+                        new View.OnSystemUiVisibilityChangeListener() {
+                            @Override
+                            public void onSystemUiVisibilityChange(int visibility) {
+                                if ((visibility) == 0) {
+                                    decorView.setSystemUiVisibility(
+                                            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                                    | View.SYSTEM_UI_FLAG_FULLSCREEN);
+                                } else {
+                                    decorView.setSystemUiVisibility(
+                                            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                                                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                                                    | View.SYSTEM_UI_FLAG_FULLSCREEN
+                                                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                                }
+                            }
+                        });
             }
-        } catch(Exception ignored){
+        } catch (Exception ignored) {
 
         }
     }
@@ -152,12 +155,15 @@ public class BaseActivity extends PeekViewActivity
                 if (overrideSwipeFromAnywhere) {
                     shouldInterceptAlways = true;
                 } else {
-                    if(verticalExit){
-                        mHelper.getSwipeBackLayout().setEdgeTrackingEnabled(SwipeBackLayout.EDGE_LEFT | SwipeBackLayout.EDGE_BOTTOM | SwipeBackLayout.EDGE_TOP);
-                    } else {
+                    if (verticalExit) {
                         mHelper.getSwipeBackLayout()
                                 .setEdgeTrackingEnabled(SwipeBackLayout.EDGE_LEFT
+                                        | SwipeBackLayout.EDGE_BOTTOM
                                         | SwipeBackLayout.EDGE_TOP);
+                    } else {
+                        mHelper.getSwipeBackLayout()
+                                .setEdgeTrackingEnabled(
+                                        SwipeBackLayout.EDGE_LEFT | SwipeBackLayout.EDGE_TOP);
                     }
                     mHelper.getSwipeBackLayout().setFullScreenSwipeEnabled(true);
                 }
@@ -220,7 +226,7 @@ public class BaseActivity extends PeekViewActivity
         overrideSwipeFromAnywhere = true;
     }
 
-    protected void swipeVerticalExit(){
+    protected void swipeVerticalExit() {
         verticalExit = true;
     }
 
@@ -269,14 +275,14 @@ public class BaseActivity extends PeekViewActivity
     @Override
     public void onResume() {
         super.onResume();
-        Reddit.setDefaultErrorHandler(this); //set defualt reddit api issue handler
+        Reddit.setDefaultErrorHandler(this); //set default reddit api issue handler
         hideDecor();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Reddit.setDefaultErrorHandler(null); //remove defualt reddit api issue handler (mem leaks)
+        Reddit.setDefaultErrorHandler(null); //remove default reddit api issue handler (mem leaks)
 
     }
 
@@ -472,11 +478,11 @@ public class BaseActivity extends PeekViewActivity
 
             if (title == null || title.equals("")) title = getString(R.string.app_name);
 
-            Bitmap bitmap= BitmapFactory.decodeResource(getResources(),(  title.equalsIgnoreCase("androidcirclejerk") ? R.drawable.matiasduarte
-                    : R.mipmap.ic_launcher));
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
+                    (title.equalsIgnoreCase("androidcirclejerk") ? R.drawable.matiasduarte
+                            : R.mipmap.ic_launcher));
 
-            setTaskDescription(
-                    new ActivityManager.TaskDescription(title, bitmap, color));
+            setTaskDescription(new ActivityManager.TaskDescription(title, bitmap, color));
 
             bitmap.recycle();
         }

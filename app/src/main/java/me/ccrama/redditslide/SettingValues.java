@@ -63,13 +63,13 @@ public class SettingValues {
     public static final String PREF_RIGHT_HANDED_COMMENT_MENU = "rightHandedCommentMenu";
     public static final String PREF_DUAL_PORTRAIT             = "dualPortrait";
     public static final String PREF_SINGLE_COLUMN_MULTI       = "singleColumnMultiWindow";
-    public static final String PREF_CROP_IMAGE                = "cropImage";
-    public static final String PREF_COMMENT_FAB               = "commentFab";
-    public static final String PREF_SWITCH_THUMB              = "switchThumb";
-    public static final String PREF_BIG_THUMBS                = "bigThumbnails";
-    public static final String PREF_LOW_RES_ALWAYS            = "lowResAlways";
-    public static final String PREF_LOW_RES_MOBILE            = "lowRes";
-    public static final String PREF_IMAGE_LQ                  = "imageLq";
+    public static final String PREF_CROP_IMAGE = "cropImage";
+    public static final String PREF_COMMENT_FAB = "commentFab";
+    public static final String PREF_SWITCH_THUMB = "switchThumb";
+    public static final String PREF_BIG_THUMBS = "bigThumbnails";
+    public static final String PREF_LOW_RES_ALWAYS = "lowResAlways";
+    public static final String PREF_LOW_RES_MOBILE = "lowRes";
+    public static final String PREF_IMAGE_LQ = "imageLq";
     public static final String PREF_COLOR_SUB_NAME          = "colorSubName";
     public static final String PREF_OVERRIDE_LANGUAGE       = "overrideLanguage";
     public static final String PREF_IMMERSIVE_MODE          = "immersiveMode";
@@ -85,13 +85,13 @@ public class SettingValues {
     public static final String PREF_SOUND_NOTIFS            = "soundNotifs";
     public static final String PREF_COOKIES                 = "storeCookies";
     public static final String PREF_NIGHT_START             = "nightStart";
-    public static final String PREF_NIGHT_END                 = "nightEnd";
-    public static final String PREF_SHOW_NSFW_CONTENT         = "showNSFWContent";
-    public static final String PREF_HIDE_NSFW_PREVIEW         = "hideNSFWPreviews";
-    public static final String PREF_HIDE_NSFW_COLLECTION      = "hideNSFWPreviewsCollection";
-    public static final String PREF_IGNORE_SUB_SETTINGS       = "ignoreSub";
-    public static final String PREF_HIGHLIGHT_TIME            = "highlightTime";
-    public static final String PREF_MUTE                      = "muted";
+    public static final String PREF_NIGHT_END = "nightEnd";
+    public static final String PREF_SHOW_NSFW_CONTENT = "showNSFWContent";
+    public static final String PREF_HIDE_NSFW_PREVIEW = "hideNSFWPreviews";
+    public static final String PREF_HIDE_NSFW_COLLECTION = "hideNSFWPreviewsCollection";
+    public static final String PREF_IGNORE_SUB_SETTINGS = "ignoreSub";
+    public static final String PREF_HIGHLIGHT_TIME = "highlightTime";
+    public static final String PREF_MUTE = "muted";
 
     public static final String PREF_FULL_COMMENT_OVERRIDE  = "fullCommentOverride";
     public static final String PREF_ALBUM                  = "album";
@@ -181,10 +181,10 @@ public class SettingValues {
     public static boolean abbreviateScores;
     public static boolean shareLongLink;
     public static boolean isMuted;
-    public static int     subredditSearchMethod;
-    public static int     backButtonBehavior;
-    public static int     nightStart;
-    public static int     nightEnd;
+    public static int subredditSearchMethod;
+    public static int backButtonBehavior;
+    public static int nightStart;
+    public static int nightEnd;
 
     public static int previews;
 

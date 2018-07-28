@@ -3,7 +3,6 @@ package me.ccrama.redditslide.Activities;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.ViewGroup;
-
 import me.ccrama.redditslide.Fragments.SettingsHandlingFragment;
 import me.ccrama.redditslide.PostMatch;
 import me.ccrama.redditslide.R;
@@ -16,7 +15,7 @@ import me.ccrama.redditslide.SettingValues;
  */
 public class SettingsHandling extends BaseActivityAnim {
 
-    private SettingsHandlingFragment fragment = new SettingsHandlingFragment(this);
+    private final SettingsHandlingFragment fragment = new SettingsHandlingFragment(this);
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

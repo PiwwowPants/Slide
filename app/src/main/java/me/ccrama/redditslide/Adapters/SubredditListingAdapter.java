@@ -2,17 +2,17 @@ package me.ccrama.redditslide.Adapters;
 
 import android.content.Context;
 import android.graphics.PorterDuff;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import me.ccrama.redditslide.R;
+import me.ccrama.redditslide.Visuals.Palette;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.Visuals.Palette;
 
 
 /**
@@ -30,17 +30,20 @@ public class SubredditListingAdapter extends ArrayAdapter<String> {
         fitems = new ArrayList<>(objects);
     }
 
+    @NonNull
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.subforsublist, parent, false);
+            convertView = LayoutInflater.from(getContext())
+                    .inflate(R.layout.subforsublist, parent, false);
         }
-        final TextView t =
-                ((TextView) convertView.findViewById(R.id.name));
+        final TextView t = convertView.findViewById(R.id.name);
         t.setText(fitems.get(position));
 
         convertView.findViewById(R.id.color).setBackgroundResource(R.drawable.circle);
-        convertView.findViewById(R.id.color).getBackground().setColorFilter(Palette.getColor(fitems.get(position)), PorterDuff.Mode.MULTIPLY);
+        convertView.findViewById(R.id.color)
+                .getBackground()
+                .setColorFilter(Palette.getColor(fitems.get(position)), PorterDuff.Mode.MULTIPLY);
 
         return convertView;
     }

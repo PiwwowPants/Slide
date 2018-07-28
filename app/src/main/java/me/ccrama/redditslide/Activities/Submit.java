@@ -20,57 +20,29 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.Toast;
-
+import android.widget.*;
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-
-import net.dean.jraw.ApiException;
-import net.dean.jraw.managers.AccountManager;
-import net.dean.jraw.models.Submission;
-import net.dean.jraw.models.Subreddit;
-
-import org.json.JSONObject;
-
-import java.io.BufferedOutputStream;
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
 import gun0912.tedbottompicker.TedBottomPicker;
-import me.ccrama.redditslide.Authentication;
-import me.ccrama.redditslide.Constants;
-import me.ccrama.redditslide.Drafts;
-import me.ccrama.redditslide.OpenRedditLink;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.SecretConstants;
-import me.ccrama.redditslide.SpoilerRobotoTextView;
-import me.ccrama.redditslide.UserSubscriptions;
+import me.ccrama.redditslide.*;
 import me.ccrama.redditslide.Views.CommentOverflow;
 import me.ccrama.redditslide.Views.DoEditorActions;
 import me.ccrama.redditslide.util.LogUtil;
 import me.ccrama.redditslide.util.SubmissionParser;
 import me.ccrama.redditslide.util.TitleExtractor;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import net.dean.jraw.ApiException;
+import net.dean.jraw.managers.AccountManager;
+import net.dean.jraw.models.Submission;
+import net.dean.jraw.models.Subreddit;
+import okhttp3.*;
 import okio.BufferedSink;
+import org.json.JSONObject;
+
+import java.io.*;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -562,7 +534,7 @@ public class Submit extends BaseActivity {
                     .positiveText(c.getString(R.string.btn_upload))
                     .onPositive(new MaterialDialog.SingleButtonCallback() {
                         @Override
-                        public void onClick(MaterialDialog d, DialogAction w) {
+                        public void onClick(@NonNull MaterialDialog d, @NonNull DialogAction w) {
                             d.dismiss();
                             dialog.show();
                             execute(uri);
@@ -571,7 +543,7 @@ public class Submit extends BaseActivity {
                     .negativeText(c.getString(R.string.btn_cancel))
                     .onNegative(new MaterialDialog.SingleButtonCallback() {
                         @Override
-                        public void onClick(MaterialDialog d, DialogAction w) {
+                        public void onClick(@NonNull MaterialDialog d, @NonNull DialogAction w) {
                             d.dismiss();
                         }
                     })
@@ -585,12 +557,16 @@ public class Submit extends BaseActivity {
             String type = resolver.getType(uri);
             String extension;
 
-            if ("image/png".equals(type)) {
-                extension = ".gif";
-            } else if ("image/png".equals(type)) {
-                extension = ".png";
-            } else {
-                extension = ".jpg";
+            switch (type) {
+                case "image/gif":
+                    extension = ".gif";
+                    break;
+                case "image/png":
+                    extension = ".png";
+                    break;
+                default:
+                    extension = ".jpg";
+                    break;
             }
 
             try {
@@ -745,7 +721,7 @@ public class Submit extends BaseActivity {
                     .positiveText(c.getString(R.string.btn_upload))
                     .onPositive(new MaterialDialog.SingleButtonCallback() {
                         @Override
-                        public void onClick(MaterialDialog d, DialogAction w) {
+                        public void onClick(@NonNull MaterialDialog d, @NonNull DialogAction w) {
                             d.dismiss();
                             dialog.show();
                             execute(uris);
@@ -754,7 +730,7 @@ public class Submit extends BaseActivity {
                     .negativeText(c.getString(R.string.btn_cancel))
                     .onNegative(new MaterialDialog.SingleButtonCallback() {
                         @Override
-                        public void onClick(MaterialDialog d, DialogAction w) {
+                        public void onClick(@NonNull MaterialDialog d, @NonNull DialogAction w) {
                             d.dismiss();
                         }
                     })
@@ -768,12 +744,16 @@ public class Submit extends BaseActivity {
             String type = resolver.getType(uri);
             String extension;
 
-            if ("image/png".equals(type)) {
-                extension = ".gif";
-            } else if ("image/png".equals(type)) {
-                extension = ".png";
-            } else {
-                extension = ".jpg";
+            switch (type) {
+                case "image/gif":
+                    extension = ".gif";
+                    break;
+                case "image/png":
+                    extension = ".png";
+                    break;
+                default:
+                    extension = ".jpg";
+                    break;
             }
 
             try {
@@ -855,7 +835,7 @@ public class Submit extends BaseActivity {
                             }
 
                             @Override
-                            public void writeTo(BufferedSink sink) throws IOException {
+                            public void writeTo(BufferedSink sink) {
 
                             }
                         })

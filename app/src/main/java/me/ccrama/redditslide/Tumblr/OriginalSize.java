@@ -1,22 +1,14 @@
-
 package me.ccrama.redditslide.Tumblr;
+
+import com.fasterxml.jackson.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
 
 @JsonPropertyOrder({
-    "url",
-    "width",
-    "height"
+        "url", "width", "height"
 })
 public class OriginalSize {
 
@@ -27,12 +19,10 @@ public class OriginalSize {
     @JsonProperty("height")
     private Integer height;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private final Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
-     * 
-     * @return
-     *     The url
+     * @return The url
      */
     @JsonProperty("url")
     public String getUrl() {
@@ -40,9 +30,7 @@ public class OriginalSize {
     }
 
     /**
-     * 
-     * @param url
-     *     The url
+     * @param url The url
      */
     @JsonProperty("url")
     public void setUrl(String url) {
@@ -50,9 +38,7 @@ public class OriginalSize {
     }
 
     /**
-     * 
-     * @return
-     *     The width
+     * @return The width
      */
     @JsonProperty("width")
     public Integer getWidth() {
@@ -60,9 +46,7 @@ public class OriginalSize {
     }
 
     /**
-     * 
-     * @param width
-     *     The width
+     * @param width The width
      */
     @JsonProperty("width")
     public void setWidth(Integer width) {
@@ -70,9 +54,7 @@ public class OriginalSize {
     }
 
     /**
-     * 
-     * @return
-     *     The height
+     * @return The height
      */
     @JsonProperty("height")
     public Integer getHeight() {
@@ -80,9 +62,7 @@ public class OriginalSize {
     }
 
     /**
-     * 
-     * @param height
-     *     The height
+     * @param height The height
      */
     @JsonProperty("height")
     public void setHeight(Integer height) {

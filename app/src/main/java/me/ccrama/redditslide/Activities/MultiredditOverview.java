@@ -130,9 +130,9 @@ public class MultiredditOverview extends BaseActivityAnim {
                         && (UserSubscriptions.multireddits != null)
                         && !UserSubscriptions.multireddits.isEmpty()) {
                     Intent i = new Intent(MultiredditOverview.this, CreateMulti.class);
-                    i.putExtra(CreateMulti.EXTRA_MULTI, UserSubscriptions.multireddits
-                            .get(pager.getCurrentItem())
-                            .getDisplayName());
+                    i.putExtra(CreateMulti.EXTRA_MULTI,
+                            UserSubscriptions.multireddits.get(pager.getCurrentItem())
+                                    .getDisplayName());
                     startActivity(i);
                 }
             }
@@ -145,13 +145,14 @@ public class MultiredditOverview extends BaseActivityAnim {
                         if ((multireddits != null) && !multireddits.isEmpty()) {
                             searchMulti = multireddits.get(pager.getCurrentItem());
                             MaterialDialog.Builder builder =
-                                    new MaterialDialog.Builder(MultiredditOverview.this).title(R.string.search_title)
+                                    new MaterialDialog.Builder(MultiredditOverview.this).title(
+                                            R.string.search_title)
                                             .alwaysCallInputCallback()
                                             .input(getString(R.string.search_msg), "",
                                                     new MaterialDialog.InputCallback() {
                                                         @Override
                                                         public void onInput(
-                                                                MaterialDialog materialDialog,
+                                                                @NonNull MaterialDialog materialDialog,
                                                                 CharSequence charSequence) {
                                                             term = charSequence.toString();
                                                         }
@@ -196,7 +197,7 @@ public class MultiredditOverview extends BaseActivityAnim {
                 return true;
 
             case R.id.subs:
-                ((DrawerLayout) findViewById(R.id.drawer_layout)).openDrawer(Gravity.RIGHT);
+                ((DrawerLayout) findViewById(R.id.drawer_layout)).openDrawer(Gravity.END);
                 return true;
             case R.id.gallery:
                 if (SettingValues.isPro) {
@@ -447,7 +448,7 @@ public class MultiredditOverview extends BaseActivityAnim {
 
     public void openPopup() {
         PopupMenu popup =
-                new PopupMenu(MultiredditOverview.this, findViewById(R.id.anchor), Gravity.RIGHT);
+                new PopupMenu(MultiredditOverview.this, findViewById(R.id.anchor), Gravity.END);
         String id =
                 ((MultiredditView) (((OverviewPagerAdapter) pager.getAdapter()).getCurrentFragment())).posts.multiReddit
                         .getDisplayName()
@@ -515,7 +516,7 @@ public class MultiredditOverview extends BaseActivityAnim {
 
     public void openPopupTime() {
         PopupMenu popup =
-                new PopupMenu(MultiredditOverview.this, findViewById(R.id.anchor), Gravity.RIGHT);
+                new PopupMenu(MultiredditOverview.this, findViewById(R.id.anchor), Gravity.END);
         String id =
                 ((MultiredditView) (((OverviewPagerAdapter) pager.getAdapter()).getCurrentFragment())).posts.multiReddit
                         .getDisplayName()

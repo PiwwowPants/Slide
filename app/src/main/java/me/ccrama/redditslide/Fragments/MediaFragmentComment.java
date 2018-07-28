@@ -5,8 +5,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,7 +18,6 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -27,34 +28,23 @@ import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
-
+import me.ccrama.redditslide.Activities.MediaView;
+import me.ccrama.redditslide.Activities.ShadowboxComments;
+import me.ccrama.redditslide.Activities.Website;
+import me.ccrama.redditslide.Adapters.CommentUrlObject;
+import me.ccrama.redditslide.*;
+import me.ccrama.redditslide.SubmissionViews.PopulateShadowboxInfo;
+import me.ccrama.redditslide.Views.ImageSource;
+import me.ccrama.redditslide.Views.MediaVideoView;
+import me.ccrama.redditslide.Views.SubsamplingScaleImageView;
+import me.ccrama.redditslide.util.*;
 import net.dean.jraw.models.Comment;
+import okhttp3.OkHttpClient;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
-
-import me.ccrama.redditslide.Activities.MediaView;
-import me.ccrama.redditslide.Activities.ShadowboxComments;
-import me.ccrama.redditslide.Activities.Website;
-import me.ccrama.redditslide.Adapters.CommentUrlObject;
-import me.ccrama.redditslide.ContentType;
-import me.ccrama.redditslide.OpenRedditLink;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.SecretConstants;
-import me.ccrama.redditslide.SettingValues;
-import me.ccrama.redditslide.SubmissionViews.PopulateShadowboxInfo;
-import me.ccrama.redditslide.Views.ImageSource;
-import me.ccrama.redditslide.Views.MediaVideoView;
-import me.ccrama.redditslide.Views.SubsamplingScaleImageView;
-import me.ccrama.redditslide.util.GifUtils;
-import me.ccrama.redditslide.util.HttpUtil;
-import me.ccrama.redditslide.util.LinkUtil;
-import me.ccrama.redditslide.util.LogUtil;
-import me.ccrama.redditslide.util.NetworkUtil;
-import okhttp3.OkHttpClient;
 
 
 /**
@@ -71,7 +61,7 @@ public class MediaFragmentComment extends Fragment {
     private boolean               imageShown;
     private float                 previous;
     private boolean               hidden;
-    private long                   stopPosition;
+    private long stopPosition;
     public  boolean               isGif;
     private GifUtils.AsyncLoadGif gif;
     private CommentUrlObject      s;
@@ -105,7 +95,7 @@ public class MediaFragmentComment extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         if (videoView != null) {
             stopPosition = videoView.getCurrentPosition();
@@ -117,8 +107,8 @@ public class MediaFragmentComment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         rootView = (ViewGroup) inflater.inflate(R.layout.submission_mediacard, container, false);
         if (savedInstanceState != null && savedInstanceState.containsKey("position")) {
             stopPosition = savedInstanceState.getLong("position");
@@ -156,7 +146,11 @@ public class MediaFragmentComment extends Fragment {
                     public void onGlobalLayout() {
                         ((SlidingUpPanelLayout) rootView.findViewById(
                                 R.id.sliding_layout)).setPanelHeight(title.getMeasuredHeight());
-                        title.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                            title.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        } else {
+                            title.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                        }
                     }
                 });
         ((SlidingUpPanelLayout) rootView.findViewById(R.id.sliding_layout)).addPanelSlideListener(
@@ -313,7 +307,8 @@ public class MediaFragmentComment extends Fragment {
                                 url = submission.getUrl();
                                 myIntent.putExtra(MediaView.EXTRA_DISPLAY_URL, submission.getUrl());
                                 myIntent.putExtra(MediaView.EXTRA_URL, url);
-                                myIntent.putExtra(MediaView.SUBREDDIT, submission.getSubredditName());
+                                myIntent.putExtra(MediaView.SUBREDDIT,
+                                        submission.getSubredditName());
                                 myIntent.putExtra(MediaView.EXTRA_SHARE_URL, submission.getUrl());
 
                                 contextActivity.startActivity(myIntent);

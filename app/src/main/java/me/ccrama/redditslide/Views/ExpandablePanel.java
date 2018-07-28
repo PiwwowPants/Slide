@@ -8,7 +8,6 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.Transformation;
 import android.widget.RelativeLayout;
-
 import me.ccrama.redditslide.R;
 
 public class ExpandablePanel extends RelativeLayout {
@@ -42,7 +41,8 @@ public class ExpandablePanel extends RelativeLayout {
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ExpandablePanel, 0, 0);
 
-        mAnimationDuration = a.getInteger(R.styleable.ExpandablePanel_animationDuration, DEFAULT_ANIM_DURATION);
+        mAnimationDuration =
+                a.getInteger(R.styleable.ExpandablePanel_animationDuration, DEFAULT_ANIM_DURATION);
 
         int handleId = a.getResourceId(R.styleable.ExpandablePanel_handle, 0);
         if (handleId == 0) {
@@ -52,12 +52,14 @@ public class ExpandablePanel extends RelativeLayout {
 
         int contentContainerId = a.getResourceId(R.styleable.ExpandablePanel_contentContainer, 0);
         if (contentContainerId == 0) {
-            throw new IllegalArgumentException("The content attribute is required and must refer to a valid child.");
+            throw new IllegalArgumentException(
+                    "The content attribute is required and must refer to a valid child.");
         }
 
         int contentId = a.getResourceId(R.styleable.ExpandablePanel_content, 0);
         if (contentId == 0) {
-            throw new IllegalArgumentException("The content attribute is required and must refer to a valid child.");
+            throw new IllegalArgumentException(
+                    "The content attribute is required and must refer to a valid child.");
         }
 
         mHandleId = handleId;
@@ -81,17 +83,20 @@ public class ExpandablePanel extends RelativeLayout {
 
         mHandle = findViewById(mHandleId);
         if (mHandle == null) {
-            throw new IllegalArgumentException("The handle attribute is must refer to an existing child.");
+            throw new IllegalArgumentException(
+                    "The handle attribute is must refer to an existing child.");
         }
 
         mContentContainer = findViewById(mContentContainerId);
         if (mContentContainer == null) {
-            throw new IllegalArgumentException("The content container attribute must refer to an existing child.");
+            throw new IllegalArgumentException(
+                    "The content container attribute must refer to an existing child.");
         }
 
         mContent = findViewById(mContentId);
         if (mContentContainer == null) {
-            throw new IllegalArgumentException("The content attribute must refer to an existing child.");
+            throw new IllegalArgumentException(
+                    "The content attribute must refer to an existing child.");
         }
 
         mContent.setVisibility(View.INVISIBLE);

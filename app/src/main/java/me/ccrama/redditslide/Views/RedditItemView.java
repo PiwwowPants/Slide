@@ -17,41 +17,25 @@ import android.text.style.StyleSpan;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.HorizontalScrollView;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-
+import android.widget.*;
 import com.devspark.robototextview.RobotoTypefaces;
-
-import net.dean.jraw.models.Account;
-import net.dean.jraw.models.Comment;
-import net.dean.jraw.models.Submission;
-import net.dean.jraw.models.Subreddit;
-import net.dean.jraw.models.VoteDirection;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-
-import me.ccrama.redditslide.ActionStates;
+import me.ccrama.redditslide.*;
 import me.ccrama.redditslide.Adapters.ProfileCommentViewHolder;
 import me.ccrama.redditslide.Adapters.SubmissionViewHolder;
-import me.ccrama.redditslide.Authentication;
 import me.ccrama.redditslide.ForceTouch.PeekViewActivity;
-import me.ccrama.redditslide.OpenRedditLink;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.SettingValues;
-import me.ccrama.redditslide.SpoilerRobotoTextView;
 import me.ccrama.redditslide.SubmissionViews.PopulateSubmissionViewHolder;
-import me.ccrama.redditslide.TimeUtils;
-import me.ccrama.redditslide.UserSubscriptions;
 import me.ccrama.redditslide.Visuals.FontPreferences;
 import me.ccrama.redditslide.Visuals.Palette;
 import me.ccrama.redditslide.util.LogUtil;
 import me.ccrama.redditslide.util.SubmissionParser;
+import net.dean.jraw.models.Account;
+import net.dean.jraw.models.Comment;
+import net.dean.jraw.models.Submission;
+import net.dean.jraw.models.Subreddit;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
 
 /**
@@ -119,11 +103,13 @@ public class RedditItemView extends RelativeLayout {
                     if (end.length() >= 3) {
                         new AsyncLoadComment(end).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     } else {
-                        new AsyncLoadSubmission(submission).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        new AsyncLoadSubmission(submission).executeOnExecutor(
+                                AsyncTask.THREAD_POOL_EXECUTOR);
                     }
 
                 } else {
-                    new AsyncLoadSubmission(submission).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    new AsyncLoadSubmission(submission).executeOnExecutor(
+                            AsyncTask.THREAD_POOL_EXECUTOR);
                 }
                 break;
             }
@@ -156,7 +142,7 @@ public class RedditItemView extends RelativeLayout {
 
     public class AsyncLoadProfile extends AsyncTask<Void, Void, Account> {
 
-        String id;
+        final String id;
 
         public AsyncLoadProfile(String profileName) {
             this.id = profileName;
@@ -185,7 +171,7 @@ public class RedditItemView extends RelativeLayout {
 
     private void doUser(Account account, View content) {
         String name = account.getFullName();
-        final TextView title = (TextView) content.findViewById(R.id.title);
+        final TextView title = content.findViewById(R.id.title);
         title.setText(name);
 
         final int currentColor = Palette.getColorUser(name);
@@ -205,7 +191,7 @@ public class RedditItemView extends RelativeLayout {
 
     public class AsyncLoadSubreddit extends AsyncTask<Void, Void, Subreddit> {
 
-        String id;
+        final String id;
 
         public AsyncLoadSubreddit(String subredditName) {
             this.id = subredditName;
@@ -238,8 +224,9 @@ public class RedditItemView extends RelativeLayout {
 
     private void doSidebar(Subreddit subreddit, View content) {
         if ((!Authentication.isLoggedIn && UserSubscriptions.getSubscriptions(getContext())
-                .contains(subreddit.getDisplayName().toLowerCase(Locale.ENGLISH))) || (Authentication.isLoggedIn
-                && subreddit.isUserSubscriber())) {
+                .contains(subreddit.getDisplayName().toLowerCase(Locale.ENGLISH))) || (
+                Authentication.isLoggedIn
+                        && subreddit.isUserSubscriber())) {
             ((AppCompatCheckBox) content.findViewById(R.id.subscribed)).setChecked(true);
         }
         content.findViewById(R.id.header_sub)
@@ -278,7 +265,7 @@ public class RedditItemView extends RelativeLayout {
 
     public class AsyncLoadComment extends AsyncTask<Void, Void, Comment> {
 
-        String id;
+        final String id;
 
         public AsyncLoadComment(String commentId) {
             this.id = commentId;
@@ -308,7 +295,7 @@ public class RedditItemView extends RelativeLayout {
 
     public class AsyncLoadSubmission extends AsyncTask<Void, Void, Submission> {
 
-        String id;
+        final String id;
 
         public AsyncLoadSubmission(String submissionId) {
             this.id = submissionId;
@@ -330,7 +317,8 @@ public class RedditItemView extends RelativeLayout {
             }
             if (progress != null) {
                 progress.setVisibility(GONE);
-            }}
+            }
+        }
     }
 
     public void doComment(Comment comment, View content) {
@@ -355,14 +343,18 @@ public class RedditItemView extends RelativeLayout {
         holder.score.setText(score);
 
         if (Authentication.isLoggedIn) {
-            if (ActionStates.getVoteDirection(comment) == VoteDirection.UPVOTE) {
-                holder.score.setTextColor(
-                        getContext().getResources().getColor(R.color.md_orange_500));
-            } else if (ActionStates.getVoteDirection(comment) == VoteDirection.DOWNVOTE) {
-                holder.score.setTextColor(
-                        getContext().getResources().getColor(R.color.md_blue_500));
-            } else {
-                holder.score.setTextColor(holder.time.getCurrentTextColor());
+            switch (ActionStates.getVoteDirection(comment)) {
+                case UPVOTE:
+                    holder.score.setTextColor(
+                            getContext().getResources().getColor(R.color.md_orange_500));
+                    break;
+                case DOWNVOTE:
+                    holder.score.setTextColor(
+                            getContext().getResources().getColor(R.color.md_blue_500));
+                    break;
+                default:
+                    holder.score.setTextColor(holder.time.getCurrentTextColor());
+                    break;
             }
         }
         String spacer = getContext().getString(R.string.submission_properties_seperator);
@@ -441,8 +433,8 @@ public class RedditItemView extends RelativeLayout {
         final SubmissionViewHolder holder = new SubmissionViewHolder(content);
         CreateCardView.resetColorCard(holder.itemView);
         if (submission.getSubredditName() != null) {
-            CreateCardView.colorCard(submission.getSubredditName().toLowerCase(Locale.ENGLISH), holder.itemView,
-                    "no_subreddit", false);
+            CreateCardView.colorCard(submission.getSubredditName().toLowerCase(Locale.ENGLISH),
+                    holder.itemView, "no_subreddit", false);
         }
         new PopulateSubmissionViewHolder().populateSubmissionViewHolder(holder, submission,
                 ((PeekViewActivity) getContext()), false, false, null, null, false, false, null,
@@ -478,7 +470,7 @@ public class RedditItemView extends RelativeLayout {
             } else {
                 commentOverflow.setViews(blocks.subList(startIndex, blocks.size()), subreddit);
             }
-            SidebarLayout sidebar = (SidebarLayout) findViewById(R.id.drawer_layout);
+            SidebarLayout sidebar = findViewById(R.id.drawer_layout);
             for (int i = 0; i < commentOverflow.getChildCount(); i++) {
                 View maybeScrollable = commentOverflow.getChildAt(i);
                 if (maybeScrollable instanceof HorizontalScrollView) {

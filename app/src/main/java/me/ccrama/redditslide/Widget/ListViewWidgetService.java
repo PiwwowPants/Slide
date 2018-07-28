@@ -10,30 +10,20 @@ import android.text.Html;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
-
+import me.ccrama.redditslide.Activities.OpenContent;
+import me.ccrama.redditslide.*;
+import me.ccrama.redditslide.Autocache.AutoCacheScheduler;
+import me.ccrama.redditslide.Notifications.NotificationJobScheduler;
+import me.ccrama.redditslide.Visuals.Palette;
+import me.ccrama.redditslide.util.LogUtil;
+import me.ccrama.redditslide.util.NetworkUtil;
 import net.dean.jraw.models.Submission;
 import net.dean.jraw.models.Thumbnails;
-import net.dean.jraw.paginators.DomainPaginator;
-import net.dean.jraw.paginators.Paginator;
-import net.dean.jraw.paginators.Sorting;
-import net.dean.jraw.paginators.SubredditPaginator;
-import net.dean.jraw.paginators.TimePeriod;
+import net.dean.jraw.paginators.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-
-import me.ccrama.redditslide.Activities.OpenContent;
-import me.ccrama.redditslide.Authentication;
-import me.ccrama.redditslide.Autocache.AutoCacheScheduler;
-import me.ccrama.redditslide.Notifications.NotificationJobScheduler;
-import me.ccrama.redditslide.PostMatch;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.TimeUtils;
-import me.ccrama.redditslide.Visuals.Palette;
-import me.ccrama.redditslide.util.LogUtil;
-import me.ccrama.redditslide.util.NetworkUtil;
 
 /**
  * Created by carlo_000 on 5/4/2016.
@@ -46,10 +36,10 @@ public class ListViewWidgetService extends RemoteViewsService {
 }
 
 class ListViewRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
-    private Context               mContext;
+    private final Context mContext;
     private ArrayList<Submission> records;
-    String subreddit;
-    int    id;
+    final String subreddit;
+    final int id;
 
     public ListViewRemoteViewsFactory(Context context, Intent intent, String subreddit, int id) {
         mContext = context;

@@ -6,17 +6,14 @@ package me.ccrama.redditslide.Adapters;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
+import android.content.*;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -35,11 +32,18 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.cocosw.bottomsheet.BottomSheet;
 import com.devspark.robototextview.RobotoTypefaces;
-
+import me.ccrama.redditslide.Activities.Inbox;
+import me.ccrama.redditslide.Activities.Profile;
+import me.ccrama.redditslide.Activities.SendMessage;
+import me.ccrama.redditslide.*;
+import me.ccrama.redditslide.Views.DoEditorActions;
+import me.ccrama.redditslide.Views.RoundedBackgroundSpan;
+import me.ccrama.redditslide.Visuals.FontPreferences;
+import me.ccrama.redditslide.Visuals.Palette;
+import me.ccrama.redditslide.util.SubmissionParser;
 import net.dean.jraw.ApiException;
 import net.dean.jraw.managers.InboxManager;
 import net.dean.jraw.models.Captcha;
@@ -49,24 +53,6 @@ import net.dean.jraw.models.PrivateMessage;
 import java.util.List;
 import java.util.Locale;
 
-import me.ccrama.redditslide.Activities.Inbox;
-import me.ccrama.redditslide.Activities.Profile;
-import me.ccrama.redditslide.Activities.SendMessage;
-import me.ccrama.redditslide.Authentication;
-import me.ccrama.redditslide.DataShare;
-import me.ccrama.redditslide.Drafts;
-import me.ccrama.redditslide.OpenRedditLink;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.SettingValues;
-import me.ccrama.redditslide.TimeUtils;
-import me.ccrama.redditslide.UserSubscriptions;
-import me.ccrama.redditslide.UserTags;
-import me.ccrama.redditslide.Views.DoEditorActions;
-import me.ccrama.redditslide.Views.RoundedBackgroundSpan;
-import me.ccrama.redditslide.Visuals.FontPreferences;
-import me.ccrama.redditslide.Visuals.Palette;
-import me.ccrama.redditslide.util.SubmissionParser;
-
 
 public class InboxAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         implements BaseAdapter {
@@ -75,7 +61,7 @@ public class InboxAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private final        int SPACER    = 6;
     public final  Context       mContext;
     private final RecyclerView  listView;
-    public        InboxMessages dataSet;
+    public final InboxMessages dataSet;
 
     public InboxAdapter(Context mContext, InboxMessages dataSet, RecyclerView listView) {
 
@@ -119,31 +105,37 @@ public class InboxAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return TOP_LEVEL;
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        if (i == SPACER) {
-            View v = LayoutInflater.from(viewGroup.getContext())
-                    .inflate(R.layout.spacer, viewGroup, false);
-            return new SpacerViewHolder(v);
-        } else if (i == TOP_LEVEL) {
-            View v = LayoutInflater.from(viewGroup.getContext())
-                    .inflate(R.layout.top_level_message, viewGroup, false);
-            return new MessageViewHolder(v);
-        } else if (i == 5) {
-            View v = LayoutInflater.from(viewGroup.getContext())
-                    .inflate(R.layout.loadingmore, viewGroup, false);
-            return new ContributionAdapter.EmptyViewHolder(v);
-        } else {
-            View v = LayoutInflater.from(viewGroup.getContext())
-                    .inflate(R.layout.message_reply, viewGroup, false);
-            return new MessageViewHolder(v);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        switch (i) {
+            case SPACER: {
+                View v = LayoutInflater.from(viewGroup.getContext())
+                        .inflate(R.layout.spacer, viewGroup, false);
+                return new SpacerViewHolder(v);
+            }
+            case TOP_LEVEL: {
+                View v = LayoutInflater.from(viewGroup.getContext())
+                        .inflate(R.layout.top_level_message, viewGroup, false);
+                return new MessageViewHolder(v);
+            }
+            case 5: {
+                View v = LayoutInflater.from(viewGroup.getContext())
+                        .inflate(R.layout.loadingmore, viewGroup, false);
+                return new ContributionAdapter.EmptyViewHolder(v);
+            }
+            default: {
+                View v = LayoutInflater.from(viewGroup.getContext())
+                        .inflate(R.layout.message_reply, viewGroup, false);
+                return new MessageViewHolder(v);
 
+            }
         }
 
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, int pos) {
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder viewHolder, int pos) {
         int i = pos != 0 ? pos - 1 : pos;
 
         if (!(viewHolder instanceof ContributionAdapter.EmptyViewHolder)
@@ -425,7 +417,7 @@ public class InboxAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         final View dialoglayout = inflater.inflate(R.layout.edit_comment, null);
         final AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(mContext);
 
-        final EditText e = (EditText) dialoglayout.findViewById(R.id.entry);
+        final EditText e = dialoglayout.findViewById(R.id.entry);
 
         DoEditorActions.doActions(e, dialoglayout,
                 ((AppCompatActivity) mContext).getSupportFragmentManager(), (Activity) mContext,
@@ -457,8 +449,8 @@ public class InboxAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private class AsyncReplyTask extends AsyncTask<Void, Void, Void> {
         String trying;
 
-        Message replyTo;
-        String  text;
+        final Message replyTo;
+        final String text;
 
         public AsyncReplyTask(Message replyTo, String text) {
             this.replyTo = replyTo;
@@ -490,16 +482,14 @@ public class InboxAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             if (sent) {
                 Snackbar s = Snackbar.make(listView, "Reply sent!", Snackbar.LENGTH_LONG);
                 View view = s.getView();
-                TextView tv =
-                        (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                TextView tv = view.findViewById(android.support.design.R.id.snackbar_text);
                 tv.setTextColor(Color.WHITE);
                 s.show();
             } else {
                 Snackbar s = Snackbar.make(listView, "Sending failed! Reply saved as a draft.",
                         Snackbar.LENGTH_LONG);
                 View view = s.getView();
-                TextView tv =
-                        (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+                TextView tv = view.findViewById(android.support.design.R.id.snackbar_text);
                 tv.setTextColor(Color.WHITE);
                 s.show();
                 Drafts.addDraft(text);
@@ -558,7 +548,7 @@ public class InboxAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private class AsyncSetRead extends AsyncTask<Message, Void, Void> {
 
-        Boolean b;
+        final Boolean b;
 
         public AsyncSetRead(Boolean b) {
             this.b = b;

@@ -3,9 +3,8 @@ package me.ccrama.redditslide.Adapters;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
-
 import com.fasterxml.jackson.databind.JsonNode;
-
+import me.ccrama.redditslide.Authentication;
 import net.dean.jraw.models.Message;
 import net.dean.jraw.models.PrivateMessage;
 import net.dean.jraw.paginators.InboxPaginator;
@@ -13,8 +12,6 @@ import net.dean.jraw.paginators.Paginator;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import me.ccrama.redditslide.Authentication;
 
 /**
  * Created by ccrama on 9/17/2015.
@@ -44,8 +41,7 @@ public class InboxMessages extends GeneralPosts {
 
     public void loadMore(InboxAdapter adapter, String where, boolean refresh) {
 
-            new LoadData(refresh).execute(where);
-
+        new LoadData(refresh).execute(where);
 
 
     }
@@ -66,9 +62,9 @@ public class InboxMessages extends GeneralPosts {
             if (subs == null && !nomore) {
                 adapter.setError(true);
                 refreshLayout.setRefreshing(false);
-            } else if(!nomore) {
+            } else if (!nomore) {
 
-                if(subs.size() < 25){
+                if (subs.size() < 25) {
                     nomore = true;
                 }
                 if (reset) {
@@ -84,8 +80,8 @@ public class InboxMessages extends GeneralPosts {
                         }
                     });
                 } else {
-                    if(posts == null){
-                        posts =new ArrayList<>();
+                    if (posts == null) {
+                        posts = new ArrayList<>();
                     }
                     posts.addAll(subs);
                     ((Activity) adapter.mContext).runOnUiThread(new Runnable() {
@@ -113,7 +109,13 @@ public class InboxMessages extends GeneralPosts {
                     ArrayList<Message> done = new ArrayList<>();
                     for (Message m : paginator.next()) {
                         done.add(m);
-                        if (m.getDataNode().has("replies") && !m.getDataNode().get("replies").toString().isEmpty() && m.getDataNode().get("replies").has("data") && m.getDataNode().get("replies").get("data").has("children")) {
+                        if (m.getDataNode().has("replies")
+                                && !m.getDataNode()
+                                .get("replies")
+                                .toString()
+                                .isEmpty()
+                                && m.getDataNode().get("replies").has("data")
+                                && m.getDataNode().get("replies").get("data").has("children")) {
                             JsonNode n = m.getDataNode().get("replies").get("data").get("children");
 
                             for (JsonNode o : n) {

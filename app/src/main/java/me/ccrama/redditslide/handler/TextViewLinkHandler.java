@@ -8,20 +8,19 @@ import android.text.method.BaseMovementMethod;
 import android.text.style.URLSpan;
 import android.view.MotionEvent;
 import android.widget.TextView;
-
 import me.ccrama.redditslide.ClickableText;
 import me.ccrama.redditslide.SettingValues;
 import me.ccrama.redditslide.SpoilerRobotoTextView;
 
 public class TextViewLinkHandler extends BaseMovementMethod {
     private final ClickableText clickableText;
-    String                subreddit;
+    final String subreddit;
     SpoilerRobotoTextView comm;
-    Spannable             sequence;
+    final Spannable sequence;
     float                 position;
     boolean               clickHandled;
-    Handler               handler;
-    Runnable              longClicked;
+    final Handler handler;
+    final Runnable longClicked;
     URLSpan[]             link;
     MotionEvent           event;
 

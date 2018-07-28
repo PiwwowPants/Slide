@@ -25,6 +25,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.AppCompatCheckBox;
@@ -32,22 +33,20 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
-
+import me.ccrama.redditslide.Activities.BaseActivityAnim;
+import me.ccrama.redditslide.*;
+import me.ccrama.redditslide.Fragments.SettingsThemeFragment;
+import me.ccrama.redditslide.Visuals.Palette;
+import me.ccrama.redditslide.util.LogUtil;
 import net.dean.jraw.models.MultiReddit;
 import net.dean.jraw.models.MultiSubreddit;
 import net.dean.jraw.models.Subreddit;
@@ -59,19 +58,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import me.ccrama.redditslide.Activities.BaseActivityAnim;
-import me.ccrama.redditslide.Activities.SettingsTheme;
-import me.ccrama.redditslide.Authentication;
-import me.ccrama.redditslide.CaseInsensitiveArrayList;
-import me.ccrama.redditslide.ColorPreferences;
-import me.ccrama.redditslide.Fragments.SettingsThemeFragment;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.SettingValues;
-import me.ccrama.redditslide.UserSubscriptions;
-import me.ccrama.redditslide.Visuals.Palette;
-import me.ccrama.redditslide.util.LogUtil;
-
 import static me.ccrama.redditslide.UserSubscriptions.setPinned;
 
 public class ReorderSubreddits extends BaseActivityAnim {
@@ -82,6 +68,7 @@ public class ReorderSubreddits extends BaseActivityAnim {
     private String                   input;
     public static final String MULTI_REDDIT = "/m/";
     MenuItem subscribe;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -155,11 +142,11 @@ public class ReorderSubreddits extends BaseActivityAnim {
                 return true;
             case R.id.alphabetize_subscribe:
                 SettingValues.prefs.edit()
-                        .putBoolean(SettingValues.PREF_ALPHABETIZE_SUBSCRIBE, !SettingValues.alphabetizeOnSubscribe)
+                        .putBoolean(SettingValues.PREF_ALPHABETIZE_SUBSCRIBE,
+                                !SettingValues.alphabetizeOnSubscribe)
                         .apply();
                 SettingValues.alphabetizeOnSubscribe = !SettingValues.alphabetizeOnSubscribe;
-                if(subscribe != null)
-                subscribe.setChecked(SettingValues.alphabetizeOnSubscribe);
+                if (subscribe != null) subscribe.setChecked(SettingValues.alphabetizeOnSubscribe);
                 return true;
             case R.id.info:
                 new AlertDialogWrapper.Builder(ReorderSubreddits.this).setTitle(
@@ -230,7 +217,7 @@ public class ReorderSubreddits extends BaseActivityAnim {
                         isSubscribed.put(s.getDisplayName().toLowerCase(Locale.ENGLISH), true);
                     }
 
-                    if(UserSubscriptions.multireddits == null){
+                    if (UserSubscriptions.multireddits == null) {
                         UserSubscriptions.loadMultireddits();
                     }
                     return null;
@@ -345,9 +332,8 @@ public class ReorderSubreddits extends BaseActivityAnim {
                                         new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
-                                                final String[] multis = new String[UserSubscriptions
-                                                        .multireddits
-                                                        .size()];
+                                                final String[] multis =
+                                                        new String[UserSubscriptions.multireddits.size()];
                                                 int i = 0;
                                                 for (MultiReddit m : UserSubscriptions.multireddits) {
                                                     multis[i] = m.getDisplayName();
@@ -418,24 +404,24 @@ public class ReorderSubreddits extends BaseActivityAnim {
                                     .input(getString(R.string.reorder_subreddit_name), null, false,
                                             new MaterialDialog.InputCallback() {
                                                 @Override
-                                                public void onInput(MaterialDialog dialog,
-                                                        CharSequence raw) {
+                                                public void onInput(@NonNull MaterialDialog dialog,
+                                                                    CharSequence raw) {
                                                     input = raw.toString();
                                                 }
                                             })
                                     .positiveText(R.string.btn_add)
                                     .onPositive(new MaterialDialog.SingleButtonCallback() {
                                         @Override
-                                        public void onClick(MaterialDialog dialog,
-                                                DialogAction which) {
+                                        public void onClick(@NonNull MaterialDialog dialog,
+                                                            @NonNull DialogAction which) {
                                             new AsyncGetSubreddit().execute(input);
                                         }
                                     })
                                     .negativeText(R.string.btn_cancel)
                                     .onNegative(new MaterialDialog.SingleButtonCallback() {
                                         @Override
-                                        public void onClick(MaterialDialog dialog,
-                                                DialogAction which) {
+                                        public void onClick(@NonNull MaterialDialog dialog,
+                                                            @NonNull DialogAction which) {
 
                                         }
                                     });
@@ -457,8 +443,8 @@ public class ReorderSubreddits extends BaseActivityAnim {
                             .input("example.com" + getString(R.string.reorder_domain_placeholder),
                                     null, false, new MaterialDialog.InputCallback() {
                                         @Override
-                                        public void onInput(MaterialDialog dialog,
-                                                CharSequence raw) {
+                                        public void onInput(@NonNull MaterialDialog dialog,
+                                                            CharSequence raw) {
                                             input = raw.toString()
                                                     .replaceAll("\\s",
                                                             ""); //remove whitespace from input
@@ -475,7 +461,8 @@ public class ReorderSubreddits extends BaseActivityAnim {
                             .inputRange(1, 35)
                             .onPositive(new MaterialDialog.SingleButtonCallback() {
                                 @Override
-                                public void onClick(MaterialDialog dialog, DialogAction which) {
+                                public void onClick(@NonNull MaterialDialog dialog,
+                                                    @NonNull DialogAction which) {
                                     try {
                                         String url = (input);
 
@@ -508,7 +495,8 @@ public class ReorderSubreddits extends BaseActivityAnim {
                             .negativeText(R.string.btn_cancel)
                             .onNegative(new MaterialDialog.SingleButtonCallback() {
                                 @Override
-                                public void onClick(MaterialDialog dialog, DialogAction which) {
+                                public void onClick(@NonNull MaterialDialog dialog,
+                                                    @NonNull DialogAction which) {
 
                                 }
                             })
@@ -722,8 +710,9 @@ public class ReorderSubreddits extends BaseActivityAnim {
             this.items = items;
         }
 
+        @NonNull
         @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             if (viewType == 2) {
                 View v = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.spacer, parent, false);
@@ -837,9 +826,9 @@ public class ReorderSubreddits extends BaseActivityAnim {
             });
         }
 
-        int[]      textColorAttr = new int[]{R.attr.fontColor};
-        TypedArray ta            = obtainStyledAttributes(textColorAttr);
-        int        textColor     = ta.getColor(0, Color.BLACK);
+        final int[] textColorAttr = new int[]{R.attr.fontColor};
+        final TypedArray ta = obtainStyledAttributes(textColorAttr);
+        final int textColor = ta.getColor(0, Color.BLACK);
 
         public void updateToolbar() {
             mToolbar.setTitle(
@@ -848,7 +837,8 @@ public class ReorderSubreddits extends BaseActivityAnim {
         }
 
         @Override
-        public void onBindViewHolder(final RecyclerView.ViewHolder holderB, final int position) {
+        public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holderB,
+                                     final int position) {
             if (holderB instanceof ViewHolder) {
                 final ViewHolder holder = (ViewHolder) holderB;
                 final String origPos = items.get(position);
@@ -876,8 +866,8 @@ public class ReorderSubreddits extends BaseActivityAnim {
                             }
                         });
                 holder.check.setChecked(
-                        isSubscribed.containsKey(origPos.toLowerCase(Locale.ENGLISH)) && isSubscribed.get(
-                                origPos.toLowerCase(Locale.ENGLISH)));
+                        isSubscribed.containsKey(origPos.toLowerCase(Locale.ENGLISH))
+                                && isSubscribed.get(origPos.toLowerCase(Locale.ENGLISH)));
                 holder.check.setOnCheckedChangeListener(
                         new CompoundButton.OnCheckedChangeListener() {
                             @Override
@@ -890,7 +880,8 @@ public class ReorderSubreddits extends BaseActivityAnim {
                                             getString(R.string.reorder_unsubscribed_toast, origPos),
                                             Snackbar.LENGTH_SHORT).show();
                                 } else {
-                                    new UserSubscriptions.SubscribeTask(ReorderSubreddits.this).execute(sub);
+                                    new UserSubscriptions.SubscribeTask(
+                                            ReorderSubreddits.this).execute(sub);
                                     Snackbar.make(mToolbar,
                                             getString(R.string.reorder_subscribed_toast, origPos),
                                             Snackbar.LENGTH_SHORT).show();
@@ -955,83 +946,94 @@ public class ReorderSubreddits extends BaseActivityAnim {
                                     }, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            if (which == 2) {
-                                                AlertDialogWrapper.Builder b =
-                                                        new AlertDialogWrapper.Builder(
-                                                                ReorderSubreddits.this).setTitle(
-                                                                R.string.reorder_remove_title)
-                                                                .setPositiveButton(
-                                                                        R.string.btn_remove,
-                                                                        new DialogInterface.OnClickListener() {
-                                                                            @Override
-                                                                            public void onClick(
-                                                                                    DialogInterface dialog,
-                                                                                    int which) {
-                                                                                subs.remove(
-                                                                                        items.get(
-                                                                                                position));
-                                                                                adapter.notifyItemRemoved(
-                                                                                        position);
-                                                                            }
-                                                                        })
-                                                                .setNegativeButton(
-                                                                        R.string.btn_cancel,
-                                                                        new DialogInterface.OnClickListener() {
-                                                                            @Override
-                                                                            public void onClick(
-                                                                                    DialogInterface dialog,
-                                                                                    int which) {
+                                            switch (which) {
+                                                case 2:
+                                                    AlertDialogWrapper.Builder b =
+                                                            new AlertDialogWrapper.Builder(
+                                                                    ReorderSubreddits.this).setTitle(
+                                                                    R.string.reorder_remove_title)
+                                                                    .setPositiveButton(
+                                                                            R.string.btn_remove,
+                                                                            new DialogInterface.OnClickListener() {
+                                                                                @Override
+                                                                                public void onClick(
+                                                                                        DialogInterface dialog,
+                                                                                        int which) {
+                                                                                    subs.remove(
+                                                                                            items.get(
+                                                                                                    position));
+                                                                                    adapter.notifyItemRemoved(
+                                                                                            position);
+                                                                                }
+                                                                            })
+                                                                    .setNegativeButton(
+                                                                            R.string.btn_cancel,
+                                                                            new DialogInterface.OnClickListener() {
+                                                                                @Override
+                                                                                public void onClick(
+                                                                                        DialogInterface dialog,
+                                                                                        int which) {
 
-                                                                            }
-                                                                        });
-                                                if (Authentication.isLoggedIn
-                                                        && Authentication.didOnline
-                                                        && isSingle(origPos)) {
-                                                    b.setNeutralButton(
-                                                            R.string.reorder_remove_unsubsribe,
-                                                            new DialogInterface.OnClickListener() {
-                                                                @Override
-                                                                public void onClick(
-                                                                        DialogInterface dialog,
-                                                                        int which) {
-                                                                    final String sub =
-                                                                            items.get(position);
-                                                                    subs.remove(sub);
-                                                                    adapter.notifyItemRemoved(
-                                                                            position);
-                                                                    new UserSubscriptions.UnsubscribeTask()
-                                                                            .execute(sub);
-                                                                    isSubscribed.put(
-                                                                            sub.toLowerCase(Locale.ENGLISH),
-                                                                            false);
-                                                                }
-                                                            });
-                                                }
-                                                b.show();
-                                            } else if (which == 0) {
-                                                String s = items.get(holder.getAdapterPosition());
-                                                int index = subs.indexOf(s);
-                                                subs.remove(index);
-                                                subs.add(0, s);
-
-                                                notifyItemMoved(holder.getAdapterPosition(), 0);
-                                                recyclerView.smoothScrollToPosition(0);
-                                            } else if (which == 1) {
-                                                String s = items.get(holder.getAdapterPosition());
-                                                if (!UserSubscriptions.getPinned().contains(s)) {
+                                                                                }
+                                                                            });
+                                                    if (Authentication.isLoggedIn
+                                                            && Authentication.didOnline
+                                                            && isSingle(origPos)) {
+                                                        b.setNeutralButton(
+                                                                R.string.reorder_remove_unsubsribe,
+                                                                new DialogInterface.OnClickListener() {
+                                                                    @Override
+                                                                    public void onClick(
+                                                                            DialogInterface dialog,
+                                                                            int which) {
+                                                                        final String sub =
+                                                                                items.get(position);
+                                                                        subs.remove(sub);
+                                                                        adapter.notifyItemRemoved(
+                                                                                position);
+                                                                        new UserSubscriptions.UnsubscribeTask()
+                                                                                .execute(sub);
+                                                                        isSubscribed.put(
+                                                                                sub.toLowerCase(
+                                                                                        Locale.ENGLISH),
+                                                                                false);
+                                                                    }
+                                                                });
+                                                    }
+                                                    b.show();
+                                                    break;
+                                                case 0: {
+                                                    String s =
+                                                            items.get(holder.getAdapterPosition());
                                                     int index = subs.indexOf(s);
-                                                    UserSubscriptions.addPinned(s,
-                                                            ReorderSubreddits.this);
                                                     subs.remove(index);
                                                     subs.add(0, s);
 
                                                     notifyItemMoved(holder.getAdapterPosition(), 0);
                                                     recyclerView.smoothScrollToPosition(0);
-                                                } else {
-                                                    UserSubscriptions.removePinned(s,
-                                                            ReorderSubreddits.this);
-                                                    adapter.notifyItemChanged(
-                                                            holder.getAdapterPosition());
+                                                    break;
+                                                }
+                                                case 1: {
+                                                    String s =
+                                                            items.get(holder.getAdapterPosition());
+                                                    if (!UserSubscriptions.getPinned()
+                                                            .contains(s)) {
+                                                        int index = subs.indexOf(s);
+                                                        UserSubscriptions.addPinned(s,
+                                                                ReorderSubreddits.this);
+                                                        subs.remove(index);
+                                                        subs.add(0, s);
+
+                                                        notifyItemMoved(holder.getAdapterPosition(),
+                                                                0);
+                                                        recyclerView.smoothScrollToPosition(0);
+                                                    } else {
+                                                        UserSubscriptions.removePinned(s,
+                                                                ReorderSubreddits.this);
+                                                        adapter.notifyItemChanged(
+                                                                holder.getAdapterPosition());
+                                                    }
+                                                    break;
                                                 }
                                             }
                                         }
@@ -1077,8 +1079,8 @@ public class ReorderSubreddits extends BaseActivityAnim {
 
             public ViewHolder(View itemView) {
                 super(itemView);
-                text = (TextView) itemView.findViewById(R.id.name);
-                check = (AppCompatCheckBox) itemView.findViewById(R.id.isSubscribed);
+                text = itemView.findViewById(R.id.name);
+                check = itemView.findViewById(R.id.isSubscribed);
             }
         }
 

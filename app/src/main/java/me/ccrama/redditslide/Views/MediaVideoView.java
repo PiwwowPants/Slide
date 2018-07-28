@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.IntRange;
@@ -20,33 +19,25 @@ import android.view.animation.AnimationSet;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
-
 import com.devbrackets.android.exomedia.listener.OnBufferUpdateListener;
 import com.devbrackets.android.exomedia.listener.OnErrorListener;
 import com.devbrackets.android.exomedia.listener.OnPreparedListener;
-import com.devbrackets.android.exomedia.listener.OnVideoSizeChangedListener;
 import com.devbrackets.android.exomedia.ui.widget.VideoControls;
 import com.devbrackets.android.exomedia.ui.widget.VideoView;
 import com.devbrackets.android.exomedia.util.TimeFormatUtil;
-import com.google.android.exoplayer2.source.TrackGroup;
-import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
-import com.google.android.exoplayer2.upstream.FileDataSource;
+import com.google.android.exoplayer2.upstream.*;
 import com.google.android.exoplayer2.upstream.cache.CacheDataSink;
 import com.google.android.exoplayer2.upstream.cache.CacheDataSource;
 import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvictor;
 import com.google.android.exoplayer2.upstream.cache.SimpleCache;
 import com.google.android.exoplayer2.util.Util;
+import me.ccrama.redditslide.R;
+import me.ccrama.redditslide.SettingValues;
+import me.ccrama.redditslide.util.LogUtil;
 
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
-
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.SettingValues;
-import me.ccrama.redditslide.util.LogUtil;
 
 /**
  * Created by vishna on 22/07/15.
@@ -65,17 +56,17 @@ public class MediaVideoView extends VideoView {
     public int number;
     public View mute;
     OnPreparedListener mOnPreparedListener;
-    private int     currentBufferPercentage;
-    private Uri     uri;
-    private Context mContext;
+    private int currentBufferPercentage;
+    private Uri uri;
+    private final Context mContext;
     // Listeners
-    private OnBufferUpdateListener     bufferingUpdateListener  = new OnBufferUpdateListener() {
+    private final OnBufferUpdateListener bufferingUpdateListener = new OnBufferUpdateListener() {
         @Override
         public void onBufferingUpdate(int percent) {
             currentBufferPercentage = percent;
         }
     };
-    private OnPreparedListener         preparedListener         = new OnPreparedListener() {
+    private final OnPreparedListener preparedListener = new OnPreparedListener() {
         @Override
         public void onPrepared() {
             LogUtil.v("Video prepared for " + number);
@@ -89,7 +80,7 @@ public class MediaVideoView extends VideoView {
             start();
         }
     };
-    private OnErrorListener            errorListener            = new OnErrorListener() {
+    private final OnErrorListener errorListener = new OnErrorListener() {
         @Override
         public boolean onError(Exception e) {
             Log.e(LOG_TAG, "There was an error during video playback.");
@@ -125,31 +116,33 @@ public class MediaVideoView extends VideoView {
                 && keyCode != KeyEvent.KEYCODE_CALL
                 && keyCode != KeyEvent.KEYCODE_ENDCALL;
         if (isPlaying() && isKeyCodeSupported) {
-            if (keyCode == KeyEvent.KEYCODE_HEADSETHOOK
-                    || keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE) {
-                if (isPlaying()) {
-                    pause();
-                    getVideoControls().show();
-                } else {
-                    start();
-                    getVideoControls().hide();
-                }
-                return true;
-            } else if (keyCode == KeyEvent.KEYCODE_MEDIA_PLAY) {
-                if (!isPlaying()) {
-                    start();
-                    getVideoControls().hide();
-                }
-                return true;
-            } else if (keyCode == KeyEvent.KEYCODE_MEDIA_STOP
-                    || keyCode == KeyEvent.KEYCODE_MEDIA_PAUSE) {
-                if (isPlaying()) {
-                    pause();
-                    getVideoControls().show();
-                }
-                return true;
-            } else {
-                toggleMediaControlsVisiblity();
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_HEADSETHOOK:
+                case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
+                    if (isPlaying()) {
+                        pause();
+                        getVideoControls().show();
+                    } else {
+                        start();
+                        getVideoControls().hide();
+                    }
+                    return true;
+                case KeyEvent.KEYCODE_MEDIA_PLAY:
+                    if (!isPlaying()) {
+                        start();
+                        getVideoControls().hide();
+                    }
+                    return true;
+                case KeyEvent.KEYCODE_MEDIA_STOP:
+                case KeyEvent.KEYCODE_MEDIA_PAUSE:
+                    if (isPlaying()) {
+                        pause();
+                        getVideoControls().show();
+                    }
+                    return true;
+                default:
+                    toggleMediaControlsVisiblity();
+                    break;
             }
         }
 
@@ -210,27 +203,34 @@ public class MediaVideoView extends VideoView {
             return;
         }
         animate().alpha(1);
-        if(mute != null){
-            if(!SettingValues.isMuted){
+        if (mute != null) {
+            if (!SettingValues.isMuted) {
                 setVolume(1f);
-                ((ImageView)mute).setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+                ((ImageView) mute).setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
             } else {
                 setVolume(0);
-                ((ImageView)mute).setColorFilter(getResources().getColor(R.color.md_red_500), PorterDuff.Mode.SRC_ATOP);
+                ((ImageView) mute).setColorFilter(getResources().getColor(R.color.md_red_500),
+                        PorterDuff.Mode.SRC_ATOP);
             }
             mute.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(SettingValues.isMuted){
+                    if (SettingValues.isMuted) {
                         setVolume(1f);
                         SettingValues.isMuted = false;
-                        SettingValues.prefs.edit().putBoolean(SettingValues.PREF_MUTE, false).apply();
-                        ((ImageView)mute).setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+                        SettingValues.prefs.edit()
+                                .putBoolean(SettingValues.PREF_MUTE, false)
+                                .apply();
+                        ((ImageView) mute).setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
                     } else {
                         setVolume(0);
                         SettingValues.isMuted = true;
-                        SettingValues.prefs.edit().putBoolean(SettingValues.PREF_MUTE, true).apply();
-                        ((ImageView)mute).setColorFilter(getResources().getColor(R.color.md_red_500), PorterDuff.Mode.SRC_ATOP);
+                        SettingValues.prefs.edit()
+                                .putBoolean(SettingValues.PREF_MUTE, true)
+                                .apply();
+                        ((ImageView) mute).setColorFilter(
+                                getResources().getColor(R.color.md_red_500),
+                                PorterDuff.Mode.SRC_ATOP);
                     }
                 }
             });
@@ -265,17 +265,17 @@ public class MediaVideoView extends VideoView {
 
         switch (specMode) {
             case MeasureSpec.UNSPECIFIED:
-             /* Parent says we can be as big as we want. Just don't be larger
-              * than max size imposed on ourselves.
-              */
+                /* Parent says we can be as big as we want. Just don't be larger
+                 * than max size imposed on ourselves.
+                 */
                 result = desiredSize;
                 break;
 
             case MeasureSpec.AT_MOST:
-             /* Parent says we can be as big as we want, up to specSize.
-              * Don't be larger than specSize, and don't be larger than
-              * the max size imposed on ourselves.
-              */
+                /* Parent says we can be as big as we want, up to specSize.
+                 * Don't be larger than specSize, and don't be larger than
+                 * the max size imposed on ourselves.
+                 */
                 result = Math.min(desiredSize, specSize);
                 break;
 
@@ -327,8 +327,8 @@ class CacheDataSourceFactory implements DataSource.Factory {
 }
 
 class FadeInAnimation extends AnimationSet {
-    private View    animationView;
-    private boolean toVisible;
+    private final View animationView;
+    private final boolean toVisible;
 
     public FadeInAnimation(View view, boolean toVisible, long duration) {
         super(false);

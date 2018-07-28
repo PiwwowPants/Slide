@@ -6,7 +6,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.widget.Toast;
-
+import me.ccrama.redditslide.Activities.Login;
+import me.ccrama.redditslide.Activities.MainActivity;
+import me.ccrama.redditslide.Activities.MultiredditOverview;
+import me.ccrama.redditslide.Activities.NewsActivity;
+import me.ccrama.redditslide.DragSort.ReorderSubreddits;
+import me.ccrama.redditslide.util.NetworkUtil;
 import net.dean.jraw.ApiException;
 import net.dean.jraw.http.NetworkException;
 import net.dean.jraw.managers.AccountManager;
@@ -18,20 +23,7 @@ import net.dean.jraw.models.UserRecord;
 import net.dean.jraw.paginators.ImportantUserPaginator;
 import net.dean.jraw.paginators.UserSubredditsPaginator;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import me.ccrama.redditslide.Activities.Login;
-import me.ccrama.redditslide.Activities.MainActivity;
-import me.ccrama.redditslide.Activities.MultiredditOverview;
-import me.ccrama.redditslide.Activities.NewsActivity;
-import me.ccrama.redditslide.DragSort.ReorderSubreddits;
-import me.ccrama.redditslide.util.NetworkUtil;
+import java.util.*;
 
 /**
  * Created by carlo_000 on 1/16/2016.
@@ -75,7 +67,8 @@ public class UserSubscriptions {
         Map<String, String> multiNameToSubsMap = new HashMap<>();
 
         for (Map.Entry<String, String> entries : multiNameToSubsMapBase.entrySet()) {
-            multiNameToSubsMap.put(entries.getKey().toLowerCase(Locale.ENGLISH), entries.getValue());
+            multiNameToSubsMap.put(entries.getKey().toLowerCase(Locale.ENGLISH),
+                    entries.getValue());
         }
 
         return multiNameToSubsMap;
@@ -94,7 +87,8 @@ public class UserSubscriptions {
         Map<String, String> multiNameToSubsMap = new HashMap<>();
 
         for (Map.Entry<String, String> entries : multiNameToSubsMapBase.entrySet()) {
-            multiNameToSubsMap.put(entries.getKey().toLowerCase(Locale.ENGLISH), entries.getValue());
+            multiNameToSubsMap.put(entries.getKey().toLowerCase(Locale.ENGLISH),
+                    entries.getValue());
         }
 
         return multiNameToSubsMap;
@@ -213,7 +207,7 @@ public class UserSubscriptions {
 
     public static class SyncMultireddits extends AsyncTask<Void, Void, Boolean> {
 
-        Context c;
+        final Context c;
 
         public SyncMultireddits(Context c) {
             this.c = c;
@@ -286,8 +280,7 @@ public class UserSubscriptions {
 
     public static CaseInsensitiveArrayList modOf;
     public static ArrayList<MultiReddit>   multireddits;
-    public static HashMap<String, List<MultiReddit>> public_multireddits =
-            new HashMap<String, List<MultiReddit>>();
+    public static final HashMap<String, List<MultiReddit>> public_multireddits = new HashMap<>();
 
     public static void doOnlineSyncing() {
         if (Authentication.mod) {
@@ -452,7 +445,8 @@ public class UserSubscriptions {
             protected List<MultiReddit> doInBackground(Void... params) {
                 try {
                     public_multireddits.put(profile, new ArrayList(
-                            new MultiRedditManager(Authentication.reddit).getPublicMultis(profile)));
+                            new MultiRedditManager(Authentication.reddit).getPublicMultis(
+                                    profile)));
                 } catch (Exception e) {
                     public_multireddits.put(profile, null);
                     e.printStackTrace();
@@ -587,7 +581,8 @@ public class UserSubscriptions {
     }
 
     public static CaseInsensitiveArrayList getHistory() {
-        String[] hist = subscriptions.getString("subhistory", "").toLowerCase(Locale.ENGLISH).split(",");
+        String[] hist =
+                subscriptions.getString("subhistory", "").toLowerCase(Locale.ENGLISH).split(",");
         CaseInsensitiveArrayList history = new CaseInsensitiveArrayList();
         Collections.addAll(history, hist);
         return history;
@@ -638,23 +633,25 @@ public class UserSubscriptions {
 
     //Sets a list of subreddits as "searched for", will apply to all accounts
     public static void addSubsToHistory(ArrayList<Subreddit> s2) {
-        String history = subscriptions.getString("subhistory", "").toLowerCase(Locale.ENGLISH);
+        StringBuilder history = new StringBuilder(
+                subscriptions.getString("subhistory", "").toLowerCase(Locale.ENGLISH));
         for (Subreddit s : s2) {
-            if (!history.contains(s.getDisplayName().toLowerCase(Locale.ENGLISH))) {
-                history += "," + s.getDisplayName().toLowerCase(Locale.ENGLISH);
+            if (!history.toString().contains(s.getDisplayName().toLowerCase(Locale.ENGLISH))) {
+                history.append(",").append(s.getDisplayName().toLowerCase(Locale.ENGLISH));
             }
         }
-        subscriptions.edit().putString("subhistory", history).apply();
+        subscriptions.edit().putString("subhistory", history.toString()).apply();
     }
 
     public static void addSubsToHistory(CaseInsensitiveArrayList s2, boolean b) {
-        String history = subscriptions.getString("subhistory", "").toLowerCase(Locale.ENGLISH);
+        StringBuilder history = new StringBuilder(
+                subscriptions.getString("subhistory", "").toLowerCase(Locale.ENGLISH));
         for (String s : s2) {
-            if (!history.contains(s.toLowerCase(Locale.ENGLISH))) {
-                history += "," + s.toLowerCase(Locale.ENGLISH);
+            if (!history.toString().contains(s.toLowerCase(Locale.ENGLISH))) {
+                history.append(",").append(s.toLowerCase(Locale.ENGLISH));
             }
         }
-        subscriptions.edit().putString("subhistory", history).apply();
+        subscriptions.edit().putString("subhistory", history.toString()).apply();
     }
 
     public static ArrayList<Subreddit> syncSubredditsGetObject() {
@@ -667,9 +664,7 @@ public class UserSubscriptions {
 
             try {
                 while (pag.hasNext()) {
-                    for (net.dean.jraw.models.Subreddit s : pag.next()) {
-                        toReturn.add(s);
-                    }
+                    toReturn.addAll(pag.next());
                 }
 
 
@@ -697,9 +692,7 @@ public class UserSubscriptions {
 
                     try {
                         while (pag.hasNext()) {
-                            for (net.dean.jraw.models.Subreddit s : pag.next()) {
-                                toReturn.add(s);
-                            }
+                            toReturn.addAll(pag.next());
                         }
 
 
@@ -778,8 +771,9 @@ public class UserSubscriptions {
     }
 
     public static class SubscribeTask extends AsyncTask<String, Void, Void> {
-        Context context;
-        public SubscribeTask(Context context){
+        final Context context;
+
+        public SubscribeTask(Context context) {
             this.context = context;
         }
 
@@ -789,8 +783,10 @@ public class UserSubscriptions {
             for (String subreddit : subreddits) {
                 try {
                     m.subscribe(Authentication.reddit.getSubreddit(subreddit));
-                } catch(Exception e){
-                    Toast.makeText(context, "Couldn't subscribe, subreddit is private, quarantined, or invite only", Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    Toast.makeText(context,
+                            "Couldn't subscribe, subreddit is private, quarantined, or invite only",
+                            Toast.LENGTH_SHORT).show();
                 }
             }
             return null;
@@ -805,7 +801,7 @@ public class UserSubscriptions {
                 for (String subreddit : subreddits) {
                     m.unsubscribe(Authentication.reddit.getSubreddit(subreddit));
                 }
-            } catch(Exception e){
+            } catch (Exception e) {
 
             }
             return null;

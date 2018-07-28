@@ -1,40 +1,30 @@
-
 package me.ccrama.redditslide.Tumblr;
+
+import com.fasterxml.jackson.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
 
 @JsonPropertyOrder({
-    "blog",
-    "posts",
-    "total_posts"
+        "blog", "posts", "total_posts"
 })
 public class Response {
 
     @JsonProperty("blog")
     private Blog blog;
     @JsonProperty("posts")
-    private List<Post> posts = new ArrayList<Post>();
+    private List<Post> posts = new ArrayList<>();
     @JsonProperty("total_posts")
     private Integer totalPosts;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private final Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
-     * 
-     * @return
-     *     The blog
+     * @return The blog
      */
     @JsonProperty("blog")
     public Blog getBlog() {
@@ -42,9 +32,7 @@ public class Response {
     }
 
     /**
-     * 
-     * @param blog
-     *     The blog
+     * @param blog The blog
      */
     @JsonProperty("blog")
     public void setBlog(Blog blog) {
@@ -52,9 +40,7 @@ public class Response {
     }
 
     /**
-     * 
-     * @return
-     *     The posts
+     * @return The posts
      */
     @JsonProperty("posts")
     public List<Post> getPosts() {
@@ -62,9 +48,7 @@ public class Response {
     }
 
     /**
-     * 
-     * @param posts
-     *     The posts
+     * @param posts The posts
      */
     @JsonProperty("posts")
     public void setPosts(List<Post> posts) {
@@ -72,9 +56,7 @@ public class Response {
     }
 
     /**
-     * 
-     * @return
-     *     The totalPosts
+     * @return The totalPosts
      */
     @JsonProperty("total_posts")
     public Integer getTotalPosts() {
@@ -82,9 +64,7 @@ public class Response {
     }
 
     /**
-     * 
-     * @param totalPosts
-     *     The total_posts
+     * @param totalPosts The total_posts
      */
     @JsonProperty("total_posts")
     public void setTotalPosts(Integer totalPosts) {

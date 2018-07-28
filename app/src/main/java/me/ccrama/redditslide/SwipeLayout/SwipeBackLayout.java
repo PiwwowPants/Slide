@@ -12,11 +12,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import me.ccrama.redditslide.R;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import me.ccrama.redditslide.R;
 
 public class SwipeBackLayout extends FrameLayout {
     /**
@@ -91,7 +90,7 @@ public class SwipeBackLayout extends FrameLayout {
 
     private View mContentView;
 
-    private ViewDragHelper mDragHelper;
+    private final ViewDragHelper mDragHelper;
 
     private float mScrollPercent;
 
@@ -118,7 +117,7 @@ public class SwipeBackLayout extends FrameLayout {
 
     private boolean mInLayout;
 
-    private Rect mTmpRect = new Rect();
+    private final Rect mTmpRect = new Rect();
 
     /**
      * Edge being dragged
@@ -242,7 +241,7 @@ public class SwipeBackLayout extends FrameLayout {
      */
     public void addSwipeListener(SwipeListener listener) {
         if (mListeners == null) {
-            mListeners = new ArrayList<SwipeListener>();
+            mListeners = new ArrayList<>();
         }
         mListeners.add(listener);
     }
@@ -259,7 +258,7 @@ public class SwipeBackLayout extends FrameLayout {
         mListeners.remove(listener);
     }
 
-    public static interface SwipeListener {
+    public interface SwipeListener {
         /**
          * Invoke when state change
          *
@@ -269,7 +268,7 @@ public class SwipeBackLayout extends FrameLayout {
          * @see #STATE_DRAGGING
          * @see #STATE_SETTLING
          */
-        public void onScrollStateChange(int state, float scrollPercent);
+        void onScrollStateChange(int state, float scrollPercent);
 
         /**
          * Invoke when edge touched
@@ -280,12 +279,12 @@ public class SwipeBackLayout extends FrameLayout {
          * @see #EDGE_BOTTOM
          * @see #EDGE_TOP
          */
-        public void onEdgeTouch(int edgeFlag);
+        void onEdgeTouch(int edgeFlag);
 
         /**
          * Invoke when scroll percent over the threshold for the first time
          */
-        public void onScrollOverThreshold();
+        void onScrollOverThreshold();
     }
 
     /**
@@ -304,7 +303,6 @@ public class SwipeBackLayout extends FrameLayout {
      * Set a drawable used for edge shadow.
      *
      * @param shadow    Drawable to use
-     * @param edgeFlags Combination of edge flags describing the edge to set
      * @see #EDGE_LEFT
      * @see #EDGE_RIGHT
      * @see #EDGE_BOTTOM
@@ -327,7 +325,6 @@ public class SwipeBackLayout extends FrameLayout {
      * Set a drawable used for edge shadow.
      *
      * @param resId     Resource of drawable to use
-     * @param edgeFlags Combination of edge flags describing the edge to set
      * @see #EDGE_LEFT
      * @see #EDGE_RIGHT
      * @see #EDGE_BOTTOM

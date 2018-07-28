@@ -2,23 +2,15 @@ package me.ccrama.redditslide.Adapters;
 
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
-
 import com.lusfold.androidkeyvaluestore.KVStore;
-
+import me.ccrama.redditslide.Authentication;
+import me.ccrama.redditslide.PostMatch;
 import net.dean.jraw.models.Contribution;
 import net.dean.jraw.models.Submission;
 import net.dean.jraw.models.Thing;
 import net.dean.jraw.paginators.FullnamesPaginator;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
-
-import me.ccrama.redditslide.Authentication;
-import me.ccrama.redditslide.PostMatch;
-import me.ccrama.redditslide.util.LogUtil;
+import java.util.*;
 
 /**
  * Created by ccrama on 9/17/2015.
@@ -142,7 +134,7 @@ public class HistoryPosts extends GeneralPosts {
                             }
                         } else {
                             String key = entry.getKey();
-                            if(!key.contains("_")){
+                            if (!key.contains("_")) {
                                 key = "t3_" + key;
                             }
                             idsSorted.put((Long) done, key.replace(prefix, ""));
@@ -156,7 +148,7 @@ public class HistoryPosts extends GeneralPosts {
                     }
 
                     paginator = new FullnamesPaginator(Authentication.reddit,
-                            ids.toArray(new String[ids.size()-1]));
+                            ids.toArray(new String[ids.size() - 1]));
 
 
                 }

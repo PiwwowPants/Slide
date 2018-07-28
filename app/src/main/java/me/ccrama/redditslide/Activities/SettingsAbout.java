@@ -1,16 +1,11 @@
 package me.ccrama.redditslide.Activities;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import me.ccrama.redditslide.BuildConfig;
 import me.ccrama.redditslide.OpenRedditLink;
 import me.ccrama.redditslide.R;
@@ -40,11 +35,12 @@ public class SettingsAbout extends BaseActivityAnim {
             version.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    SharedPreferences prefs = getSharedPreferences(
-                            "STACKTRACE", Context.MODE_PRIVATE);
+                    SharedPreferences prefs =
+                            getSharedPreferences("STACKTRACE", Context.MODE_PRIVATE);
                     String stacktrace = prefs.getString("stacktrace", null);
                     if (stacktrace != null) {
-                        ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                        ClipboardManager clipboard =
+                                (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
                         ClipData clip = ClipData.newPlainText("Stacktrace", stacktrace);
                         clipboard.setPrimaryClip(clip);
                     }
@@ -61,7 +57,8 @@ public class SettingsAbout extends BaseActivityAnim {
                 ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText("Version", versionNumber);
                 clipboard.setPrimaryClip(clip);
-                Toast.makeText(SettingsAbout.this, R.string.settings_about_version_copied_toast, Toast.LENGTH_SHORT).show();
+                Toast.makeText(SettingsAbout.this, R.string.settings_about_version_copied_toast,
+                        Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -82,9 +79,11 @@ public class SettingsAbout extends BaseActivityAnim {
             @Override
             public void onClick(View v) {
                 try {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=me.ccrama.redditslide")));
+                    startActivity(new Intent(Intent.ACTION_VIEW,
+                            Uri.parse("market://details?id=me.ccrama.redditslide")));
                 } catch (android.content.ActivityNotFoundException anfe) {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=me.ccrama.redditslide")));
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(
+                            "http://play.google.com/store/apps/details?id=me.ccrama.redditslide")));
                 }
             }
         });

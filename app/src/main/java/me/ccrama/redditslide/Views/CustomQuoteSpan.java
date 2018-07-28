@@ -28,8 +28,8 @@ public class CustomQuoteSpan implements LeadingMarginSpan, LineBackgroundSpan {
     }
 
     @Override
-    public void drawLeadingMargin(Canvas c, Paint p, int x, int dir, int top, int baseline, int bottom,
-                                  CharSequence text, int start, int end, boolean first, Layout layout) {
+    public void drawLeadingMargin(Canvas c, Paint p, int x, int dir, int top, int baseline,
+                                  int bottom, CharSequence text, int start, int end, boolean first, Layout layout) {
         Paint.Style style = p.getStyle();
         int paintColor = p.getColor();
 
@@ -43,7 +43,8 @@ public class CustomQuoteSpan implements LeadingMarginSpan, LineBackgroundSpan {
     }
 
     @Override
-    public void drawBackground(Canvas c, Paint p, int left, int right, int top, int baseline, int bottom, CharSequence text, int start, int end, int lnum) {
+    public void drawBackground(Canvas c, Paint p, int left, int right, int top, int baseline,
+                               int bottom, CharSequence text, int start, int end, int lnum) {
         int paintColor = p.getColor();
         p.setColor(backgroundColor);
         c.drawRect(left, top, right, bottom, p);

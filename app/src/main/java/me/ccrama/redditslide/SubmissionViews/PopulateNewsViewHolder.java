@@ -2,17 +2,13 @@ package me.ccrama.redditslide.SubmissionViews;
 
 
 import android.app.Activity;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -27,62 +23,29 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.cocosw.bottomsheet.BottomSheet;
-
-import net.dean.jraw.ApiException;
-import net.dean.jraw.managers.AccountManager;
-import net.dean.jraw.models.Contribution;
-import net.dean.jraw.models.Submission;
-
-import org.apache.commons.text.StringEscapeUtils;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-
-import me.ccrama.redditslide.ActionStates;
-import me.ccrama.redditslide.Activities.Album;
-import me.ccrama.redditslide.Activities.AlbumPager;
-import me.ccrama.redditslide.Activities.FullscreenVideo;
-import me.ccrama.redditslide.Activities.MainActivity;
-import me.ccrama.redditslide.Activities.MediaView;
-import me.ccrama.redditslide.Activities.MultiredditOverview;
-import me.ccrama.redditslide.Activities.PostReadLater;
-import me.ccrama.redditslide.Activities.Profile;
-import me.ccrama.redditslide.Activities.Search;
-import me.ccrama.redditslide.Activities.SubredditView;
-import me.ccrama.redditslide.Activities.Tumblr;
-import me.ccrama.redditslide.Activities.TumblrPager;
+import me.ccrama.redditslide.*;
+import me.ccrama.redditslide.Activities.*;
 import me.ccrama.redditslide.Adapters.CommentAdapter;
 import me.ccrama.redditslide.Adapters.NewsViewHolder;
-import me.ccrama.redditslide.Authentication;
-import me.ccrama.redditslide.CommentCacheAsync;
-import me.ccrama.redditslide.ContentType;
-import me.ccrama.redditslide.DataShare;
 import me.ccrama.redditslide.ForceTouch.PeekViewActivity;
 import me.ccrama.redditslide.Fragments.SubmissionsView;
-import me.ccrama.redditslide.HasSeen;
-import me.ccrama.redditslide.Hidden;
-import me.ccrama.redditslide.LastComments;
-import me.ccrama.redditslide.OfflineSubreddit;
-import me.ccrama.redditslide.OpenRedditLink;
-import me.ccrama.redditslide.PostMatch;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.ReadLater;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.SettingValues;
-import me.ccrama.redditslide.SubmissionCache;
 import me.ccrama.redditslide.Views.CreateCardView;
 import me.ccrama.redditslide.Visuals.Palette;
 import me.ccrama.redditslide.util.GifUtils;
 import me.ccrama.redditslide.util.LinkUtil;
 import me.ccrama.redditslide.util.NetworkUtil;
 import me.ccrama.redditslide.util.OnSingleClickListener;
+import net.dean.jraw.ApiException;
+import net.dean.jraw.managers.AccountManager;
+import net.dean.jraw.models.Contribution;
+import net.dean.jraw.models.Submission;
+import org.apache.commons.text.StringEscapeUtils;
+
+import java.util.*;
 
 /**
  * Created by ccrama on 9/19/2015.
@@ -255,8 +218,7 @@ public class PopulateNewsViewHolder {
                         Snackbar s = Snackbar.make(holder.itemView, R.string.go_online_view_content,
                                 Snackbar.LENGTH_SHORT);
                         View view = s.getView();
-                        TextView tv = view.findViewById(
-                                android.support.design.R.id.snackbar_text);
+                        TextView tv = view.findViewById(android.support.design.R.id.snackbar_text);
                         tv.setTextColor(Color.WHITE);
                         s.show();
                     }
@@ -795,8 +757,8 @@ public class PopulateNewsViewHolder {
                             Snackbar s = Snackbar.make(holder.itemView, "Added to read later!",
                                     Snackbar.LENGTH_SHORT);
                             View view = s.getView();
-                            TextView tv = view.findViewById(
-                                    android.support.design.R.id.snackbar_text);
+                            TextView tv =
+                                    view.findViewById(android.support.design.R.id.snackbar_text);
                             tv.setTextColor(Color.WHITE);
                             s.setAction(R.string.btn_undo, new View.OnClickListener() {
                                 @Override
@@ -812,7 +774,8 @@ public class PopulateNewsViewHolder {
                                 }
                             });
                             if (NetworkUtil.isConnected(mContext)) {
-                                new CommentCacheAsync(Arrays.asList(submission), mContext,
+                                new CommentCacheAsync(Collections.singletonList(submission),
+                                        mContext,
                                         CommentCacheAsync.SAVED_SUBMISSIONS,
                                         new boolean[]{true, true}).executeOnExecutor(
                                         AsyncTask.THREAD_POOL_EXECUTOR);
@@ -865,7 +828,8 @@ public class PopulateNewsViewHolder {
                                 mContext.getString(R.string.input_reason_for_report), null, true,
                                 new MaterialDialog.InputCallback() {
                                     @Override
-                                    public void onInput(MaterialDialog dialog, CharSequence input) {
+                                    public void onInput(@NonNull MaterialDialog dialog,
+                                                        CharSequence input) {
                                         reportReason = input.toString();
                                     }
                                 })
@@ -880,7 +844,8 @@ public class PopulateNewsViewHolder {
                                 .onNegative(null)
                                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                                     @Override
-                                    public void onClick(MaterialDialog dialog, DialogAction which) {
+                                    public void onClick(@NonNull MaterialDialog dialog,
+                                                        @NonNull DialogAction which) {
                                         new AsyncTask<Void, Void, Void>() {
                                             @Override
                                             protected Void doInBackground(Void... params) {
@@ -1096,11 +1061,11 @@ public class PopulateNewsViewHolder {
 
     }
 
-    public <T extends Contribution> void populateNewsViewHolder(
-            final NewsViewHolder holder, final Submission submission, final Activity mContext,
-            boolean fullscreen, final boolean full, final List<T> posts,
-            final RecyclerView recyclerview, final boolean same, final boolean offline,
-            final String baseSub, @Nullable final CommentAdapter adapter) {
+    public <T extends Contribution> void populateNewsViewHolder(final NewsViewHolder holder,
+                                                                final Submission submission, final Activity mContext, boolean fullscreen,
+                                                                final boolean full, final List<T> posts, final RecyclerView recyclerview,
+                                                                final boolean same, final boolean offline, final String baseSub,
+                                                                @Nullable final CommentAdapter adapter) {
 
         holder.menu.setOnClickListener(new View.OnClickListener() {
             @Override

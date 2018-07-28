@@ -4,26 +4,19 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import me.ccrama.redditslide.Reddit;
 import me.ccrama.redditslide.SecretConstants;
 import me.ccrama.redditslide.util.HttpUtil;
 import me.ccrama.redditslide.util.LogUtil;
 import okhttp3.OkHttpClient;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by carlo_000 on 2/1/2016.
@@ -33,7 +26,7 @@ public class AlbumUtils {
     public static SharedPreferences albumRequests;
 
     private static String getHash(String s) {
-        if(s.contains("/comment/")){
+        if (s.contains("/comment/")) {
             s = s.substring(0, s.indexOf("/comment"));
         }
         String next = s.substring(s.lastIndexOf("/"), s.length());
@@ -59,14 +52,15 @@ public class AlbumUtils {
         }
     }
 
-    public static class GetAlbumWithCallback extends AsyncTask<String, Void, ArrayList<JsonElement>> {
+    public static class GetAlbumWithCallback
+            extends AsyncTask<String, Void, ArrayList<JsonElement>> {
 
         public String hash;
-        public Activity baseActivity;
+        public final Activity baseActivity;
 
-        private OkHttpClient client;
-        private Gson gson;
-        private String mashapeKey;
+        private final OkHttpClient client;
+        private final Gson gson;
+        private final String mashapeKey;
 
         public void onError() {
 
@@ -75,7 +69,7 @@ public class AlbumUtils {
         public GetAlbumWithCallback(@NotNull String url, @NotNull Activity baseActivity) {
 
             this.baseActivity = baseActivity;
-            if(url.contains("/layout/")){
+            if (url.contains("/layout/")) {
                 url = url.substring(0, url.indexOf("/layout"));
             }
             String rawDat = cutEnds(url);
@@ -84,8 +78,9 @@ public class AlbumUtils {
                 rawDat = rawDat.substring(0, rawDat.length() - 1);
             }
 
-            if (rawDat.substring(rawDat.lastIndexOf("/")+1, rawDat.length()).length() < 4) {
-                rawDat = rawDat.replace(rawDat.substring(rawDat.lastIndexOf("/"), rawDat.length()), "");
+            if (rawDat.substring(rawDat.lastIndexOf("/") + 1, rawDat.length()).length() < 4) {
+                rawDat = rawDat.replace(rawDat.substring(rawDat.lastIndexOf("/"), rawDat.length()),
+                        "");
             }
             if (rawDat.contains("?")) {
                 rawDat = rawDat.substring(0, rawDat.indexOf("?"));
@@ -98,7 +93,7 @@ public class AlbumUtils {
         }
 
         public void doWithData(List<Image> data) {
-            if(data == null || data.isEmpty()){
+            if (data == null || data.isEmpty()) {
                 onError();
             }
         }
@@ -116,13 +111,14 @@ public class AlbumUtils {
                 final Image toDo = new Image();
                 toDo.setAnimated(data.getAnimated() || data.getLink().contains(".gif"));
                 toDo.setDescription(data.getDescription());
-                if(data.getAdditionalProperties().keySet().contains("mp4")){
+                if (data.getAdditionalProperties().keySet().contains("mp4")) {
                     toDo.setHash(getHash(data.getAdditionalProperties().get("mp4").toString()));
                 } else {
                     toDo.setHash(getHash(data.getLink()));
                 }
                 toDo.setTitle(data.getTitle());
-                toDo.setExt(data.getLink().substring(data.getLink().lastIndexOf("."), data.getLink().length()));
+                toDo.setExt(data.getLink()
+                        .substring(data.getLink().lastIndexOf("."), data.getLink().length()));
                 toDo.setHeight(data.getHeight());
                 toDo.setWidth(data.getWidth());
                 return toDo;
@@ -152,13 +148,15 @@ public class AlbumUtils {
                 } else {
                     String apiUrl = "https://imgur-apiv3.p.mashape.com/3/image/" + hash + ".json";
                     LogUtil.v(apiUrl);
-                    JsonObject result = HttpUtil.getImgurMashapeJsonObject(client, gson, apiUrl, mashapeKey);
+                    JsonObject result =
+                            HttpUtil.getImgurMashapeJsonObject(client, gson, apiUrl, mashapeKey);
                     try {
                         if (result == null) {
                             onError();
                             return;
                         }
-                        final SingleImage single = new ObjectMapper().readValue(result.toString(), SingleAlbumImage.class).getData();
+                        final SingleImage single = new ObjectMapper().readValue(result.toString(),
+                                SingleAlbumImage.class).getData();
                         if (single.getLink() != null) {
                             baseActivity.runOnUiThread(new Runnable() {
                                 @Override
@@ -193,7 +191,8 @@ public class AlbumUtils {
                     count++;
                     String apiUrl = "https://imgur-apiv3.p.mashape.com/3/image/" + s + ".json";
                     LogUtil.v(apiUrl);
-                    JsonObject result = HttpUtil.getImgurMashapeJsonObject(client, gson, apiUrl, mashapeKey);
+                    JsonObject result =
+                            HttpUtil.getImgurMashapeJsonObject(client, gson, apiUrl, mashapeKey);
                     target[pos] = result;
                     done += 1;
                     if (done == target.length) {
@@ -201,7 +200,8 @@ public class AlbumUtils {
                         for (JsonElement el : target) {
                             if (el != null) {
                                 try {
-                                    SingleImage single = new ObjectMapper().readValue(el.toString(), SingleAlbumImage.class).getData();
+                                    SingleImage single = new ObjectMapper().readValue(el.toString(),
+                                            SingleAlbumImage.class).getData();
                                     LogUtil.v(el.toString());
                                     jsons.add(convertToSingle(single));
                                 } catch (IOException e) {
@@ -224,8 +224,10 @@ public class AlbumUtils {
             } else {
                 if (baseActivity != null) {
                     final String apiUrl = getUrl(hash);
-                    if (albumRequests.contains(apiUrl) && new JsonParser().parse(albumRequests.getString(apiUrl, "")).getAsJsonObject().has("data")) {
-                        parseJson(new JsonParser().parse(albumRequests.getString(apiUrl, "")).getAsJsonObject());
+                    if (albumRequests.contains(apiUrl) && new JsonParser().parse(
+                            albumRequests.getString(apiUrl, "")).getAsJsonObject().has("data")) {
+                        parseJson(new JsonParser().parse(albumRequests.getString(apiUrl, ""))
+                                .getAsJsonObject());
                     } else {
                         LogUtil.v(apiUrl);
                         // This call requires no mashape headers, don't pass in the headers Map
@@ -254,12 +256,32 @@ public class AlbumUtils {
     public static void preloadImages(Context c, JsonObject result, boolean gallery) {
         if (gallery && result != null) {
 
-            if (result.has("data") && result.get("data").getAsJsonObject().has("image") && result.get("data").getAsJsonObject().get("image").getAsJsonObject().has("album_images") && result.get("data").getAsJsonObject().get("image").getAsJsonObject().get("album_images").getAsJsonObject().has("images")) {
-                JsonArray obj = result.getAsJsonObject("data").getAsJsonObject("image").getAsJsonObject("album_images").get("images").getAsJsonArray();
+            if (result.has("data")
+                    && result.get("data").getAsJsonObject().has("image")
+                    && result.get("data")
+                    .getAsJsonObject()
+                    .get("image")
+                    .getAsJsonObject()
+                    .has("album_images")
+                    && result.get("data")
+                    .getAsJsonObject()
+                    .get("image")
+                    .getAsJsonObject()
+                    .get("album_images")
+                    .getAsJsonObject()
+                    .has("images")) {
+                JsonArray obj = result.getAsJsonObject("data")
+                        .getAsJsonObject("image")
+                        .getAsJsonObject("album_images")
+                        .get("images")
+                        .getAsJsonArray();
                 if (obj != null && !obj.isJsonNull() && obj.size() > 0) {
 
                     for (JsonElement o : obj) {
-                        ((Reddit) c.getApplicationContext()).getImageLoader().loadImage("https://imgur.com/" + o.getAsJsonObject().get("hash").getAsString() + ".png", new SimpleImageLoadingListener());
+                        ((Reddit) c.getApplicationContext()).getImageLoader()
+                                .loadImage("https://imgur.com/" + o.getAsJsonObject()
+                                        .get("hash")
+                                        .getAsString() + ".png", new SimpleImageLoadingListener());
                     }
 
                 }
@@ -273,7 +295,11 @@ public class AlbumUtils {
                     final JsonArray jsonAuthorsArray = obj.get("images").getAsJsonArray();
 
                     for (JsonElement o : jsonAuthorsArray) {
-                        ((Reddit) c.getApplicationContext()).getImageLoader().loadImage(o.getAsJsonObject().getAsJsonObject("links").get("original").getAsString(), new SimpleImageLoadingListener());
+                        ((Reddit) c.getApplicationContext()).getImageLoader()
+                                .loadImage(o.getAsJsonObject()
+                                        .getAsJsonObject("links")
+                                        .get("original")
+                                        .getAsString(), new SimpleImageLoadingListener());
                     }
                 }
             }

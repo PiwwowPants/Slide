@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,9 +18,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.afollestad.materialdialogs.AlertDialogWrapper;
-
+import me.ccrama.redditslide.*;
+import me.ccrama.redditslide.Activities.CommentsScreen;
+import me.ccrama.redditslide.Activities.MainActivity;
+import me.ccrama.redditslide.Activities.SubredditView;
+import me.ccrama.redditslide.Fragments.SubmissionsView;
+import me.ccrama.redditslide.SubmissionViews.PopulateNewsViewHolder;
+import me.ccrama.redditslide.Views.CatchStaggeredGridLayoutManager;
+import me.ccrama.redditslide.Views.CreateCardView;
+import me.ccrama.redditslide.util.OnSingleClickListener;
 import net.dean.jraw.managers.AccountManager;
 import net.dean.jraw.models.Submission;
 
@@ -27,33 +35,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import me.ccrama.redditslide.ActionStates;
-import me.ccrama.redditslide.Activities.CommentsScreen;
-import me.ccrama.redditslide.Activities.MainActivity;
-import me.ccrama.redditslide.Activities.SubredditView;
-import me.ccrama.redditslide.Authentication;
-import me.ccrama.redditslide.Fragments.SubmissionsView;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.SettingValues;
-import me.ccrama.redditslide.SubmissionViews.PopulateNewsViewHolder;
-import me.ccrama.redditslide.Views.CatchStaggeredGridLayoutManager;
-import me.ccrama.redditslide.Views.CreateCardView;
-import me.ccrama.redditslide.util.OnSingleClickListener;
-
 public class SubmissionNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         implements BaseAdapter {
 
     private final RecyclerView        listView;
     public final  String              subreddit;
-    public        Activity            context;
+    public final Activity context;
     private final boolean             custom;
-    public        SubredditPostsRealm dataSet;
-    public        List<Submission>    seen;
+    public final SubredditPostsRealm dataSet;
+    public final List<Submission> seen;
     private final int LOADING_SPINNER = 5;
     private final int NO_MORE         = 3;
     private final int SPACER          = 6;
-    SubmissionDisplay displayer;
+    final SubmissionDisplay displayer;
 
     public SubmissionNewsAdapter(Activity context, SubredditPostsRealm dataSet,
             RecyclerView listView, String subreddit, SubmissionDisplay displayer) {
@@ -127,26 +121,32 @@ public class SubmissionNewsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     int tag = 1;
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         tag++;
 
-        if (i == SPACER) {
-            View v = LayoutInflater.from(viewGroup.getContext())
-                    .inflate(R.layout.spacer, viewGroup, false);
-            return new SpacerViewHolder(v);
+        switch (i) {
+            case SPACER: {
+                View v = LayoutInflater.from(viewGroup.getContext())
+                        .inflate(R.layout.spacer, viewGroup, false);
+                return new SpacerViewHolder(v);
 
-        } else if (i == LOADING_SPINNER) {
-            View v = LayoutInflater.from(viewGroup.getContext())
-                    .inflate(R.layout.loadingmore, viewGroup, false);
-            return new SubmissionFooterViewHolder(v);
-        } else if (i == NO_MORE) {
-            View v = LayoutInflater.from(viewGroup.getContext())
-                    .inflate(R.layout.nomoreposts, viewGroup, false);
-            return new SubmissionFooterViewHolder(v);
-        } else {
-            View v = CreateCardView.CreateViewNews(viewGroup);
-            return new NewsViewHolder(v);
+            }
+            case LOADING_SPINNER: {
+                View v = LayoutInflater.from(viewGroup.getContext())
+                        .inflate(R.layout.loadingmore, viewGroup, false);
+                return new SubmissionFooterViewHolder(v);
+            }
+            case NO_MORE: {
+                View v = LayoutInflater.from(viewGroup.getContext())
+                        .inflate(R.layout.nomoreposts, viewGroup, false);
+                return new SubmissionFooterViewHolder(v);
+            }
+            default: {
+                View v = CreateCardView.CreateViewNews(viewGroup);
+                return new NewsViewHolder(v);
+            }
         }
     }
 
@@ -192,7 +192,7 @@ public class SubmissionNewsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder2, final int pos) {
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder2, final int pos) {
 
         int i = pos != 0 ? pos - 1 : pos;
 
@@ -325,7 +325,7 @@ public class SubmissionNewsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                                 }
                             });
                             View view = s.getView();
-                            TextView tv = (TextView) view.findViewById(
+                            TextView tv = view.findViewById(
                                     android.support.design.R.id.snackbar_text);
                             tv.setTextColor(Color.WHITE);
                             s.show();
@@ -435,7 +435,7 @@ public class SubmissionNewsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                         @Override
                         public void run() {
                             View view = s.getView();
-                            TextView tv = (TextView) view.findViewById(
+                            TextView tv = view.findViewById(
                                     android.support.design.R.id.snackbar_text);
                             tv.setTextColor(Color.WHITE);
                             s.show();
@@ -453,7 +453,7 @@ public class SubmissionNewsAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                         @Override
                         public void run() {
                             View view = s.getView();
-                            TextView tv = (TextView) view.findViewById(
+                            TextView tv = view.findViewById(
                                     android.support.design.R.id.snackbar_text);
                             tv.setTextColor(Color.WHITE);
                             s.show();

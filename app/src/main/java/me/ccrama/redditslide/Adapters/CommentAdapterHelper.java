@@ -4,33 +4,19 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.ClipData;
+import android.content.*;
 import android.content.ClipboardManager;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.Typeface;
+import android.graphics.*;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
-import android.text.Html;
-import android.text.InputType;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.ImageSpan;
-import android.text.style.RelativeSizeSpan;
-import android.text.style.StyleSpan;
-import android.text.style.TypefaceSpan;
+import android.text.*;
+import android.text.style.*;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,47 +25,30 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.cocosw.bottomsheet.BottomSheet;
-
+import me.ccrama.redditslide.*;
+import me.ccrama.redditslide.Activities.Profile;
+import me.ccrama.redditslide.Activities.Reauthenticate;
+import me.ccrama.redditslide.Activities.Website;
+import me.ccrama.redditslide.Views.CommentOverflow;
+import me.ccrama.redditslide.Views.DoEditorActions;
+import me.ccrama.redditslide.Views.RoundedBackgroundSpan;
+import me.ccrama.redditslide.Visuals.FontPreferences;
+import me.ccrama.redditslide.Visuals.Palette;
 import net.dean.jraw.ApiException;
 import net.dean.jraw.http.oauth.InvalidScopeException;
 import net.dean.jraw.managers.AccountManager;
 import net.dean.jraw.managers.ModerationManager;
-import net.dean.jraw.models.Comment;
-import net.dean.jraw.models.CommentNode;
-import net.dean.jraw.models.DistinguishedStatus;
-import net.dean.jraw.models.Submission;
-import net.dean.jraw.models.VoteDirection;
-
+import net.dean.jraw.models.*;
 import org.apache.commons.text.StringEscapeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import me.ccrama.redditslide.ActionStates;
-import me.ccrama.redditslide.Activities.Profile;
-import me.ccrama.redditslide.Activities.Reauthenticate;
-import me.ccrama.redditslide.Activities.Website;
-import me.ccrama.redditslide.Authentication;
-import me.ccrama.redditslide.OpenRedditLink;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.SettingValues;
-import me.ccrama.redditslide.SpoilerRobotoTextView;
-import me.ccrama.redditslide.TimeUtils;
-import me.ccrama.redditslide.UserSubscriptions;
-import me.ccrama.redditslide.UserTags;
-import me.ccrama.redditslide.Views.CommentOverflow;
-import me.ccrama.redditslide.Views.DoEditorActions;
-import me.ccrama.redditslide.Views.RoundedBackgroundSpan;
-import me.ccrama.redditslide.Visuals.FontPreferences;
-import me.ccrama.redditslide.Visuals.Palette;
 
 /**
  * Created by Carlos on 8/4/2016.
@@ -130,7 +99,7 @@ public class CommentAdapterHelper {
                 b.sheet(3, saved, save);
                 b.sheet(16, report, mContext.getString(R.string.btn_report));
             }
-            if(Authentication.name.equalsIgnoreCase(baseNode.getComment().getAuthor())){
+            if (Authentication.name.equalsIgnoreCase(baseNode.getComment().getAuthor())) {
                 b.sheet(50, replies, mContext.getString(R.string.disable_replies_comment));
             }
         }
@@ -166,7 +135,10 @@ public class CommentAdapterHelper {
                     }
                     break;
                     case 50: {
-                        setReplies(baseNode.getComment(), holder, !baseNode.getComment().getDataNode().get("send_replies").asBoolean());
+                        setReplies(baseNode.getComment(), holder, !baseNode.getComment()
+                                .getDataNode()
+                                .get("send_replies")
+                                .asBoolean());
                     }
                     break;
                     case 5: {
@@ -187,7 +159,8 @@ public class CommentAdapterHelper {
                                 mContext.getString(R.string.input_reason_for_report), null, true,
                                 new MaterialDialog.InputCallback() {
                                     @Override
-                                    public void onInput(MaterialDialog dialog, CharSequence input) {
+                                    public void onInput(@NonNull MaterialDialog dialog,
+                                                        CharSequence input) {
                                         reportReason = input.toString();
                                     }
                                 })
@@ -202,7 +175,8 @@ public class CommentAdapterHelper {
                                 .onNegative(null)
                                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                                     @Override
-                                    public void onClick(MaterialDialog dialog, DialogAction which) {
+                                    public void onClick(@NonNull MaterialDialog dialog,
+                                                        @NonNull DialogAction which) {
                                         new AsyncReportTask(adapter.currentBaseNode,
                                                 adapter.listView).execute();
                                     }
@@ -277,12 +251,14 @@ public class CommentAdapterHelper {
         b.show();
     }
 
-    private static void setReplies(final Comment comment, final CommentViewHolder holder, final boolean showReplies) {
+    private static void setReplies(final Comment comment, final CommentViewHolder holder,
+                                   final boolean showReplies) {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
                 try {
-                    new AccountManager(Authentication.reddit).sendRepliesToInbox(comment, showReplies);
+                    new AccountManager(Authentication.reddit).sendRepliesToInbox(comment,
+                            showReplies);
 
                 } catch (ApiException e) {
                     e.printStackTrace();
@@ -304,8 +280,7 @@ public class CommentAdapterHelper {
                                     Snackbar.LENGTH_SHORT);
                         }
                         View view = s.getView();
-                        TextView tv = view.findViewById(
-                                android.support.design.R.id.snackbar_text);
+                        TextView tv = view.findViewById(android.support.design.R.id.snackbar_text);
                         tv.setTextColor(Color.WHITE);
                         s.show();
                     }
@@ -383,8 +358,7 @@ public class CommentAdapterHelper {
                                     Snackbar.LENGTH_SHORT);
                         }
                         View view = s.getView();
-                        TextView tv = view.findViewById(
-                                android.support.design.R.id.snackbar_text);
+                        TextView tv = view.findViewById(android.support.design.R.id.snackbar_text);
                         tv.setTextColor(Color.WHITE);
                         s.show();
                     }
@@ -411,7 +385,7 @@ public class CommentAdapterHelper {
             @Override
             protected List<String> doInBackground(Void... params) {
                 try {
-                    List<String> categories = new ArrayList<String>(
+                    List<String> categories = new ArrayList<>(
                             new AccountManager(Authentication.reddit).getSavedCategories());
                     categories.add("New category");
                     return categories;
@@ -441,7 +415,7 @@ public class CommentAdapterHelper {
                                                         false, new MaterialDialog.InputCallback() {
                                                             @Override
                                                             public void onInput(
-                                                                    MaterialDialog dialog,
+                                                                    @NonNull MaterialDialog dialog,
                                                                     CharSequence input) {
 
                                                             }
@@ -451,8 +425,8 @@ public class CommentAdapterHelper {
                                                         new MaterialDialog.SingleButtonCallback() {
                                                             @Override
                                                             public void onClick(
-                                                                    MaterialDialog dialog,
-                                                                    DialogAction which) {
+                                                                    @NonNull MaterialDialog dialog,
+                                                                    @NonNull DialogAction which) {
                                                                 final String flair =
                                                                         dialog.getInputEditText()
                                                                                 .getText()
@@ -1291,7 +1265,9 @@ public class CommentAdapterHelper {
         if (comment.getAuthorFlair() != null && (comment.getAuthorFlair().getText() != null
                 || comment.getAuthorFlair().getCssClass() != null)) {
             String flairText = null;
-            if (comment.getAuthorFlair() != null && comment.getAuthorFlair().getText() != null && !comment.getAuthorFlair().getText().isEmpty()) {
+            if (comment.getAuthorFlair() != null
+                    && comment.getAuthorFlair().getText() != null
+                    && !comment.getAuthorFlair().getText().isEmpty()) {
                 flairText = comment.getAuthorFlair().getText();
             } else if (!comment.getAuthorFlair().getCssClass().isEmpty()) {
                 flairText = comment.getAuthorFlair().getCssClass();
@@ -1411,12 +1387,12 @@ public class CommentAdapterHelper {
     }
 
     public static class AsyncEditTask extends AsyncTask<Void, Void, Void> {
-        CommentAdapter    adapter;
-        CommentNode       baseNode;
-        String            text;
-        Context           mContext;
-        Dialog            dialog;
-        CommentViewHolder holder;
+        final CommentAdapter adapter;
+        final CommentNode baseNode;
+        final String text;
+        final Context mContext;
+        final Dialog dialog;
+        final CommentViewHolder holder;
 
         public AsyncEditTask(CommentAdapter adapter, CommentNode baseNode, String text,
                 Context mContext, Dialog dialog, CommentViewHolder holder) {
@@ -1471,10 +1447,10 @@ public class CommentAdapterHelper {
     }
 
     public static class AsyncDeleteTask extends AsyncTask<Void, Void, Boolean> {
-        CommentAdapter    adapter;
-        CommentNode       baseNode;
-        CommentViewHolder holder;
-        Context           mContext;
+        final CommentAdapter adapter;
+        final CommentNode baseNode;
+        final CommentViewHolder holder;
+        final Context mContext;
 
         public AsyncDeleteTask(CommentAdapter adapter, CommentNode baseNode,
                 CommentViewHolder holder, Context mContext) {
@@ -1523,8 +1499,8 @@ public class CommentAdapterHelper {
     }
 
     public static class AsyncReportTask extends AsyncTask<Void, Void, Void> {
-        private CommentNode baseNode;
-        private View        contextView;
+        private final CommentNode baseNode;
+        private final View contextView;
 
         public AsyncReportTask(CommentNode baseNode, View contextView) {
             this.baseNode = baseNode;
@@ -1562,7 +1538,7 @@ public class CommentAdapterHelper {
 
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                float value = ((Float) (animation.getAnimatedValue())).floatValue();
+                float value = (Float) (animation.getAnimatedValue());
                 v.setAlpha(value);
                 v.setScaleX(value);
                 v.setScaleY(value);
@@ -1581,7 +1557,7 @@ public class CommentAdapterHelper {
 
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                float value = ((Float) (animation.getAnimatedValue())).floatValue();
+                float value = (Float) (animation.getAnimatedValue());
                 v.setAlpha(value);
                 v.setScaleX(value);
                 v.setScaleY(value);

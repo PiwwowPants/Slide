@@ -1,12 +1,11 @@
 package me.ccrama.redditslide;
 
+import me.ccrama.redditslide.Adapters.CommentObject;
+import me.ccrama.redditslide.Adapters.SubredditPosts;
 import net.dean.jraw.models.PrivateMessage;
 import net.dean.jraw.models.Submission;
 
 import java.util.ArrayList;
-
-import me.ccrama.redditslide.Adapters.CommentObject;
-import me.ccrama.redditslide.Adapters.SubredditPosts;
 
 /**
  * Created by ccrama on 9/19/2015.
@@ -18,8 +17,6 @@ public class DataShare {
     public static ArrayList<CommentObject> sharedComments;
     public static String subAuthor;
     public static SubredditPosts sharedSub;
-
-
 
 
 }

@@ -8,31 +8,15 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
+import android.view.*;
 import android.widget.Toast;
-
 import com.afollestad.materialdialogs.AlertDialogWrapper;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import me.ccrama.redditslide.Adapters.TumblrView;
 import me.ccrama.redditslide.ColorPreferences;
 import me.ccrama.redditslide.Fragments.BlankFragment;
@@ -47,6 +31,14 @@ import me.ccrama.redditslide.Tumblr.TumblrUtils;
 import me.ccrama.redditslide.Views.PreCachingLayoutManager;
 import me.ccrama.redditslide.Views.ToolbarColorizeHelper;
 import me.ccrama.redditslide.util.LinkUtil;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by ccrama on 9/7/2016. <p/> This class is responsible for accessing the Tumblr api to get
@@ -61,7 +53,7 @@ public class Tumblr extends FullScreenActivity implements FolderChooserDialogCre
     public  String subreddit;
 
     @Override
-    public void onFolderSelection(FolderChooserDialogCreate dialog, File folder) {
+    public void onFolderSelection(@NonNull FolderChooserDialogCreate dialog, @NonNull File folder) {
         if (folder != null) {
             Reddit.appRestart.edit().putString("imagelocation", folder.getAbsolutePath()).apply();
             Toast.makeText(this,
@@ -87,7 +79,7 @@ public class Tumblr extends FullScreenActivity implements FolderChooserDialogCre
                 i.putExtra(MediaView.SUBMISSION_URL,
                         getIntent().getStringExtra(MediaView.SUBMISSION_URL));
             }
-            if(getIntent().hasExtra(SUBREDDIT)){
+            if (getIntent().hasExtra(SUBREDDIT)) {
                 i.putExtra(SUBREDDIT, getIntent().getStringExtra(SUBREDDIT));
             }
             i.putExtra("url", url);
@@ -233,7 +225,7 @@ public class Tumblr extends FullScreenActivity implements FolderChooserDialogCre
         album = new OverviewPagerAdapter(getSupportFragmentManager());
         pager.setAdapter(album);
         pager.setCurrentItem(1);
-        if(getIntent().hasExtra(SUBREDDIT)){
+        if (getIntent().hasExtra(SUBREDDIT)) {
             subreddit = getIntent().getStringExtra(SUBREDDIT);
         }
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -320,8 +312,8 @@ public class Tumblr extends FullScreenActivity implements FolderChooserDialogCre
         public RecyclerView recyclerView;
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
+        public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
             rootView = inflater.inflate(R.layout.fragment_verticalalbum, container, false);
 
             final PreCachingLayoutManager mLayoutManager;
@@ -350,7 +342,7 @@ public class Tumblr extends FullScreenActivity implements FolderChooserDialogCre
 
         public class LoadIntoRecycler extends TumblrUtils.GetTumblrPostWithCallback {
 
-            String url;
+            final String url;
 
             public LoadIntoRecycler(@NotNull String url, @NotNull Activity baseActivity) {
                 super(url, baseActivity);
@@ -373,7 +365,8 @@ public class Tumblr extends FullScreenActivity implements FolderChooserDialogCre
                     ((Tumblr) getActivity()).images = new ArrayList<>(jsonElements);
                     TumblrView adapter =
                             new TumblrView(baseActivity, ((Tumblr) getActivity()).images,
-                                    getActivity().findViewById(R.id.toolbar).getHeight(), ((Tumblr) getActivity()).subreddit);
+                                    getActivity().findViewById(R.id.toolbar).getHeight(),
+                                    ((Tumblr) getActivity()).subreddit);
                     recyclerView.setAdapter(adapter);
                 }
             }

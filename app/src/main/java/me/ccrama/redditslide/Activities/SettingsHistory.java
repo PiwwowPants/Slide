@@ -2,13 +2,12 @@ package me.ccrama.redditslide.Activities;
 
 import android.os.Bundle;
 import android.view.ViewGroup;
-
 import me.ccrama.redditslide.Fragments.SettingsHistoryFragment;
 import me.ccrama.redditslide.R;
 
 public class SettingsHistory extends BaseActivityAnim {
 
-    private SettingsHistoryFragment fragment = new SettingsHistoryFragment(this);
+    private final SettingsHistoryFragment fragment = new SettingsHistoryFragment(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

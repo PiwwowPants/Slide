@@ -6,18 +6,18 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-
 import com.afollestad.materialdialogs.AlertDialogWrapper;
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-
+import me.ccrama.redditslide.Authentication;
+import me.ccrama.redditslide.R;
+import me.ccrama.redditslide.Reddit;
+import me.ccrama.redditslide.util.LogUtil;
 import net.dean.jraw.http.NetworkException;
 import net.dean.jraw.http.oauth.Credentials;
 import net.dean.jraw.http.oauth.OAuthData;
@@ -28,12 +28,6 @@ import net.dean.jraw.models.LoggedInAccount;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-
-import me.ccrama.redditslide.Authentication;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.UserSubscriptions;
-import me.ccrama.redditslide.util.LogUtil;
 
 
 /**
@@ -52,11 +46,16 @@ public class Reauthenticate extends BaseActivityAnim {
         setContentView(R.layout.activity_login);
         setupAppBar(R.id.toolbar, "Re-authenticate", true, true);
 
-        String[] scopes = {"identity", "modcontributors", "modconfig", "modothers", "modwiki", "creddits", "livemanage", "account", "privatemessages", "modflair", "modlog", "report", "modposts", "modwiki", "read", "vote", "edit", "submit", "subscribe", "save", "wikiread", "flair", "history", "mysubreddits"};
+        String[] scopes = {
+                "identity", "modcontributors", "modconfig", "modothers", "modwiki", "creddits",
+                "livemanage", "account", "privatemessages", "modflair", "modlog", "report",
+                "modposts", "modwiki", "read", "vote", "edit", "submit", "subscribe", "save",
+                "wikiread", "flair", "history", "mysubreddits"
+        };
         final OAuthHelper oAuthHelper = Authentication.reddit.getOAuthHelper();
         final Credentials credentials = Credentials.installedApp(CLIENT_ID, REDIRECT_URL);
-        String authorizationUrl = oAuthHelper.getAuthorizationUrl(credentials, true, scopes)
-                .toExternalForm();
+        String authorizationUrl =
+                oAuthHelper.getAuthorizationUrl(credentials, true, scopes).toExternalForm();
         authorizationUrl = authorizationUrl.replace("www.", "i.");
         authorizationUrl = authorizationUrl.replace("%3A%2F%2Fi", "://www");
         Log.v(LogUtil.getTag(), "Auth URL: " + authorizationUrl);
@@ -102,8 +101,8 @@ public class Reauthenticate extends BaseActivityAnim {
         @Override
         protected void onPreExecute() {
             //Show a dialog to indicate progress
-            MaterialDialog.Builder builder = new MaterialDialog.Builder(Reauthenticate.this)
-                    .title(R.string.login_authenticating)
+            MaterialDialog.Builder builder = new MaterialDialog.Builder(Reauthenticate.this).title(
+                    R.string.login_authenticating)
                     .progress(true, 0)
                     .content(R.string.misc_please_wait)
                     .cancelable(false);
@@ -120,7 +119,8 @@ public class Reauthenticate extends BaseActivityAnim {
                     Authentication.isLoggedIn = true;
                     String refreshToken = Authentication.reddit.getOAuthData().getRefreshToken();
                     SharedPreferences.Editor editor = Authentication.authentication.edit();
-                    Set<String> accounts = Authentication.authentication.getStringSet("accounts", new HashSet<String>());
+                    Set<String> accounts = Authentication.authentication.getStringSet("accounts",
+                            new HashSet<String>());
                     LoggedInAccount me = Authentication.reddit.me();
                     String toRemove = "";
                     for (String s : accounts) {
@@ -129,13 +129,13 @@ public class Reauthenticate extends BaseActivityAnim {
                         }
                     }
 
-                    if (!toRemove.isEmpty())
-                        accounts.remove(toRemove);
+                    if (!toRemove.isEmpty()) accounts.remove(toRemove);
 
                     accounts.add(me.getFullName() + ":" + refreshToken);
                     Authentication.name = me.getFullName();
                     editor.putStringSet("accounts", accounts);
-                    Set<String> tokens = Authentication.authentication.getStringSet("tokens", new HashSet<String>());
+                    Set<String> tokens = Authentication.authentication.getStringSet("tokens",
+                            new HashSet<String>());
                     tokens.add(refreshToken);
                     editor.putStringSet("tokens", tokens);
                     editor.putString("lasttoken", refreshToken);
@@ -159,8 +159,7 @@ public class Reauthenticate extends BaseActivityAnim {
             //Dismiss old progress dialog
             mMaterialDialog.dismiss();
 
-            new AlertDialogWrapper.Builder(Reauthenticate.this)
-                    .setTitle(R.string.reauth_complete)
+            new AlertDialogWrapper.Builder(Reauthenticate.this).setTitle(R.string.reauth_complete)
                     .setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

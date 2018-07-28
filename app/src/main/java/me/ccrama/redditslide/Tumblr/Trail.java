@@ -1,25 +1,14 @@
-
 package me.ccrama.redditslide.Tumblr;
+
+import com.fasterxml.jackson.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
 
 @JsonPropertyOrder({
-    "blog",
-    "post",
-    "content_raw",
-    "content",
-    "is_current_item",
-    "is_root_item"
+        "blog", "post", "content_raw", "content", "is_current_item", "is_root_item"
 })
 public class Trail {
 
@@ -36,12 +25,10 @@ public class Trail {
     @JsonProperty("is_root_item")
     private Boolean isRootItem;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private final Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
-     * 
-     * @return
-     *     The blog
+     * @return The blog
      */
     @JsonProperty("blog")
     public Blog_ getBlog() {
@@ -49,9 +36,7 @@ public class Trail {
     }
 
     /**
-     * 
-     * @param blog
-     *     The blog
+     * @param blog The blog
      */
     @JsonProperty("blog")
     public void setBlog(Blog_ blog) {
@@ -59,9 +44,7 @@ public class Trail {
     }
 
     /**
-     * 
-     * @return
-     *     The post
+     * @return The post
      */
     @JsonProperty("post")
     public Post_ getPost() {
@@ -69,9 +52,7 @@ public class Trail {
     }
 
     /**
-     * 
-     * @param post
-     *     The post
+     * @param post The post
      */
     @JsonProperty("post")
     public void setPost(Post_ post) {
@@ -79,9 +60,7 @@ public class Trail {
     }
 
     /**
-     * 
-     * @return
-     *     The contentRaw
+     * @return The contentRaw
      */
     @JsonProperty("content_raw")
     public String getContentRaw() {
@@ -89,9 +68,7 @@ public class Trail {
     }
 
     /**
-     * 
-     * @param contentRaw
-     *     The content_raw
+     * @param contentRaw The content_raw
      */
     @JsonProperty("content_raw")
     public void setContentRaw(String contentRaw) {
@@ -99,9 +76,7 @@ public class Trail {
     }
 
     /**
-     * 
-     * @return
-     *     The content
+     * @return The content
      */
     @JsonProperty("content")
     public String getContent() {
@@ -109,9 +84,7 @@ public class Trail {
     }
 
     /**
-     * 
-     * @param content
-     *     The content
+     * @param content The content
      */
     @JsonProperty("content")
     public void setContent(String content) {
@@ -119,9 +92,7 @@ public class Trail {
     }
 
     /**
-     * 
-     * @return
-     *     The isCurrentItem
+     * @return The isCurrentItem
      */
     @JsonProperty("is_current_item")
     public Boolean getIsCurrentItem() {
@@ -129,9 +100,7 @@ public class Trail {
     }
 
     /**
-     * 
-     * @param isCurrentItem
-     *     The is_current_item
+     * @param isCurrentItem The is_current_item
      */
     @JsonProperty("is_current_item")
     public void setIsCurrentItem(Boolean isCurrentItem) {
@@ -139,9 +108,7 @@ public class Trail {
     }
 
     /**
-     * 
-     * @return
-     *     The isRootItem
+     * @return The isRootItem
      */
     @JsonProperty("is_root_item")
     public Boolean getIsRootItem() {
@@ -149,9 +116,7 @@ public class Trail {
     }
 
     /**
-     * 
-     * @param isRootItem
-     *     The is_root_item
+     * @param isRootItem The is_root_item
      */
     @JsonProperty("is_root_item")
     public void setIsRootItem(Boolean isRootItem) {

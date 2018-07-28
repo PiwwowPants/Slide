@@ -10,13 +10,12 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import java.util.Map;
-
 import me.ccrama.redditslide.R;
 import me.ccrama.redditslide.SettingValues;
 import me.ccrama.redditslide.SubmissionCache;
 import me.ccrama.redditslide.Views.CreateCardView;
+
+import java.util.Map;
 
 /**
  * Created by ccrama on 9/17/2015.
@@ -40,7 +39,11 @@ public class EditCardsLayout extends BaseActivityAnim {
 
         //View type//
         //Cards or List//
-        ((TextView) findViewById(R.id.view_current)).setText(CreateCardView.isCard() ? (CreateCardView.isMiddle() ? getString(R.string.mode_centered) : getString(R.string.mode_card)) : CreateCardView.isDesktop() ? getString(R.string.mode_desktop_compact) : getString(R.string.mode_list));
+        ((TextView) findViewById(R.id.view_current)).setText(
+                CreateCardView.isCard() ? (CreateCardView.isMiddle() ? getString(
+                        R.string.mode_centered) : getString(R.string.mode_card))
+                        : CreateCardView.isDesktop() ? getString(R.string.mode_desktop_compact)
+                        : getString(R.string.mode_list));
 
         findViewById(R.id.view).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,19 +60,28 @@ public class EditCardsLayout extends BaseActivityAnim {
                                 break;
                             case R.id.card:
                                 layout.removeAllViews();
-                                layout.addView(CreateCardView.setCardViewType(CreateCardView.CardEnum.LARGE, layout));
+                                layout.addView(CreateCardView.setCardViewType(
+                                        CreateCardView.CardEnum.LARGE, layout));
                                 break;
                             case R.id.list:
                                 layout.removeAllViews();
-                                layout.addView(CreateCardView.setCardViewType(CreateCardView.CardEnum.LIST, layout));
+                                layout.addView(
+                                        CreateCardView.setCardViewType(CreateCardView.CardEnum.LIST,
+                                                layout));
                                 break;
                             case R.id.desktop:
                                 layout.removeAllViews();
-                                layout.addView(CreateCardView.setCardViewType(CreateCardView.CardEnum.DESKTOP, layout));
+                                layout.addView(CreateCardView.setCardViewType(
+                                        CreateCardView.CardEnum.DESKTOP, layout));
                                 break;
 
                         }
-                        ((TextView) findViewById(R.id.view_current)).setText(CreateCardView.isCard() ? (CreateCardView.isMiddle() ? getString(R.string.mode_centered) : getString(R.string.mode_card)) : CreateCardView.isDesktop() ? getString(R.string.mode_desktop_compact) : getString(R.string.mode_list));
+                        ((TextView) findViewById(R.id.view_current)).setText(
+                                CreateCardView.isCard() ? (CreateCardView.isMiddle() ? getString(
+                                        R.string.mode_centered) : getString(R.string.mode_card))
+                                        : CreateCardView.isDesktop() ? getString(
+                                        R.string.mode_desktop_compact)
+                                        : getString(R.string.mode_list));
                         return true;
                     }
                 });
@@ -87,7 +99,9 @@ public class EditCardsLayout extends BaseActivityAnim {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     SettingValues.commentLastVisit = isChecked;
-                    SettingValues.prefs.edit().putBoolean(SettingValues.PREF_COMMENT_LAST_VISIT, isChecked).apply();
+                    SettingValues.prefs.edit()
+                            .putBoolean(SettingValues.PREF_COMMENT_LAST_VISIT, isChecked)
+                            .apply();
 
                 }
             });
@@ -101,7 +115,9 @@ public class EditCardsLayout extends BaseActivityAnim {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     SettingValues.showDomain = isChecked;
-                    SettingValues.prefs.edit().putBoolean(SettingValues.PREF_SHOW_DOMAIN, isChecked).apply();
+                    SettingValues.prefs.edit()
+                            .putBoolean(SettingValues.PREF_SHOW_DOMAIN, isChecked)
+                            .apply();
 
                 }
             });
@@ -113,7 +129,9 @@ public class EditCardsLayout extends BaseActivityAnim {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     SettingValues.hideSelftextLeadImage = isChecked;
-                    SettingValues.prefs.edit().putBoolean(SettingValues.PREF_SELFTEXT_IMAGE_COMMENT, isChecked).apply();
+                    SettingValues.prefs.edit()
+                            .putBoolean(SettingValues.PREF_SELFTEXT_IMAGE_COMMENT, isChecked)
+                            .apply();
                 }
             });
         }
@@ -124,7 +142,9 @@ public class EditCardsLayout extends BaseActivityAnim {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     SettingValues.abbreviateScores = isChecked;
-                    SettingValues.prefs.edit().putBoolean(SettingValues.PREF_ABBREVIATE_SCORES, isChecked).apply();
+                    SettingValues.prefs.edit()
+                            .putBoolean(SettingValues.PREF_ABBREVIATE_SCORES, isChecked)
+                            .apply();
                 }
             });
         }
@@ -135,7 +155,9 @@ public class EditCardsLayout extends BaseActivityAnim {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     SettingValues.titleTop = isChecked;
-                    SettingValues.prefs.edit().putBoolean(SettingValues.PREF_TITLE_TOP, isChecked).apply();
+                    SettingValues.prefs.edit()
+                            .putBoolean(SettingValues.PREF_TITLE_TOP, isChecked)
+                            .apply();
                 }
             });
         }
@@ -146,7 +168,9 @@ public class EditCardsLayout extends BaseActivityAnim {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     SettingValues.votesInfoLine = isChecked;
-                    SettingValues.prefs.edit().putBoolean(SettingValues.PREF_VOTES_INFO_LINE, isChecked).apply();
+                    SettingValues.prefs.edit()
+                            .putBoolean(SettingValues.PREF_VOTES_INFO_LINE, isChecked)
+                            .apply();
                     SubmissionCache.evictAll();
                 }
             });
@@ -158,7 +182,9 @@ public class EditCardsLayout extends BaseActivityAnim {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     SettingValues.typeInfoLine = isChecked;
-                    SettingValues.prefs.edit().putBoolean(SettingValues.PREF_TYPE_INFO_LINE, isChecked).apply();
+                    SettingValues.prefs.edit()
+                            .putBoolean(SettingValues.PREF_TYPE_INFO_LINE, isChecked)
+                            .apply();
                     SubmissionCache.evictAll();
 
                 }
@@ -173,7 +199,9 @@ public class EditCardsLayout extends BaseActivityAnim {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     SettingValues.cardText = isChecked;
-                    SettingValues.prefs.edit().putBoolean(SettingValues.PREF_CARD_TEXT, isChecked).apply();
+                    SettingValues.prefs.edit()
+                            .putBoolean(SettingValues.PREF_CARD_TEXT, isChecked)
+                            .apply();
 
                 }
             });
@@ -204,7 +232,8 @@ public class EditCardsLayout extends BaseActivityAnim {
                                 layout.addView(CreateCardView.setBigPicEnabled(true, layout));
                             {
                                 SharedPreferences.Editor e = SettingValues.prefs.edit();
-                                for (Map.Entry<String, ?> map : SettingValues.prefs.getAll().entrySet()) {
+                                for (Map.Entry<String, ?> map : SettingValues.prefs.getAll()
+                                        .entrySet()) {
                                     if (map.getKey().startsWith("picsenabled")) {
                                         e.remove(map.getKey()); //reset all overridden values
                                     }
@@ -221,7 +250,8 @@ public class EditCardsLayout extends BaseActivityAnim {
                                 layout.addView(CreateCardView.setBigPicEnabled(false, layout));
                             {
                                 SharedPreferences.Editor e = SettingValues.prefs.edit();
-                                for (Map.Entry<String, ?> map : SettingValues.prefs.getAll().entrySet()) {
+                                for (Map.Entry<String, ?> map : SettingValues.prefs.getAll()
+                                        .entrySet()) {
                                     if (map.getKey().startsWith("picsenabled")) {
                                         e.remove(map.getKey()); //reset all overridden values
                                     }
@@ -273,7 +303,10 @@ public class EditCardsLayout extends BaseActivityAnim {
         });
 
         //Actionbar//
-        ((TextView) findViewById(R.id.actionbar_current)).setText(!SettingValues.actionbarVisible ? (SettingValues.actionbarTap ? getString(R.string.tap_actionbar) : getString(R.string.press_actionbar)) : getString(R.string.always_actionbar));
+        ((TextView) findViewById(R.id.actionbar_current)).setText(
+                !SettingValues.actionbarVisible ? (SettingValues.actionbarTap ? getString(
+                        R.string.tap_actionbar) : getString(R.string.press_actionbar))
+                        : getString(R.string.always_actionbar));
 
         findViewById(R.id.actionbar).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -286,24 +319,34 @@ public class EditCardsLayout extends BaseActivityAnim {
                         switch (item.getItemId()) {
                             case R.id.always:
                                 SettingValues.actionbarTap = false;
-                                SettingValues.prefs.edit().putBoolean(SettingValues.PREF_ACTIONBAR_TAP, false).apply();
+                                SettingValues.prefs.edit()
+                                        .putBoolean(SettingValues.PREF_ACTIONBAR_TAP, false)
+                                        .apply();
                                 layout.removeAllViews();
                                 layout.addView(CreateCardView.setActionbarVisible(true, layout));
                                 break;
                             case R.id.tap:
                                 SettingValues.actionbarTap = true;
-                                SettingValues.prefs.edit().putBoolean(SettingValues.PREF_ACTIONBAR_TAP, true).apply();
+                                SettingValues.prefs.edit()
+                                        .putBoolean(SettingValues.PREF_ACTIONBAR_TAP, true)
+                                        .apply();
                                 layout.removeAllViews();
                                 layout.addView(CreateCardView.setActionbarVisible(false, layout));
                                 break;
                             case R.id.button:
                                 SettingValues.actionbarTap = false;
-                                SettingValues.prefs.edit().putBoolean(SettingValues.PREF_ACTIONBAR_TAP, false).apply();
+                                SettingValues.prefs.edit()
+                                        .putBoolean(SettingValues.PREF_ACTIONBAR_TAP, false)
+                                        .apply();
                                 layout.removeAllViews();
                                 layout.addView(CreateCardView.setActionbarVisible(false, layout));
                                 break;
                         }
-                        ((TextView) findViewById(R.id.actionbar_current)).setText(!SettingValues.actionbarVisible ? (SettingValues.actionbarTap ? getString(R.string.tap_actionbar) : getString(R.string.press_actionbar)) : getString(R.string.always_actionbar));
+                        ((TextView) findViewById(R.id.actionbar_current)).setText(
+                                !SettingValues.actionbarVisible ? (SettingValues.actionbarTap
+                                        ? getString(R.string.tap_actionbar)
+                                        : getString(R.string.press_actionbar))
+                                        : getString(R.string.always_actionbar));
                         return true;
                     }
                 });
@@ -315,31 +358,52 @@ public class EditCardsLayout extends BaseActivityAnim {
 
         //Other buttons//
         final AppCompatCheckBox hidebutton = (AppCompatCheckBox) findViewById(R.id.hidebutton);
-        layout.findViewById(R.id.hide).setVisibility(SettingValues.hideButton && SettingValues.actionbarVisible ? View.VISIBLE : View.GONE);
-        layout.findViewById(R.id.save).setVisibility(SettingValues.saveButton && SettingValues.actionbarVisible ? View.VISIBLE : View.GONE);
+        layout.findViewById(R.id.hide)
+                .setVisibility(
+                        SettingValues.hideButton && SettingValues.actionbarVisible ? View.VISIBLE
+                                : View.GONE);
+        layout.findViewById(R.id.save)
+                .setVisibility(
+                        SettingValues.saveButton && SettingValues.actionbarVisible ? View.VISIBLE
+                                : View.GONE);
 
         hidebutton.setChecked(SettingValues.hideButton);
         hidebutton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 SettingValues.hideButton = isChecked;
-                layout.findViewById(R.id.hide).setVisibility(SettingValues.hideButton && SettingValues.actionbarVisible ? View.VISIBLE : View.GONE);
-                layout.findViewById(R.id.save).setVisibility(SettingValues.saveButton && SettingValues.actionbarVisible ? View.VISIBLE : View.GONE);
-                SettingValues.prefs.edit().putBoolean(SettingValues.PREF_HIDEBUTTON, isChecked).apply();
+                layout.findViewById(R.id.hide)
+                        .setVisibility(SettingValues.hideButton && SettingValues.actionbarVisible
+                                ? View.VISIBLE : View.GONE);
+                layout.findViewById(R.id.save)
+                        .setVisibility(SettingValues.saveButton && SettingValues.actionbarVisible
+                                ? View.VISIBLE : View.GONE);
+                SettingValues.prefs.edit()
+                        .putBoolean(SettingValues.PREF_HIDEBUTTON, isChecked)
+                        .apply();
 
             }
         });
         final AppCompatCheckBox savebutton = (AppCompatCheckBox) findViewById(R.id.savebutton);
-        layout.findViewById(R.id.save).setVisibility(SettingValues.saveButton && SettingValues.actionbarVisible ? View.VISIBLE : View.GONE);
+        layout.findViewById(R.id.save)
+                .setVisibility(
+                        SettingValues.saveButton && SettingValues.actionbarVisible ? View.VISIBLE
+                                : View.GONE);
 
         savebutton.setChecked(SettingValues.saveButton);
         savebutton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 SettingValues.saveButton = isChecked;
-                layout.findViewById(R.id.hide).setVisibility(SettingValues.hideButton && SettingValues.actionbarVisible ? View.VISIBLE : View.GONE);
-                layout.findViewById(R.id.save).setVisibility(SettingValues.saveButton && SettingValues.actionbarVisible ? View.VISIBLE : View.GONE);
-                SettingValues.prefs.edit().putBoolean(SettingValues.PREF_SAVE_BUTTON, isChecked).apply();
+                layout.findViewById(R.id.hide)
+                        .setVisibility(SettingValues.hideButton && SettingValues.actionbarVisible
+                                ? View.VISIBLE : View.GONE);
+                layout.findViewById(R.id.save)
+                        .setVisibility(SettingValues.saveButton && SettingValues.actionbarVisible
+                                ? View.VISIBLE : View.GONE);
+                SettingValues.prefs.edit()
+                        .putBoolean(SettingValues.PREF_SAVE_BUTTON, isChecked)
+                        .apply();
 
             }
         });

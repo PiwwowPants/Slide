@@ -1,7 +1,6 @@
 package me.ccrama.redditslide;
 
 import com.lusfold.androidkeyvaluestore.KVStore;
-
 import net.dean.jraw.models.Submission;
 
 /**
@@ -12,7 +11,8 @@ public class ReadLater {
     public static void setReadLater(Submission s, boolean readLater) {
         if (readLater) {
             KVStore.getInstance()
-                    .insert("readLater" + s.getFullName(), String.valueOf(System.currentTimeMillis()));
+                    .insert("readLater" + s.getFullName(),
+                            String.valueOf(System.currentTimeMillis()));
         } else {
             if (!KVStore.getInstance().getByContains("readLater" + s.getFullName()).isEmpty()) {
                 KVStore.getInstance().delete("readLater" + s.getFullName());

@@ -41,14 +41,14 @@ import java.util.List;
 import java.util.Locale;
 
 public class NewsView extends Fragment implements SubmissionDisplay {
-    private static int                 adapterPosition;
-    private static int                 currentPosition;
-    public         SubredditPostsRealm posts;
-    public         RecyclerView        rv;
-    public         SubmissionNewsAdapter   adapter;
-    public         String              id;
-    public         boolean             main;
-    public         boolean             forced;
+    private static int adapterPosition;
+    private static int currentPosition;
+    public SubredditPostsRealm posts;
+    public RecyclerView rv;
+    public SubmissionNewsAdapter adapter;
+    public String id;
+    public boolean main;
+    public boolean forced;
     int     diff;
     boolean forceLoad;
     private        FloatingActionButton fab;
@@ -71,13 +71,13 @@ public class NewsView extends Fragment implements SubmissionDisplay {
     }
 
     Runnable mLongPressRunnable;
-    GestureDetector detector =
+    final GestureDetector detector =
             new GestureDetector(getActivity(), new GestureDetector.SimpleOnGestureListener());
     float origY;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
 
         final Context contextThemeWrapper = new ContextThemeWrapper(getActivity(),
                 new ColorPreferences(inflater.getContext()).getThemeSubreddit(id));
@@ -240,8 +240,7 @@ public class NewsView extends Fragment implements SubmissionDisplay {
                             }
                         });*/
                         View view = s.getView();
-                        TextView tv = view.findViewById(
-                                android.support.design.R.id.snackbar_text);
+                        TextView tv = view.findViewById(android.support.design.R.id.snackbar_text);
                         tv.setTextColor(Color.WHITE);
                         s.show();
                     }

@@ -1,39 +1,18 @@
-
 package me.ccrama.redditslide.Tumblr;
+
+import com.fasterxml.jackson.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
 
 @JsonPropertyOrder({
-    "header_full_width",
-    "header_full_height",
-    "header_focus_width",
-    "header_focus_height",
-    "avatar_shape",
-    "background_color",
-    "body_font",
-    "header_bounds",
-    "header_image",
-    "header_image_focused",
-    "header_image_scaled",
-    "header_stretch",
-    "link_color",
-    "show_avatar",
-    "show_description",
-    "show_header_image",
-    "show_title",
-    "title_color",
-    "title_font",
-    "title_font_weight"
+        "header_full_width", "header_full_height", "header_focus_width", "header_focus_height",
+        "avatar_shape", "background_color", "body_font", "header_bounds", "header_image",
+        "header_image_focused", "header_image_scaled", "header_stretch", "link_color",
+        "show_avatar", "show_description", "show_header_image", "show_title", "title_color",
+        "title_font", "title_font_weight"
 })
 public class Theme {
 
@@ -78,12 +57,10 @@ public class Theme {
     @JsonProperty("title_font_weight")
     private String titleFontWeight;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private final Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
-     * 
-     * @return
-     *     The headerFullWidth
+     * @return The headerFullWidth
      */
     @JsonProperty("header_full_width")
     public Integer getHeaderFullWidth() {
@@ -91,9 +68,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @param headerFullWidth
-     *     The header_full_width
+     * @param headerFullWidth The header_full_width
      */
     @JsonProperty("header_full_width")
     public void setHeaderFullWidth(Integer headerFullWidth) {
@@ -101,9 +76,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @return
-     *     The headerFullHeight
+     * @return The headerFullHeight
      */
     @JsonProperty("header_full_height")
     public Integer getHeaderFullHeight() {
@@ -111,9 +84,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @param headerFullHeight
-     *     The header_full_height
+     * @param headerFullHeight The header_full_height
      */
     @JsonProperty("header_full_height")
     public void setHeaderFullHeight(Integer headerFullHeight) {
@@ -121,9 +92,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @return
-     *     The headerFocusWidth
+     * @return The headerFocusWidth
      */
     @JsonProperty("header_focus_width")
     public Integer getHeaderFocusWidth() {
@@ -131,9 +100,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @param headerFocusWidth
-     *     The header_focus_width
+     * @param headerFocusWidth The header_focus_width
      */
     @JsonProperty("header_focus_width")
     public void setHeaderFocusWidth(Integer headerFocusWidth) {
@@ -141,9 +108,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @return
-     *     The headerFocusHeight
+     * @return The headerFocusHeight
      */
     @JsonProperty("header_focus_height")
     public Integer getHeaderFocusHeight() {
@@ -151,9 +116,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @param headerFocusHeight
-     *     The header_focus_height
+     * @param headerFocusHeight The header_focus_height
      */
     @JsonProperty("header_focus_height")
     public void setHeaderFocusHeight(Integer headerFocusHeight) {
@@ -161,9 +124,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @return
-     *     The avatarShape
+     * @return The avatarShape
      */
     @JsonProperty("avatar_shape")
     public String getAvatarShape() {
@@ -171,9 +132,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @param avatarShape
-     *     The avatar_shape
+     * @param avatarShape The avatar_shape
      */
     @JsonProperty("avatar_shape")
     public void setAvatarShape(String avatarShape) {
@@ -181,9 +140,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @return
-     *     The backgroundColor
+     * @return The backgroundColor
      */
     @JsonProperty("background_color")
     public String getBackgroundColor() {
@@ -191,9 +148,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @param backgroundColor
-     *     The background_color
+     * @param backgroundColor The background_color
      */
     @JsonProperty("background_color")
     public void setBackgroundColor(String backgroundColor) {
@@ -201,9 +156,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @return
-     *     The bodyFont
+     * @return The bodyFont
      */
     @JsonProperty("body_font")
     public String getBodyFont() {
@@ -211,9 +164,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @param bodyFont
-     *     The body_font
+     * @param bodyFont The body_font
      */
     @JsonProperty("body_font")
     public void setBodyFont(String bodyFont) {
@@ -221,9 +172,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @return
-     *     The headerBounds
+     * @return The headerBounds
      */
     @JsonProperty("header_bounds")
     public String getHeaderBounds() {
@@ -231,9 +180,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @param headerBounds
-     *     The header_bounds
+     * @param headerBounds The header_bounds
      */
     @JsonProperty("header_bounds")
     public void setHeaderBounds(String headerBounds) {
@@ -241,9 +188,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @return
-     *     The headerImage
+     * @return The headerImage
      */
     @JsonProperty("header_image")
     public String getHeaderImage() {
@@ -251,9 +196,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @param headerImage
-     *     The header_image
+     * @param headerImage The header_image
      */
     @JsonProperty("header_image")
     public void setHeaderImage(String headerImage) {
@@ -261,9 +204,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @return
-     *     The headerImageFocused
+     * @return The headerImageFocused
      */
     @JsonProperty("header_image_focused")
     public String getHeaderImageFocused() {
@@ -271,9 +212,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @param headerImageFocused
-     *     The header_image_focused
+     * @param headerImageFocused The header_image_focused
      */
     @JsonProperty("header_image_focused")
     public void setHeaderImageFocused(String headerImageFocused) {
@@ -281,9 +220,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @return
-     *     The headerImageScaled
+     * @return The headerImageScaled
      */
     @JsonProperty("header_image_scaled")
     public String getHeaderImageScaled() {
@@ -291,9 +228,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @param headerImageScaled
-     *     The header_image_scaled
+     * @param headerImageScaled The header_image_scaled
      */
     @JsonProperty("header_image_scaled")
     public void setHeaderImageScaled(String headerImageScaled) {
@@ -301,9 +236,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @return
-     *     The headerStretch
+     * @return The headerStretch
      */
     @JsonProperty("header_stretch")
     public Boolean getHeaderStretch() {
@@ -311,9 +244,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @param headerStretch
-     *     The header_stretch
+     * @param headerStretch The header_stretch
      */
     @JsonProperty("header_stretch")
     public void setHeaderStretch(Boolean headerStretch) {
@@ -321,9 +252,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @return
-     *     The linkColor
+     * @return The linkColor
      */
     @JsonProperty("link_color")
     public String getLinkColor() {
@@ -331,9 +260,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @param linkColor
-     *     The link_color
+     * @param linkColor The link_color
      */
     @JsonProperty("link_color")
     public void setLinkColor(String linkColor) {
@@ -341,9 +268,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @return
-     *     The showAvatar
+     * @return The showAvatar
      */
     @JsonProperty("show_avatar")
     public Boolean getShowAvatar() {
@@ -351,9 +276,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @param showAvatar
-     *     The show_avatar
+     * @param showAvatar The show_avatar
      */
     @JsonProperty("show_avatar")
     public void setShowAvatar(Boolean showAvatar) {
@@ -361,9 +284,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @return
-     *     The showDescription
+     * @return The showDescription
      */
     @JsonProperty("show_description")
     public Boolean getShowDescription() {
@@ -371,9 +292,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @param showDescription
-     *     The show_description
+     * @param showDescription The show_description
      */
     @JsonProperty("show_description")
     public void setShowDescription(Boolean showDescription) {
@@ -381,9 +300,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @return
-     *     The showHeaderImage
+     * @return The showHeaderImage
      */
     @JsonProperty("show_header_image")
     public Boolean getShowHeaderImage() {
@@ -391,9 +308,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @param showHeaderImage
-     *     The show_header_image
+     * @param showHeaderImage The show_header_image
      */
     @JsonProperty("show_header_image")
     public void setShowHeaderImage(Boolean showHeaderImage) {
@@ -401,9 +316,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @return
-     *     The showTitle
+     * @return The showTitle
      */
     @JsonProperty("show_title")
     public Boolean getShowTitle() {
@@ -411,9 +324,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @param showTitle
-     *     The show_title
+     * @param showTitle The show_title
      */
     @JsonProperty("show_title")
     public void setShowTitle(Boolean showTitle) {
@@ -421,9 +332,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @return
-     *     The titleColor
+     * @return The titleColor
      */
     @JsonProperty("title_color")
     public String getTitleColor() {
@@ -431,9 +340,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @param titleColor
-     *     The title_color
+     * @param titleColor The title_color
      */
     @JsonProperty("title_color")
     public void setTitleColor(String titleColor) {
@@ -441,9 +348,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @return
-     *     The titleFont
+     * @return The titleFont
      */
     @JsonProperty("title_font")
     public String getTitleFont() {
@@ -451,9 +356,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @param titleFont
-     *     The title_font
+     * @param titleFont The title_font
      */
     @JsonProperty("title_font")
     public void setTitleFont(String titleFont) {
@@ -461,9 +364,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @return
-     *     The titleFontWeight
+     * @return The titleFontWeight
      */
     @JsonProperty("title_font_weight")
     public String getTitleFontWeight() {
@@ -471,9 +372,7 @@ public class Theme {
     }
 
     /**
-     * 
-     * @param titleFontWeight
-     *     The title_font_weight
+     * @param titleFontWeight The title_font_weight
      */
     @JsonProperty("title_font_weight")
     public void setTitleFontWeight(String titleFontWeight) {

@@ -4,7 +4,9 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,15 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
-
-import net.dean.jraw.models.Submission;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
-
 import me.ccrama.redditslide.Activities.CommentsScreen;
 import me.ccrama.redditslide.Activities.Shadowbox;
 import me.ccrama.redditslide.Adapters.AlbumView;
@@ -28,6 +22,10 @@ import me.ccrama.redditslide.ImgurAlbum.AlbumUtils;
 import me.ccrama.redditslide.ImgurAlbum.Image;
 import me.ccrama.redditslide.R;
 import me.ccrama.redditslide.SubmissionViews.PopulateShadowboxInfo;
+import net.dean.jraw.models.Submission;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 
 /**
@@ -44,8 +42,8 @@ public class AlbumFull extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.submission_albumcard, container, false);
         PopulateShadowboxInfo.doActionbar(s, rootView, getActivity(), true);
 
@@ -126,7 +124,11 @@ public class AlbumFull extends Fragment {
                     public void onGlobalLayout() {
                         ((SlidingUpPanelLayout) rootView.findViewById(
                                 R.id.sliding_layout)).setPanelHeight(title.getMeasuredHeight());
-                        title.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                            title.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        } else {
+                            title.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                        }
                     }
                 });
         ((SlidingUpPanelLayout) rootView.findViewById(R.id.sliding_layout)).addPanelSlideListener(
@@ -167,7 +169,7 @@ public class AlbumFull extends Fragment {
 
     public class LoadIntoRecycler extends AlbumUtils.GetAlbumWithCallback {
 
-        String url;
+        final String url;
 
         public LoadIntoRecycler(@NotNull String url, @NotNull Activity baseActivity) {
             super(url, baseActivity);
@@ -178,8 +180,7 @@ public class AlbumFull extends Fragment {
         @Override
         public void doWithData(final List<Image> jsonElements) {
             super.doWithData(jsonElements);
-            AlbumView adapter = new AlbumView(baseActivity, jsonElements, 0,
-                    s.getSubredditName());
+            AlbumView adapter = new AlbumView(baseActivity, jsonElements, 0, s.getSubredditName());
             ((RecyclerView) list).setAdapter(adapter);
         }
 

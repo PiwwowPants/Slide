@@ -4,29 +4,15 @@ package me.ccrama.redditslide.util;
  * Created by Carlos on 7/15/2016.
  */
 
+import com.fasterxml.jackson.annotation.*;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-        "url",
-        "author_name",
-        "author_url",
-        "html",
-        "width",
-        "height",
-        "type",
-        "cache_age",
-        "provider_name",
-        "provider_url",
-        "version"
+        "url", "author_name", "author_url", "html", "width", "height", "type", "cache_age",
+        "provider_name", "provider_url", "version"
 })
 public class TwitterObject {
 
@@ -53,7 +39,7 @@ public class TwitterObject {
     @JsonProperty("version")
     private String version;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private final Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
      * @return The url

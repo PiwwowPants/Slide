@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.net.Uri;
-
 import net.dean.jraw.models.Submission;
 
 import java.net.URI;
@@ -156,8 +155,9 @@ public class ContentType {
             final String host = uri.getHost().toLowerCase(Locale.ENGLISH);
             final String scheme = uri.getScheme().toLowerCase(Locale.ENGLISH);
 
-            if(hostContains(host, "v.redd.it") || (host.equals("reddit.com") && url.contains("reddit.com/video/"))){
-                if(url.contains("DASH_")){
+            if (hostContains(host, "v.redd.it") || (host.equals("reddit.com") && url.contains(
+                    "reddit.com/video/"))) {
+                if (url.contains("DASH_")) {
                     return Type.VREDDIT_DIRECT;
                 } else {
                     return Type.VREDDIT_REDIRECT;
@@ -395,7 +395,7 @@ public class ContentType {
         return R.string.type_link;
     }
 
-    static HashMap<String, String> contentDescriptions = new HashMap<>();
+    static final HashMap<String, String> contentDescriptions = new HashMap<>();
 
     /**
      * Returns a description of the submission, for example "Link", "NSFW link", if the link is set
@@ -470,6 +470,7 @@ public class ContentType {
     }
 
     public enum Type {
-        ALBUM, DEVIANTART, EMBEDDED, EXTERNAL, GIF, VREDDIT_DIRECT, VREDDIT_REDIRECT, IMAGE, IMGUR, LINK, NONE, REDDIT, SELF, SPOILER, STREAMABLE, VIDEO, XKCD, TUMBLR, VID_ME
+        ALBUM, DEVIANTART, EMBEDDED, EXTERNAL, GIF, VREDDIT_DIRECT, VREDDIT_REDIRECT, IMAGE, IMGUR,
+        LINK, NONE, REDDIT, SELF, SPOILER, STREAMABLE, VIDEO, XKCD, TUMBLR, VID_ME
     }
 }

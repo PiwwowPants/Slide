@@ -3,21 +3,15 @@ package me.ccrama.redditslide.ImgurAlbum;
 /**
  * Created by carlo_000 on 5/3/2016.
  */
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+import com.fasterxml.jackson.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-        "data",
-        "success",
-        "status"
+        "data", "success", "status"
 })
 public class SingleAlbumImage {
 
@@ -28,12 +22,10 @@ public class SingleAlbumImage {
     @JsonProperty("status")
     private Integer status;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<>();
+    private final Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
-     *
-     * @return
-     * The data
+     * @return The data
      */
     @JsonProperty("data")
     public SingleImage getData() {
@@ -41,9 +33,7 @@ public class SingleAlbumImage {
     }
 
     /**
-     *
-     * @param data
-     * The data
+     * @param data The data
      */
     @JsonProperty("data")
     public void setData(SingleImage data) {
@@ -51,9 +41,7 @@ public class SingleAlbumImage {
     }
 
     /**
-     *
-     * @return
-     * The success
+     * @return The success
      */
     @JsonProperty("success")
     public Boolean getSuccess() {
@@ -61,9 +49,7 @@ public class SingleAlbumImage {
     }
 
     /**
-     *
-     * @param success
-     * The success
+     * @param success The success
      */
     @JsonProperty("success")
     public void setSuccess(Boolean success) {
@@ -71,9 +57,7 @@ public class SingleAlbumImage {
     }
 
     /**
-     *
-     * @return
-     * The status
+     * @return The status
      */
     @JsonProperty("status")
     public Integer getStatus() {
@@ -81,9 +65,7 @@ public class SingleAlbumImage {
     }
 
     /**
-     *
-     * @param status
-     * The status
+     * @param status The status
      */
     @JsonProperty("status")
     public void setStatus(Integer status) {

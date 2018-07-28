@@ -18,12 +18,7 @@ package me.ccrama.redditslide.util;
 import android.text.TextUtils;
 import android.util.Log;
 
-import java.security.InvalidKeyException;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
-import java.security.Signature;
-import java.security.SignatureException;
+import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 
@@ -52,9 +47,11 @@ class Security {
      * @param signedData      the signed JSON string (signed, not encrypted)
      * @param signature       the signature for the data, signed with the private key
      */
-    public static boolean verifyPurchase(String base64PublicKey, String signedData, String signature) {
-        if (TextUtils.isEmpty(signedData) || TextUtils.isEmpty(base64PublicKey) ||
-                TextUtils.isEmpty(signature)) {
+    public static boolean verifyPurchase(String base64PublicKey, String signedData,
+                                         String signature) {
+        if (TextUtils.isEmpty(signedData)
+                || TextUtils.isEmpty(base64PublicKey)
+                || TextUtils.isEmpty(signature)) {
             Log.e(TAG, "Purchase verification failed: missing data.");
             return false;
         }

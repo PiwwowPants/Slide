@@ -8,10 +8,16 @@ import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-
+import me.ccrama.redditslide.Activities.BaseActivity;
+import me.ccrama.redditslide.Activities.NewsActivity;
+import me.ccrama.redditslide.Activities.SubredditView;
+import me.ccrama.redditslide.*;
+import me.ccrama.redditslide.Fragments.SubmissionsView;
+import me.ccrama.redditslide.Synccit.MySynccitReadTask;
+import me.ccrama.redditslide.util.LogUtil;
+import me.ccrama.redditslide.util.NetworkUtil;
 import net.dean.jraw.http.NetworkException;
 import net.dean.jraw.models.Submission;
 import net.dean.jraw.paginators.DomainPaginator;
@@ -19,34 +25,7 @@ import net.dean.jraw.paginators.Paginator;
 import net.dean.jraw.paginators.SubredditPaginator;
 
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-
-import me.ccrama.redditslide.Activities.BaseActivity;
-import me.ccrama.redditslide.Activities.MainActivity;
-import me.ccrama.redditslide.Activities.NewsActivity;
-import me.ccrama.redditslide.Activities.SubredditView;
-import me.ccrama.redditslide.Authentication;
-import me.ccrama.redditslide.BuildConfig;
-import me.ccrama.redditslide.Constants;
-import me.ccrama.redditslide.ContentType;
-import me.ccrama.redditslide.Fragments.SubmissionsView;
-import me.ccrama.redditslide.HasSeen;
-import me.ccrama.redditslide.LastComments;
-import me.ccrama.redditslide.OfflineSubreddit;
-import me.ccrama.redditslide.PostLoader;
-import me.ccrama.redditslide.PostMatch;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.SettingValues;
-import me.ccrama.redditslide.SubmissionCache;
-import me.ccrama.redditslide.Synccit.MySynccitReadTask;
-import me.ccrama.redditslide.TimeUtils;
-import me.ccrama.redditslide.util.LogUtil;
-import me.ccrama.redditslide.util.NetworkUtil;
+import java.util.*;
 
 /**
  * This class is reponsible for loading subreddit specific submissions {@link loadMore(Context,
@@ -63,7 +42,7 @@ public class SubredditPostsRealm implements PostLoader {
     public  boolean          loading;
     private Paginator        paginator;
     public  OfflineSubreddit cached;
-    Context c;
+    final Context c;
     boolean force18;
 
     public SubredditPostsRealm(String subreddit, Context c) {
@@ -281,7 +260,7 @@ public class SubredditPostsRealm implements PostLoader {
      */
     private class LoadData extends AsyncTask<String, Void, List<Submission>> {
         final boolean reset;
-        Context context;
+        final Context context;
 
         public LoadData(Context context, SubmissionDisplay display, boolean reset) {
             this.context = context;

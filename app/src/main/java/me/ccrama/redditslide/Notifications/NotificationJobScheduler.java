@@ -5,7 +5,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-
 import me.ccrama.redditslide.Reddit;
 
 /**
@@ -27,7 +26,8 @@ public class NotificationJobScheduler {
         int interval = 1000 * 60 * Reddit.notificationTime;
         long currentTime = System.currentTimeMillis();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            manager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, currentTime + interval, pendingIntent);
+            manager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, currentTime + interval,
+                    pendingIntent);
         } else {
             manager.set(AlarmManager.RTC_WAKEUP, currentTime + interval, pendingIntent);
         }

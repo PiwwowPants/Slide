@@ -19,19 +19,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.cocosw.bottomsheet.BottomSheet;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
-
-import net.dean.jraw.models.Submission;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import me.ccrama.redditslide.ContentType;
+import me.ccrama.redditslide.*;
 import me.ccrama.redditslide.ForceTouch.PeekView;
 import me.ccrama.redditslide.ForceTouch.PeekViewActivity;
 import me.ccrama.redditslide.ForceTouch.builder.Peek;
@@ -40,14 +33,14 @@ import me.ccrama.redditslide.ForceTouch.callback.OnButtonUp;
 import me.ccrama.redditslide.ForceTouch.callback.OnPop;
 import me.ccrama.redditslide.ForceTouch.callback.OnRemove;
 import me.ccrama.redditslide.ForceTouch.callback.SimpleOnPeek;
-import me.ccrama.redditslide.HasSeen;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.SettingValues;
 import me.ccrama.redditslide.Views.PeekMediaView;
 import me.ccrama.redditslide.Views.TransparentTagTextView;
 import me.ccrama.redditslide.util.LinkUtil;
 import me.ccrama.redditslide.util.NetworkUtil;
+import net.dean.jraw.models.Submission;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * Created by carlo_000 on 2/7/2016.
@@ -62,7 +55,8 @@ public class HeaderImageLinkView extends RelativeLayout {
     boolean done;
     String lastDone = "";
     ContentType.Type type;
-    DisplayImageOptions bigOptions = new DisplayImageOptions.Builder().resetViewBeforeLoading(false)
+    final DisplayImageOptions bigOptions =
+            new DisplayImageOptions.Builder().resetViewBeforeLoading(false)
             .cacheOnDisk(true)
             .imageScaleType(ImageScaleType.EXACTLY)
             .cacheInMemory(false)
@@ -95,7 +89,8 @@ public class HeaderImageLinkView extends RelativeLayout {
 
     boolean thumbUsed;
 
-    public void doImageAndText(final Submission submission, boolean full, String baseSub, boolean news) {
+    public void doImageAndText(final Submission submission, boolean full, String baseSub,
+                               boolean news) {
 
         boolean fullImage = ContentType.fullImage(type);
         thumbUsed = false;
@@ -210,7 +205,11 @@ public class HeaderImageLinkView extends RelativeLayout {
             }
 
             JsonNode node = submission.getDataNode();
-            if(!SettingValues.ignoreSubSetting && node != null && node.has("sr_detail") && node.get("sr_detail").has("show_media") && !node.get("sr_detail").get("show_media").asBoolean()){
+            if (!SettingValues.ignoreSubSetting
+                    && node != null
+                    && node.has("sr_detail")
+                    && node.get("sr_detail").has("show_media")
+                    && !node.get("sr_detail").get("show_media").asBoolean()) {
                 thumbnailType = Submission.ThumbnailType.NONE;
             }
 
@@ -224,8 +223,11 @@ public class HeaderImageLinkView extends RelativeLayout {
                 thumbImage2.setImageDrawable(
                         ContextCompat.getDrawable(getContext(), R.drawable.web));
                 thumbUsed = true;
-            } else if (submission.isNsfw()
-                    && SettingValues.getIsNSFWEnabled() || (baseSub != null && submission.isNsfw() && SettingValues.hideNSFWCollection && (baseSub.equals("frontpage") || baseSub.equals("all") || baseSub.contains("+") || baseSub.equals("popular")) )) {
+            } else if (submission.isNsfw() && SettingValues.getIsNSFWEnabled() || (baseSub != null
+                    && submission.isNsfw()
+                    && SettingValues.hideNSFWCollection
+                    && (baseSub.equals("frontpage") || baseSub.equals("all") || baseSub.contains(
+                    "+") || baseSub.equals("popular")))) {
                 setVisibility(View.GONE);
                 if (!full || forceThumb) {
                     thumbImage2.setVisibility(View.VISIBLE);
@@ -394,7 +396,8 @@ public class HeaderImageLinkView extends RelativeLayout {
                     url = Html.fromHtml(submission.getThumbnails().getSource().getUrl())
                             .toString(); //unescape url characters
                 }
-                if (!SettingValues.isPicsEnabled(baseSub) && !full || forceThumb || (news && submission.getScore() < 5000)) {
+                if (!SettingValues.isPicsEnabled(baseSub) && !full || forceThumb || (news
+                        && submission.getScore() < 5000)) {
 
                     if (!full) {
                         thumbImage2.setVisibility(View.VISIBLE);

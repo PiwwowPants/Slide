@@ -2,7 +2,6 @@ package me.ccrama.redditslide.test;
 
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
-
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
@@ -12,7 +11,8 @@ import java.util.Set;
 public class TestUtils {
 
     public static String getResource(String path) throws IOException {
-        return IOUtils.toString(TestUtils.class.getClassLoader().getResourceAsStream(path), "utf-8");
+        return IOUtils.toString(TestUtils.class.getClassLoader().getResourceAsStream(path),
+                "utf-8");
     }
 
     public static class MockPreferences implements SharedPreferences {

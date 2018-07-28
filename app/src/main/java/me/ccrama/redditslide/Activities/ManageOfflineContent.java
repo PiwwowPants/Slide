@@ -2,7 +2,6 @@ package me.ccrama.redditslide.Activities;
 
 import android.os.Bundle;
 import android.view.ViewGroup;
-
 import me.ccrama.redditslide.Fragments.ManageOfflineContentFragment;
 import me.ccrama.redditslide.R;
 
@@ -12,7 +11,7 @@ import me.ccrama.redditslide.R;
  */
 public class ManageOfflineContent extends BaseActivityAnim {
 
-    ManageOfflineContentFragment fragment = new ManageOfflineContentFragment(this);
+    final ManageOfflineContentFragment fragment = new ManageOfflineContentFragment(this);
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

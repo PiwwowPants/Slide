@@ -177,7 +177,7 @@ public class CheckForMail extends BroadcastReceiver {
                             openPIBase = new Intent(c, Inbox.class);
                             openPIBase.putExtra(Inbox.EXTRA_UNREAD, true);
                         }
-                      //  openPIBase.setFlags(
+                        //  openPIBase.setFlags(
                         //        Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
                         PendingIntent openPi =
@@ -203,7 +203,8 @@ public class CheckForMail extends BroadcastReceiver {
                                                         m.getDataNode().get("body_html").asText())))
                                         .setStyle(notiStyle)
                                         .setGroup("MESSAGES")
-                                        .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_SUMMARY)
+                                .setGroupAlertBehavior(
+                                        NotificationCompat.GROUP_ALERT_SUMMARY)
                                         .addAction(R.drawable.ic_check_all_black,
                                                 c.getString(R.string.mail_mark_read), readPISingle);
                         if (!SettingValues.notifSound) {
@@ -248,8 +249,8 @@ public class CheckForMail extends BroadcastReceiver {
 
                 Intent notificationIntent = new Intent(c, ModQueue.class);
 
-              //  notificationIntent.setFlags(
-              //          Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                //  notificationIntent.setFlags(
+                //          Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
                 PendingIntent intent = PendingIntent.getActivity(c, 0, notificationIntent, 0);
 
@@ -304,7 +305,8 @@ public class CheckForMail extends BroadcastReceiver {
                                         .setWhen(System.currentTimeMillis())
                                         .setAutoCancel(true)
                                         .setGroup("MODMAIL")
-                                        .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_SUMMARY)
+                                .setGroupAlertBehavior(
+                                        NotificationCompat.GROUP_ALERT_SUMMARY)
                                         .setContentTitle(
                                                 c.getString(R.string.mail_notification_author,
                                                         m.getSubject(), m.getAuthor()))
@@ -345,7 +347,7 @@ public class CheckForMail extends BroadcastReceiver {
 
     public static class AsyncGetSubs extends AsyncTask<Void, Void, List<Submission>> {
 
-        public Context c;
+        public final Context c;
 
         public AsyncGetSubs(Context context) {
             this.c = context;
@@ -363,13 +365,13 @@ public class CheckForMail extends BroadcastReceiver {
                                 "https://reddit.com" + s.getPermalink());
                         readIntent.setAction(s.getTitle());
                         PendingIntent readPI = PendingIntent.getActivity(c,
-                                (int) (s.getCreated().getTime() / 1000), readIntent,
-                                0);
+                                (int) (s.getCreated().getTime() / 1000), readIntent, 0);
 
                         Intent cancelIntent = new Intent(c, CancelSubNotifs.class);
                         cancelIntent.putExtra(CancelSubNotifs.EXTRA_SUB, s.getSubredditName());
-                        PendingIntent cancelPi = PendingIntent.getActivity(c,  (int)s.getCreated().getTime() / 1000, cancelIntent,
-                                0);
+                        PendingIntent cancelPi =
+                                PendingIntent.getActivity(c, (int) s.getCreated().getTime() / 1000,
+                                        cancelIntent, 0);
 
 
                         NotificationCompat.BigTextStyle notiStyle =
@@ -436,14 +438,14 @@ public class CheckForMail extends BroadcastReceiver {
                     return null;
                 }
 
-                String first = "";
+                StringBuilder first = new StringBuilder();
                 int count = 0, totalCount = 0;
                 for (String s : subThresholds.keySet()) {
-                    first = first + s + "+";
+                    first.append(s).append("+");
                     count++;
                     totalCount++;
                     if (count == 3 || totalCount == subThresholds.keySet().size()) {
-                        first = first.substring(0, first.length() - 1);
+                        first = new StringBuilder(first.substring(0, first.length() - 1));
                         SubmissionSearchPaginator unread =
                                 new SubmissionSearchPaginator(Authentication.reddit,
                                         "timestamp:" + ((lastTime / 1000) + offsetSeconds)
@@ -455,7 +457,7 @@ public class CheckForMail extends BroadcastReceiver {
                                 + offsetSeconds));
                         unread.setSearchSorting(SubmissionSearchPaginator.SearchSort.NEW);
                         unread.setSyntax(SubmissionSearchPaginator.SearchSyntax.CLOUDSEARCH);
-                        unread.setSubreddit(first);
+                        unread.setSubreddit(first.toString());
                         unread.setLimit(30);
                         if (unread.hasNext()) {
                             for (Submission subm : unread.next()) {
@@ -468,7 +470,7 @@ public class CheckForMail extends BroadcastReceiver {
                                 }
                             }
                         }
-                        first = "";
+                        first = new StringBuilder();
                         count = 0;
                     }
                 }

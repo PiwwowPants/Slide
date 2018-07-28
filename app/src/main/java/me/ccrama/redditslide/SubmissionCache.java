@@ -14,9 +14,11 @@ import android.text.style.ImageSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.util.TypedValue;
-
 import com.fasterxml.jackson.databind.JsonNode;
-
+import me.ccrama.redditslide.Adapters.CommentAdapterHelper;
+import me.ccrama.redditslide.Views.RoundedBackgroundSpan;
+import me.ccrama.redditslide.Visuals.FontPreferences;
+import me.ccrama.redditslide.Visuals.Palette;
 import net.dean.jraw.models.DistinguishedStatus;
 import net.dean.jraw.models.Submission;
 
@@ -24,11 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.WeakHashMap;
-
-import me.ccrama.redditslide.Adapters.CommentAdapterHelper;
-import me.ccrama.redditslide.Views.RoundedBackgroundSpan;
-import me.ccrama.redditslide.Visuals.FontPreferences;
-import me.ccrama.redditslide.Visuals.Palette;
 
 /**
  * Created by carlo_000 on 4/22/2016.
@@ -103,11 +100,12 @@ public class SubmissionCache {
         }
         json = json.get("crosspost_parent_list").get(0);
 
-        if(json.has("subreddit")){
+        if (json.has("subreddit")) {
             String subname = json.get("subreddit").asText().toLowerCase(Locale.ENGLISH);
             SpannableStringBuilder subreddit = new SpannableStringBuilder("/r/" + subname + spacer);
 
-            if ((SettingValues.colorSubName && Palette.getColor(subname) != Palette.getDefaultColor())
+            if ((SettingValues.colorSubName
+                    && Palette.getColor(subname) != Palette.getDefaultColor())
                     || (SettingValues.colorSubName
                     && Palette.getColor(subname) != Palette.getDefaultColor())) {
                 if (!SettingValues.colorEverywhere) {
@@ -122,7 +120,7 @@ public class SubmissionCache {
         }
 
         SpannableStringBuilder author =
-                new SpannableStringBuilder( json.get("author").asText() + " ");
+                new SpannableStringBuilder(json.get("author").asText() + " ");
 
         int authorcolor = Palette.getFontColorUser(json.get("author").asText());
 
@@ -488,8 +486,8 @@ public class SubmissionCache {
 
     }
 
-    public static ArrayList<String> removed  = new ArrayList<>();
-    public static ArrayList<String> approved = new ArrayList<>();
+    public static final ArrayList<String> removed = new ArrayList<>();
+    public static final ArrayList<String> approved = new ArrayList<>();
 
     private static SpannableStringBuilder getTitleSpannable(Submission submission,
             Context mContext) {

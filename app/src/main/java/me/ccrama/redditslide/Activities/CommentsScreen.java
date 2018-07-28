@@ -250,7 +250,7 @@ public class CommentsScreen extends BaseActivityAnim implements SubmissionDispla
 
     private void updateSubredditAndSubmission(Submission post) {
         subreddit = post.getSubredditName();
-        if(post.getSubredditName() == null){
+        if (post.getSubredditName() == null) {
             subreddit = "Promoted";
         }
         themeSystemBars(subreddit);

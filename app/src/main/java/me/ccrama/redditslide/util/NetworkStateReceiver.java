@@ -13,34 +13,33 @@ import java.util.List;
 
 public class NetworkStateReceiver extends BroadcastReceiver {
 
-    protected List<NetworkStateReceiverListener> listeners;
-    protected Boolean                            connected;
+    protected final List<NetworkStateReceiverListener> listeners;
+    protected Boolean connected;
 
     public NetworkStateReceiver() {
-        listeners = new ArrayList<NetworkStateReceiverListener>();
+        listeners = new ArrayList<>();
         connected = null;
     }
 
     public void onReceive(Context context, Intent intent) {
-        if(intent == null || intent.getExtras() == null)
-            return;
+        if (intent == null || intent.getExtras() == null) return;
         connected = NetworkUtil.isConnected(context);
         notifyStateToAll();
     }
 
     private void notifyStateToAll() {
-        for(NetworkStateReceiverListener listener : listeners)
+        for (NetworkStateReceiverListener listener : listeners)
             notifyState(listener);
     }
 
     private void notifyState(NetworkStateReceiverListener listener) {
-        if(connected == null || listener == null)
-            return;
+        if (connected == null || listener == null) return;
 
-        if(connected == true)
+        if (connected == true) {
             listener.networkAvailable();
-        else
+        } else {
             listener.networkUnavailable();
+        }
     }
 
     public void addListener(NetworkStateReceiverListener l) {
@@ -53,7 +52,8 @@ public class NetworkStateReceiver extends BroadcastReceiver {
     }
 
     public interface NetworkStateReceiverListener {
-        public void networkAvailable();
-        public void networkUnavailable();
+        void networkAvailable();
+
+        void networkUnavailable();
     }
 }

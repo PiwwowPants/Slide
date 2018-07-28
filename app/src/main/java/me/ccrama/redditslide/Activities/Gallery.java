@@ -196,7 +196,8 @@ public class Gallery extends FullScreenActivity implements SubmissionDisplay {
         final int numColumns;
         boolean singleColumnMultiWindow = false;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            singleColumnMultiWindow = Gallery.this.isInMultiWindowMode() && SettingValues.singleColumnMultiWindow;
+            singleColumnMultiWindow =
+                    Gallery.this.isInMultiWindowMode() && SettingValues.singleColumnMultiWindow;
         }
         if (orientation == Configuration.ORIENTATION_LANDSCAPE && SettingValues.isPro && !singleColumnMultiWindow) {
             numColumns = Reddit.dpWidth;

@@ -1,21 +1,14 @@
-
 package me.ccrama.redditslide.Tumblr;
+
+import com.fasterxml.jackson.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
 
 @JsonPropertyOrder({
-    "meta",
-    "response"
+        "meta", "response"
 })
 public class Example {
 
@@ -24,12 +17,10 @@ public class Example {
     @JsonProperty("response")
     private Response response;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private final Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
-     * 
-     * @return
-     *     The meta
+     * @return The meta
      */
     @JsonProperty("meta")
     public Meta getMeta() {
@@ -37,9 +28,7 @@ public class Example {
     }
 
     /**
-     * 
-     * @param meta
-     *     The meta
+     * @param meta The meta
      */
     @JsonProperty("meta")
     public void setMeta(Meta meta) {
@@ -47,9 +36,7 @@ public class Example {
     }
 
     /**
-     * 
-     * @return
-     *     The response
+     * @return The response
      */
     @JsonProperty("response")
     public Response getResponse() {
@@ -57,9 +44,7 @@ public class Example {
     }
 
     /**
-     * 
-     * @param response
-     *     The response
+     * @param response The response
      */
     @JsonProperty("response")
     public void setResponse(Response response) {

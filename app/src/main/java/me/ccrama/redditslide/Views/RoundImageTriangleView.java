@@ -3,11 +3,8 @@ package me.ccrama.redditslide.Views;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Path;
 import android.support.annotation.ColorRes;
 import android.util.AttributeSet;
-
 import com.makeramen.roundedimageview.RoundedImageView;
 
 /**
@@ -27,9 +24,10 @@ public class RoundImageTriangleView extends RoundedImageView {
     public RoundImageTriangleView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
+
     int color = Color.TRANSPARENT;
 
-    public void setFlagColor(@ColorRes int color){
+    public void setFlagColor(@ColorRes int color) {
         this.color = color;
         invalidate();
     }

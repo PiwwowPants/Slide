@@ -3,7 +3,6 @@ package me.ccrama.redditslide.Adapters;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
-
 import me.ccrama.redditslide.R;
 
 /**
@@ -17,7 +16,7 @@ public class MoreCommentViewHolder extends RecyclerView.ViewHolder {
     public MoreCommentViewHolder(View v) {
         super(v);
         dots = v.findViewById(R.id.dot);
-        content = (TextView) v.findViewById(R.id.content);
+        content = v.findViewById(R.id.content);
         loading = v.findViewById(R.id.loading);
     }
 }

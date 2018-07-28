@@ -54,7 +54,7 @@ public class Wiki extends BaseActivityAnim implements WikiPage.WikiPageListener 
         setContentView(R.layout.activity_slidetabs);
         setupSubredditAppBar(R.id.toolbar, "/r/" + subreddit + " wiki", true, subreddit);
 
-        if(getIntent().hasExtra(EXTRA_PAGE)) {
+        if (getIntent().hasExtra(EXTRA_PAGE)) {
             page = getIntent().getExtras().getString(EXTRA_PAGE);
             LogUtil.v("Page is " + page);
         } else {
@@ -123,7 +123,7 @@ public class Wiki extends BaseActivityAnim implements WikiPage.WikiPageListener 
         @Override
         protected Void doInBackground(Void... params) {
 
-           wiki = new WikiManager(Authentication.reddit);
+            wiki = new WikiManager(Authentication.reddit);
             try {
                 pages = wiki.getPages(subreddit);
 
@@ -144,22 +144,25 @@ public class Wiki extends BaseActivityAnim implements WikiPage.WikiPageListener 
                     @Override
                     public void run() {
                         try {
-                            new AlertDialogWrapper.Builder(Wiki.this)
-                                    .setTitle(R.string.wiki_err)
+                            new AlertDialogWrapper.Builder(Wiki.this).setTitle(R.string.wiki_err)
                                     .setMessage(R.string.wiki_err_msg)
-                                    .setPositiveButton(R.string.btn_close, new DialogInterface.OnClickListener() {
+                                    .setPositiveButton(R.string.btn_close,
+                                            new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog,
+                                                                    int which) {
+                                                    dialog.dismiss();
+                                                    finish();
+                                                }
+                                            })
+                                    .setOnDismissListener(new DialogInterface.OnDismissListener() {
                                         @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
+                                        public void onDismiss(DialogInterface dialog) {
                                             finish();
                                         }
-                                    }).setOnDismissListener(new DialogInterface.OnDismissListener() {
-                                @Override
-                                public void onDismiss(DialogInterface dialog) {
-                                    finish();
-                                }
-                            }).show();
-                        } catch(Exception ignored){
+                                    })
+                                    .show();
+                        } catch (Exception ignored) {
 
                         }
                     }
@@ -173,20 +176,21 @@ public class Wiki extends BaseActivityAnim implements WikiPage.WikiPageListener 
             if (adapter != null) {
                 pager.setAdapter(adapter);
                 tabs.setupWithViewPager(pager);
-                if(pages.contains(page)){
+                if (pages.contains(page)) {
                     pager.setCurrentItem(pages.indexOf(page));
                 }
             } else {
                 try {
                     new AlertDialogWrapper.Builder(Wiki.this).setTitle(R.string.wiki_err)
                             .setMessage(R.string.wiki_err_msg)
-                            .setPositiveButton(R.string.btn_close, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                    finish();
-                                }
-                            })
+                            .setPositiveButton(R.string.btn_close,
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                            finish();
+                                        }
+                                    })
                             .setOnDismissListener(new DialogInterface.OnDismissListener() {
                                 @Override
                                 public void onDismiss(DialogInterface dialog) {
@@ -194,7 +198,7 @@ public class Wiki extends BaseActivityAnim implements WikiPage.WikiPageListener 
                                 }
                             })
                             .show();
-                } catch(Exception e){
+                } catch (Exception e) {
 
                 }
             }

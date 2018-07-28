@@ -14,21 +14,19 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-
 import com.afollestad.materialdialogs.color.ColorChooserDialog;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import me.ccrama.redditslide.R;
 import me.ccrama.redditslide.Reddit;
 import me.ccrama.redditslide.Views.CanvasView;
 import me.ccrama.redditslide.Views.DoEditorActions;
 import me.ccrama.redditslide.Visuals.Palette;
 import me.ccrama.redditslide.util.FileUtil;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 
 /**
@@ -68,11 +66,11 @@ public class Draw extends BaseActivity implements ColorChooserDialog.ColorCallba
         if (id == android.R.id.home) {
             onBackPressed();
         }
-        if(id == R.id.done && enabled){
+        if (id == R.id.done && enabled) {
             File image; //image to share
             //check to see if the cache/shared_images directory is present
-            final File imagesDir = new File(
-                    Draw.this.getCacheDir().toString() + File.separator + "shared_image");
+            final File imagesDir =
+                    new File(Draw.this.getCacheDir().toString() + File.separator + "shared_image");
             if (!imagesDir.exists()) {
                 imagesDir.mkdir(); //create the folder if it doesn't exist
             } else {
@@ -122,7 +120,7 @@ public class Draw extends BaseActivity implements ColorChooserDialog.ColorCallba
         return true;
     }
 
-    boolean enabled ;
+    boolean enabled;
 
     @Override
     protected void onActivityResult(int code, int resultC, Intent data) {

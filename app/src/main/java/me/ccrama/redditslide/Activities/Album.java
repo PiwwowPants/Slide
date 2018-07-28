@@ -8,31 +8,15 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
+import android.view.*;
 import android.widget.Toast;
-
 import com.afollestad.materialdialogs.AlertDialogWrapper;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import me.ccrama.redditslide.Adapters.AlbumView;
 import me.ccrama.redditslide.ColorPreferences;
 import me.ccrama.redditslide.Fragments.BlankFragment;
@@ -47,6 +31,14 @@ import me.ccrama.redditslide.SettingValues;
 import me.ccrama.redditslide.Views.PreCachingLayoutManager;
 import me.ccrama.redditslide.Views.ToolbarColorizeHelper;
 import me.ccrama.redditslide.util.LinkUtil;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by ccrama on 3/5/2015. <p/> This class is responsible for accessing the Imgur api to get
@@ -60,7 +52,7 @@ public class Album extends FullScreenActivity implements FolderChooserDialogCrea
     private int         adapterPosition;
 
     @Override
-    public void onFolderSelection(FolderChooserDialogCreate dialog, File folder) {
+    public void onFolderSelection(@NonNull FolderChooserDialogCreate dialog, @NonNull File folder) {
         if (folder != null) {
             Reddit.appRestart.edit().putString("imagelocation", folder.getAbsolutePath()).apply();
             Toast.makeText(this,
@@ -225,7 +217,7 @@ public class Album extends FullScreenActivity implements FolderChooserDialogCrea
         //Keep the screen on
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        if(getIntent().hasExtra(SUBREDDIT)){
+        if (getIntent().hasExtra(SUBREDDIT)) {
             this.subreddit = getIntent().getExtras().getString(SUBREDDIT);
         }
 
@@ -319,8 +311,8 @@ public class Album extends FullScreenActivity implements FolderChooserDialogCrea
         public RecyclerView recyclerView;
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
+        public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
             rootView = inflater.inflate(R.layout.fragment_verticalalbum, container, false);
 
             final PreCachingLayoutManager mLayoutManager;
@@ -349,7 +341,7 @@ public class Album extends FullScreenActivity implements FolderChooserDialogCrea
 
         public class LoadIntoRecycler extends AlbumUtils.GetAlbumWithCallback {
 
-            String url;
+            final String url;
 
             public LoadIntoRecycler(@NotNull String url, @NotNull Activity baseActivity) {
                 super(url, baseActivity);
@@ -404,7 +396,8 @@ public class Album extends FullScreenActivity implements FolderChooserDialogCrea
                     getActivity().findViewById(R.id.progress).setVisibility(View.GONE);
                     ((Album) getActivity()).images = new ArrayList<>(jsonElements);
                     AlbumView adapter = new AlbumView(baseActivity, ((Album) getActivity()).images,
-                            getActivity().findViewById(R.id.toolbar).getHeight(), ((Album) getActivity()).subreddit);
+                            getActivity().findViewById(R.id.toolbar).getHeight(),
+                            ((Album) getActivity()).subreddit);
                     recyclerView.setAdapter(adapter);
                 }
             }

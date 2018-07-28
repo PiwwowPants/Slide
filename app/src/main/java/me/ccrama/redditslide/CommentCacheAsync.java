@@ -9,11 +9,12 @@ import android.support.v4.app.NotificationCompat;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-
+import me.ccrama.redditslide.util.GifUtils;
+import me.ccrama.redditslide.util.LogUtil;
+import me.ccrama.redditslide.util.NetworkUtil;
 import net.dean.jraw.http.NetworkException;
 import net.dean.jraw.http.RestResponse;
 import net.dean.jraw.http.SubmissionRequest;
@@ -23,22 +24,9 @@ import net.dean.jraw.models.meta.SubmissionSerializer;
 import net.dean.jraw.paginators.SubredditPaginator;
 import net.dean.jraw.util.JrawUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import me.ccrama.redditslide.Activities.CommentsScreenSingle;
-import me.ccrama.redditslide.Autocache.AutoCacheScheduler;
-import me.ccrama.redditslide.Notifications.NotificationJobScheduler;
-import me.ccrama.redditslide.util.GifUtils;
-import me.ccrama.redditslide.util.LogUtil;
-import me.ccrama.redditslide.util.NetworkUtil;
 
 /**
  * Created by carlo_000 on 4/18/2016.
@@ -69,9 +57,9 @@ public class CommentCacheAsync extends AsyncTask {
         this.subs = subreddits;
     }
 
-    String[] subs;
+    final String[] subs;
 
-    Context                    context;
+    final Context context;
     NotificationCompat.Builder mBuilder;
 
     boolean[] otherChoices;
@@ -92,28 +80,20 @@ public class CommentCacheAsync extends AsyncTask {
                             && submission.getThumbnails().getVariations().length > 0) {
 
                         int length = submission.getThumbnails().getVariations().length;
-                        if (SettingValues.lqLow && length >= 3)
-                        {
+                        if (SettingValues.lqLow && length >= 3) {
                             url = Html.fromHtml(
                                     submission.getThumbnails().getVariations()[2].getUrl())
                                     .toString(); //unescape url characters
-                        }
-                        else if (SettingValues.lqMid && length >= 4)
-                        {
+                        } else if (SettingValues.lqMid && length >= 4) {
                             url = Html.fromHtml(
                                     submission.getThumbnails().getVariations()[3].getUrl())
                                     .toString(); //unescape url characters
-                        }
-                        else if (length >= 5)
-                        {
+                        } else if (length >= 5) {
                             url = Html.fromHtml(
                                     submission.getThumbnails().getVariations()[length - 1].getUrl())
                                     .toString(); //unescape url characters
-                        }
-                        else
-                        {
-                            url = Html.fromHtml(
-                                    submission.getThumbnails().getSource().getUrl())
+                        } else {
+                            url = Html.fromHtml(submission.getThumbnails().getSource().getUrl())
                                     .toString(); //unescape url characters
                         }
 
@@ -169,28 +149,20 @@ public class CommentCacheAsync extends AsyncTask {
                             && submission.getThumbnails().getVariations().length != 0) {
 
                         int length = submission.getThumbnails().getVariations().length;
-                        if (SettingValues.lqLow && length >= 3)
-                        {
+                        if (SettingValues.lqLow && length >= 3) {
                             url = Html.fromHtml(
                                     submission.getThumbnails().getVariations()[2].getUrl())
                                     .toString(); //unescape url characters
-                        }
-                        else if (SettingValues.lqMid && length >= 4)
-                        {
+                        } else if (SettingValues.lqMid && length >= 4) {
                             url = Html.fromHtml(
                                     submission.getThumbnails().getVariations()[3].getUrl())
                                     .toString(); //unescape url characters
-                        }
-                        else if (length >= 5)
-                        {
+                        } else if (length >= 5) {
                             url = Html.fromHtml(
                                     submission.getThumbnails().getVariations()[length - 1].getUrl())
                                     .toString(); //unescape url characters
-                        }
-                        else
-                        {
-                            url = Html.fromHtml(
-                                    submission.getThumbnails().getSource().getUrl())
+                        } else {
+                            url = Html.fromHtml(submission.getThumbnails().getSource().getUrl())
                                     .toString(); //unescape url characters
                         }
 
@@ -259,12 +231,13 @@ public class CommentCacheAsync extends AsyncTask {
 
     @Override
     public Void doInBackground(Object[] params) {
-        if (Authentication.isLoggedIn && Authentication.me == null || Authentication.reddit == null) {
+        if (Authentication.isLoggedIn && Authentication.me == null
+                || Authentication.reddit == null) {
 
             if (Authentication.reddit == null) {
                 new Authentication(context);
             }
-            if(Authentication.reddit != null) {
+            if (Authentication.reddit != null) {
                 try {
                     Authentication.me = Authentication.reddit.me();
                     Authentication.mod = Authentication.me.isMod();
@@ -278,16 +251,19 @@ public class CommentCacheAsync extends AsyncTask {
 
                     if (Authentication.reddit.isAuthenticated()) {
                         final Set<String> accounts =
-                                Authentication.authentication.getStringSet("accounts", new HashSet<String>());
+                                Authentication.authentication.getStringSet("accounts",
+                                        new HashSet<String>());
                         if (accounts.contains(name)) { //convert to new system
                             accounts.remove(name);
                             accounts.add(name + ":" + Authentication.refresh);
-                            Authentication.authentication.edit().putStringSet("accounts", accounts).apply(); //force commit
+                            Authentication.authentication.edit()
+                                    .putStringSet("accounts", accounts)
+                                    .apply(); //force commit
                         }
                         Authentication.isLoggedIn = true;
                         Reddit.notFirst = true;
                     }
-                } catch(Exception e){
+                } catch (Exception e) {
                     new Authentication(context);
                 }
             }

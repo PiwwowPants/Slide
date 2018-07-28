@@ -2,6 +2,7 @@ package me.ccrama.redditslide.Activities;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.*;
@@ -40,8 +41,7 @@ public class Website extends BaseActivityAnim {
             uri = new URI(url);
 
             String domain = uri.getHost();
-            if(domain == null)
-                return "";
+            if (domain == null) return "";
             return domain.startsWith("www.") ? domain.substring(4) : domain;
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -172,10 +172,14 @@ public class Website extends BaseActivityAnim {
             CookieSyncManager.createInstance(this);
             CookieManager cookieManager = CookieManager.getInstance();
             try {
-                cookieManager.removeAllCookies(null);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    cookieManager.removeAllCookies(null);
+                } else {
+                    cookieManager.removeAllCookie();
+                }
                 CookieManager.getInstance().flush();
                 cookieManager.setAcceptCookie(false);
-            } catch(NoSuchMethodError e){
+            } catch (NoSuchMethodError e) {
                 //Although these were added in api 12, some devices don't have this method
             }
             WebSettings ws = v.getSettings();
@@ -321,7 +325,7 @@ public class Website extends BaseActivityAnim {
 
     //Method adapted from http://www.hidroh.com/2016/05/19/hacking-up-ad-blocker-android/
     public class AdBlockWebViewClient extends WebViewClient {
-        private Map<String, Boolean> loadedUrls = new HashMap<>();
+        private final Map<String, Boolean> loadedUrls = new HashMap<>();
 
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
@@ -332,7 +336,9 @@ public class Website extends BaseActivityAnim {
             } else {
                 ad = loadedUrls.get(url);
             }
-            return ad && (currentURL != null && !currentURL.contains("twitter.com")) && SettingValues.isPro
+            return ad
+                    && (currentURL != null && !currentURL.contains("twitter.com"))
+                    && SettingValues.isPro
                     ? AdBlocker.createEmptyResource()
                     : super.shouldInterceptRequest(view, url);
         }
@@ -358,7 +364,7 @@ public class Website extends BaseActivityAnim {
                         }
                         return super.shouldOverrideUrlLoading(view, url);
                     case REDDIT:
-                        if(!url.contains("inapp=false")) {
+                        if (!url.contains("inapp=false")) {
                             boolean opened = OpenRedditLink.openUrl(view.getContext(), url, false);
                             if (!opened) {
                                 return super.shouldOverrideUrlLoading(view, url);

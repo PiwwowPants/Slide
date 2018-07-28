@@ -1,40 +1,30 @@
-
 package me.ccrama.redditslide.Tumblr;
+
+import com.fasterxml.jackson.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
 
 @JsonPropertyOrder({
-    "caption",
-    "alt_sizes",
-    "original_size"
+        "caption", "alt_sizes", "original_size"
 })
 public class Photo {
 
     @JsonProperty("caption")
     private String caption;
     @JsonProperty("alt_sizes")
-    private List<AltSize> altSizes = new ArrayList<AltSize>();
+    private List<AltSize> altSizes = new ArrayList<>();
     @JsonProperty("original_size")
     private OriginalSize originalSize;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private final Map<String, Object> additionalProperties = new HashMap<>();
 
     /**
-     * 
-     * @return
-     *     The caption
+     * @return The caption
      */
     @JsonProperty("caption")
     public String getCaption() {
@@ -42,9 +32,7 @@ public class Photo {
     }
 
     /**
-     * 
-     * @param caption
-     *     The caption
+     * @param caption The caption
      */
     @JsonProperty("caption")
     public void setCaption(String caption) {
@@ -52,9 +40,7 @@ public class Photo {
     }
 
     /**
-     * 
-     * @return
-     *     The altSizes
+     * @return The altSizes
      */
     @JsonProperty("alt_sizes")
     public List<AltSize> getAltSizes() {
@@ -62,9 +48,7 @@ public class Photo {
     }
 
     /**
-     * 
-     * @param altSizes
-     *     The alt_sizes
+     * @param altSizes The alt_sizes
      */
     @JsonProperty("alt_sizes")
     public void setAltSizes(List<AltSize> altSizes) {
@@ -72,9 +56,7 @@ public class Photo {
     }
 
     /**
-     * 
-     * @return
-     *     The originalSize
+     * @return The originalSize
      */
     @JsonProperty("original_size")
     public OriginalSize getOriginalSize() {
@@ -82,9 +64,7 @@ public class Photo {
     }
 
     /**
-     * 
-     * @param originalSize
-     *     The original_size
+     * @param originalSize The original_size
      */
     @JsonProperty("original_size")
     public void setOriginalSize(OriginalSize originalSize) {

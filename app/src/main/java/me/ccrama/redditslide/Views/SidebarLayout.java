@@ -6,11 +6,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import me.ccrama.redditslide.R;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import me.ccrama.redditslide.R;
 
 /**
  * Drawer that allows for horizontal scrolling views.
@@ -22,7 +21,7 @@ import me.ccrama.redditslide.R;
  * any view.
  */
 public class SidebarLayout extends DrawerLayout {
-    private List<View> scrollableViews = new ArrayList<>();
+    private final List<View> scrollableViews = new ArrayList<>();
 
     public SidebarLayout(Context context) {
         super(context);
@@ -62,13 +61,14 @@ public class SidebarLayout extends DrawerLayout {
         for (View view : scrollableViews) {
             Rect rect = new Rect();
             view.getHitRect(rect);
-            if (rect.contains((int) ev.getX(), (int) ev.getY() - commentOverflow.getTop() + yOffset)) {
+            if (rect.contains((int) ev.getX(),
+                    (int) ev.getY() - commentOverflow.getTop() + yOffset)) {
                 return false;
             }
         }
         try {
             return super.onInterceptTouchEvent(ev);
-        } catch(Exception e){
+        } catch (Exception e) {
             return false;
         }
     }

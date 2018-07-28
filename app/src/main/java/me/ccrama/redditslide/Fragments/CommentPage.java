@@ -241,8 +241,8 @@ public class CommentPage extends Fragment {
     public int                  diff;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         LayoutInflater localInflater = inflater.cloneInContext(contextThemeWrapper);
         v = localInflater.inflate(R.layout.fragment_verticalcontenttoolbar, container, false);
 
@@ -342,8 +342,7 @@ public class CommentPage extends Fragment {
                                 public void onClick(View v) {
                                     adapter.dataSet.refreshLayout.setRefreshing(true);
                                     adapter.new ReplyTaskComment(adapter.submission,
-                                            changedProfile[0]).execute(
-                                            e.getText().toString());
+                                            changedProfile[0]).execute(e.getText().toString());
                                     d.dismiss();
                                 }
 
@@ -425,11 +424,9 @@ public class CommentPage extends Fragment {
                                         + parentCount
                                         + ")"
                                         + ","
-                                        +
-                                        "Children comment (highlight child comment & navigate)"
+                                        + "Children comment (highlight child comment & navigate)"
                                         + ","
-                                        +
-                                        "OP ("
+                                        + "OP ("
                                         + opCount
                                         + ")"
                                         + ","
@@ -439,10 +436,8 @@ public class CommentPage extends Fragment {
                                         + linkCount
                                         + ")"
                                         + ","
-                                        +
-                                        ((Authentication.isLoggedIn) ? "You" + "," : "")
-                                        +
-                                        "Gilded ("
+                                        + ((Authentication.isLoggedIn) ? "You" + "," : "")
+                                        + "Gilded ("
                                         + gildCount
                                         + ")")
                                         .toArray(new String[Authentication.isLoggedIn ? 6 : 5]),
@@ -691,8 +686,8 @@ public class CommentPage extends Fragment {
 
                                                     if (ContentType.mediaType(t)) {
                                                         ShadowboxComments.comments.add(
-                                                                new CommentUrlObject(c.comment,
-                                                                        url, subreddit));
+                                                                new CommentUrlObject(c.comment, url,
+                                                                        subreddit));
                                                     }
 
                                                 }
@@ -705,7 +700,8 @@ public class CommentPage extends Fragment {
 
                                                 if (ContentType.mediaType(t)) {
                                                     ShadowboxComments.comments.add(
-                                                            new CommentUrlObject(c.comment, url, subreddit));
+                                                            new CommentUrlObject(c.comment, url,
+                                                                    subreddit));
                                                 }
 
                                             }
@@ -1087,7 +1083,7 @@ public class CommentPage extends Fragment {
                                 .setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                       ImageFlairs.syncFlairs(getContext(), subreddit);
+                                        ImageFlairs.syncFlairs(getContext(), subreddit);
                                     }
                                 });
                         dialoglayout.findViewById(R.id.theme)
@@ -1214,8 +1210,7 @@ public class CommentPage extends Fragment {
                                 @Override
                                 public void onClick(View v) {
                                     new AsyncTask<Void, Void, Void>() {
-                                        HashMap<String, MultiReddit> multis =
-                                                new HashMap<String, MultiReddit>();
+                                        final HashMap<String, MultiReddit> multis = new HashMap<>();
 
                                         @Override
                                         protected Void doInBackground(Void... params) {
@@ -1253,7 +1248,7 @@ public class CommentPage extends Fragment {
                                                                                                         new String[multis
                                                                                                                 .size()])[which];
                                                                                 List<String> subs =
-                                                                                        new ArrayList<String>();
+                                                                                        new ArrayList<>();
                                                                                 for (MultiSubreddit sub : multis
                                                                                         .get(multiName)
                                                                                         .getSubreddits()) {
@@ -1341,9 +1336,8 @@ public class CommentPage extends Fragment {
 
                             currentlySubbed = (!Authentication.isLoggedIn
                                     && UserSubscriptions.getSubscriptions(getActivity())
-                                    .contains(baseSub.getDisplayName().toLowerCase(Locale.ENGLISH))) || (
-                                    Authentication.isLoggedIn
-                                            && baseSub.isUserSubscriber());
+                                    .contains(baseSub.getDisplayName().toLowerCase(Locale.ENGLISH)))
+                                    || (Authentication.isLoggedIn && baseSub.isUserSubscriber());
                             doSubscribeButtonText(currentlySubbed, subscribe);
 
                             subscribe.setOnClickListener(new View.OnClickListener() {
@@ -1391,9 +1385,8 @@ public class CommentPage extends Fragment {
                                                                                                             s.getView();
                                                                                                     TextView
                                                                                                             tv =
-                                                                                                            view
-                                                                                                                    .findViewById(
-                                                                                                                            android.support.design.R.id.snackbar_text);
+                                                                                                            view.findViewById(
+                                                                                                                    android.support.design.R.id.snackbar_text);
                                                                                                     tv.setTextColor(
                                                                                                             Color.WHITE);
                                                                                                     s.show();
@@ -1517,9 +1510,8 @@ public class CommentPage extends Fragment {
                                                                                                             s.getView();
                                                                                                     TextView
                                                                                                             tv =
-                                                                                                            view
-                                                                                                                    .findViewById(
-                                                                                                                            android.support.design.R.id.snackbar_text);
+                                                                                                            view.findViewById(
+                                                                                                                    android.support.design.R.id.snackbar_text);
                                                                                                     tv.setTextColor(
                                                                                                             Color.WHITE);
                                                                                                     s.show();
@@ -1686,10 +1678,12 @@ public class CommentPage extends Fragment {
         if (!single
                 && getActivity() instanceof CommentsScreen
                 && ((CommentsScreen) getActivity()).subredditPosts != null
-                && Authentication.didOnline && ((CommentsScreen) getActivity()).currentPosts != null && ((CommentsScreen) getActivity()).currentPosts.size() > page) {
+                && Authentication.didOnline
+                && ((CommentsScreen) getActivity()).currentPosts != null
+                && ((CommentsScreen) getActivity()).currentPosts.size() > page) {
             try {
                 comments = new SubmissionComments(fullname, this, mSwipeRefreshLayout);
-            } catch(IndexOutOfBoundsException e){
+            } catch (IndexOutOfBoundsException e) {
                 return;
             }
             Submission s = ((CommentsScreen) getActivity()).currentPosts.get(page);
@@ -2194,7 +2188,8 @@ public class CommentPage extends Fragment {
     }
 
     private void changeSubscription(Subreddit subreddit, boolean isChecked) {
-        UserSubscriptions.addSubreddit(subreddit.getDisplayName().toLowerCase(Locale.ENGLISH), getContext());
+        UserSubscriptions.addSubreddit(subreddit.getDisplayName().toLowerCase(Locale.ENGLISH),
+                getContext());
 
         Snackbar s = Snackbar.make(toolbar, isChecked ? getString(R.string.misc_subscribed)
                 : getString(R.string.misc_unsubscribed), Snackbar.LENGTH_SHORT);

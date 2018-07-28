@@ -3,7 +3,6 @@ package me.ccrama.redditslide.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ViewGroup;
-
 import me.ccrama.redditslide.Fragments.SettingsFragment;
 import me.ccrama.redditslide.Fragments.SettingsThemeFragment;
 import me.ccrama.redditslide.R;
@@ -12,9 +11,9 @@ import me.ccrama.redditslide.R;
 /**
  * Created by ccrama on 3/5/2015.
  */
-public class SettingsTheme extends BaseActivityAnim implements SettingsFragment.RestartActivity{
+public class SettingsTheme extends BaseActivityAnim implements SettingsFragment.RestartActivity {
 
-    private SettingsThemeFragment fragment = new SettingsThemeFragment(this);
+    private final SettingsThemeFragment fragment = new SettingsThemeFragment(this);
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

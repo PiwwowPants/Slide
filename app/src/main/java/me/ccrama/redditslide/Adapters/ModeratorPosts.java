@@ -2,15 +2,13 @@ package me.ccrama.redditslide.Adapters;
 
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
-
+import me.ccrama.redditslide.Authentication;
 import net.dean.jraw.models.PublicContribution;
 import net.dean.jraw.paginators.ModeratorPaginator;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
-
-import me.ccrama.redditslide.Authentication;
 
 /**
  * Created by ccrama on 9/17/2015.
@@ -61,7 +59,7 @@ public class ModeratorPosts {
         public void onPostExecute(ArrayList<PublicContribution> subs) {
             if (subs != null) {
 
-                if(reset || posts == null){
+                if (reset || posts == null) {
                     posts = new ArrayList<>(new LinkedHashSet(subs));
                 } else {
                     posts.addAll(subs);

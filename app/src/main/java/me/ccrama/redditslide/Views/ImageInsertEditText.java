@@ -10,14 +10,13 @@ import android.support.v4.os.BuildCompat;
 import android.util.AttributeSet;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
-import android.widget.EditText;
 
 
 /**
  * Created by Carlos on 11/5/2016.
  */
 
-public class ImageInsertEditText extends EditText {
+public class ImageInsertEditText extends android.support.v7.widget.AppCompatEditText {
 
     public interface ImageSelectedCallback {
         void onImageSelected(Uri content, String mimeType);
@@ -35,11 +34,6 @@ public class ImageInsertEditText extends EditText {
     public ImageInsertEditText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
-
-    public ImageInsertEditText(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-    }
-
     // endregion
 
     private ImageSelectedCallback callback;
@@ -51,32 +45,34 @@ public class ImageInsertEditText extends EditText {
     @Override
     public InputConnection onCreateInputConnection(EditorInfo attrs) {
         InputConnection con = super.onCreateInputConnection(attrs);
-        EditorInfoCompat.setContentMimeTypes(attrs, new String[] { "image/gif", "image/png" });
+        EditorInfoCompat.setContentMimeTypes(attrs, new String[]{"image/gif", "image/png"});
 
-        return InputConnectionCompat.createWrapper(con, attrs, new InputConnectionCompat.OnCommitContentListener() {
-            @Override
-            public boolean onCommitContent(InputContentInfoCompat inputContentInfo, int flags, Bundle opts) {
-                if (callback != null) {
-                    if (BuildCompat.isAtLeastNMR1() &&
-                            (flags & InputConnectionCompat.INPUT_CONTENT_GRANT_READ_URI_PERMISSION) != 0) {
-                        try {
-                            inputContentInfo.requestPermission();
-                        } catch (Exception e) {
+        return InputConnectionCompat.createWrapper(con, attrs,
+                new InputConnectionCompat.OnCommitContentListener() {
+                    @Override
+                    public boolean onCommitContent(InputContentInfoCompat inputContentInfo,
+                                                   int flags, Bundle opts) {
+                        if (callback != null) {
+                            if (BuildCompat.isAtLeastNMR1()
+                                    && (flags
+                                    & InputConnectionCompat.INPUT_CONTENT_GRANT_READ_URI_PERMISSION)
+                                    != 0) {
+                                try {
+                                    inputContentInfo.requestPermission();
+                                } catch (Exception e) {
+                                    return false;
+                                }
+                            }
+
+                            callback.onImageSelected(inputContentInfo.getContentUri(),
+                                    inputContentInfo.getDescription().getMimeType(0));
+
+                            return true;
+                        } else {
                             return false;
                         }
                     }
-
-                    callback.onImageSelected(
-                            inputContentInfo.getContentUri(),
-                            inputContentInfo.getDescription().getMimeType(0)
-                    );
-
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        });
+                });
     }
 
 }

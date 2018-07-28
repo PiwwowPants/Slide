@@ -1,10 +1,8 @@
-
 package me.ccrama.redditslide.SwipeLayout.app;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-
 import me.ccrama.redditslide.SwipeLayout.SwipeBackLayout;
 import me.ccrama.redditslide.SwipeLayout.Utils;
 // * By ikew0ng
@@ -29,8 +27,7 @@ public class SwipeBackActivity extends AppCompatActivity implements SwipeBackAct
     @Override
     public View findViewById(int id) {
         View v = super.findViewById(id);
-        if (v == null && mHelper != null)
-            return mHelper.findViewById(id);
+        if (v == null && mHelper != null) return mHelper.findViewById(id);
         return v;
     }
 

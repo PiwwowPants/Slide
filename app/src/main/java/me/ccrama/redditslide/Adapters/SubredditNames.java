@@ -2,7 +2,8 @@ package me.ccrama.redditslide.Adapters;
 
 import android.content.Context;
 import android.os.AsyncTask;
-
+import me.ccrama.redditslide.*;
+import me.ccrama.redditslide.Fragments.SubredditListView;
 import net.dean.jraw.models.Subreddit;
 import net.dean.jraw.paginators.Paginator;
 import net.dean.jraw.paginators.SubredditSearchPaginator;
@@ -12,13 +13,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
-
-import me.ccrama.redditslide.Authentication;
-import me.ccrama.redditslide.Constants;
-import me.ccrama.redditslide.Fragments.SubredditListView;
-import me.ccrama.redditslide.PostMatch;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.SettingValues;
 
 /**
  * This class is reponsible for loading a list of subreddits from an endpoint
@@ -33,9 +27,9 @@ public class SubredditNames {
     public boolean nomore = false;
     public boolean stillShow;
     public boolean loading;
-    public SubredditListView parent;
+    public final SubredditListView parent;
     private Paginator<Subreddit> paginator;
-    Context c;
+    final Context c;
 
     public SubredditNames(String where, Context c, SubredditListView parent) {
         posts = new ArrayList<>();
@@ -80,9 +74,11 @@ public class SubredditNames {
             if (submissions != null && !submissions.isEmpty()) {
                 ArrayList<Subreddit> toRemove = new ArrayList<>();
                 for (Subreddit s : submissions) {
-                    if (!SettingValues.subredditFilters.isEmpty() && PostMatch.contains(s.getDisplayName().toLowerCase(
-                            Locale.ENGLISH), PostMatch.subreddits, true))
+                    if (!SettingValues.subredditFilters.isEmpty() && PostMatch.contains(
+                            s.getDisplayName().toLowerCase(Locale.ENGLISH), PostMatch.subreddits,
+                            true)) {
                         toRemove.add(s);
+                    }
                 }
                 submissions.removeAll(toRemove);
                 // new submissions found
@@ -113,68 +109,72 @@ public class SubredditNames {
         protected List<Subreddit> doInBackground(String... subredditPaginators) {
 
             List<Subreddit> things = new ArrayList<>();
-            if (PostMatch.subreddits == null)
-                PostMatch.subreddits = SettingValues.subredditFilters.replaceAll("^[,\\s]+", "").split("[,\\s]+");
+            if (PostMatch.subreddits == null) {
+                PostMatch.subreddits =
+                        SettingValues.subredditFilters.replaceAll("^[,\\s]+", "").split("[,\\s]+");
+            }
 
             try {
-            if (subredditPaginators[0].equalsIgnoreCase("trending")) {
-                List<String> trending = Authentication.reddit.getTrendingSubreddits();
+                if (subredditPaginators[0].equalsIgnoreCase("trending")) {
+                    List<String> trending = Authentication.reddit.getTrendingSubreddits();
 
-                for (String s : trending) {
-                    things.add(Authentication.reddit.getSubreddit(s));
-                }
-                nomore = true;
-            } else if (subredditPaginators[0].equalsIgnoreCase("popular")) {
-                stillShow = true;
-                if (reset || paginator == null) {
-                    paginator = new SubredditStream(Authentication.reddit, subredditPaginators[0]);
-                    paginator.setSorting(SettingValues.getSubmissionSort(where));
-                    paginator.setTimePeriod(SettingValues.getSubmissionTimePeriod(where));
-                    paginator.setLimit(Constants.PAGINATOR_POST_LIMIT);
+                    for (String s : trending) {
+                        things.add(Authentication.reddit.getSubreddit(s));
+                    }
+                    nomore = true;
+                } else if (subredditPaginators[0].equalsIgnoreCase("popular")) {
+                    stillShow = true;
+                    if (reset || paginator == null) {
+                        paginator =
+                                new SubredditStream(Authentication.reddit, subredditPaginators[0]);
+                        paginator.setSorting(SettingValues.getSubmissionSort(where));
+                        paginator.setTimePeriod(SettingValues.getSubmissionTimePeriod(where));
+                        paginator.setLimit(Constants.PAGINATOR_POST_LIMIT);
 
-                }
-
-
-                try {
-                    if (paginator != null && paginator.hasNext()) {
-                        things.addAll(paginator.next());
-                    } else {
-                        nomore = true;
                     }
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    if (e.getMessage().contains("Forbidden")) {
-                        Reddit.authentication.updateToken(context);
+
+                    try {
+                        if (paginator != null && paginator.hasNext()) {
+                            things.addAll(paginator.next());
+                        } else {
+                            nomore = true;
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        if (e.getMessage().contains("Forbidden")) {
+                            Reddit.authentication.updateToken(context);
+                        }
+
+                    }
+                } else {
+                    stillShow = true;
+                    if (reset || paginator == null) {
+                        paginator = new SubredditSearchPaginator(Authentication.reddit,
+                                subredditPaginators[0]);
+                        paginator.setSorting(SettingValues.getSubmissionSort(where));
+                        paginator.setTimePeriod(SettingValues.getSubmissionTimePeriod(where));
+                        paginator.setLimit(Constants.PAGINATOR_POST_LIMIT);
                     }
 
-                }
-            } else {
-                stillShow = true;
-                if (reset || paginator == null) {
-                    paginator = new SubredditSearchPaginator(Authentication.reddit, subredditPaginators[0]);
-                    paginator.setSorting(SettingValues.getSubmissionSort(where));
-                    paginator.setTimePeriod(SettingValues.getSubmissionTimePeriod(where));
-                    paginator.setLimit(Constants.PAGINATOR_POST_LIMIT);
-                }
+                    try {
+                        if (paginator != null && paginator.hasNext()) {
+                            things.addAll(paginator.next());
 
-                try {
-                    if (paginator != null && paginator.hasNext()) {
-                        things.addAll(paginator.next());
+                        } else {
+                            nomore = true;
+                        }
 
-                    } else {
-                        nomore = true;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        if (e.getMessage().contains("Forbidden")) {
+                            Reddit.authentication.updateToken(context);
+                        }
+
                     }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    if (e.getMessage().contains("Forbidden")) {
-                        Reddit.authentication.updateToken(context);
-                    }
-
                 }
-            }
-            } catch (Exception e){
+            } catch (Exception e) {
                 return null;
             }
             return things;

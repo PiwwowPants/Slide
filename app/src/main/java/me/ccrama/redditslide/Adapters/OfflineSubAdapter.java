@@ -2,6 +2,7 @@ package me.ccrama.redditslide.Adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,36 +14,38 @@ import android.widget.TextView;
  */
 public class OfflineSubAdapter extends ArrayAdapter<String> {
 
-    private Context mContext;
-    public OfflineSubAdapter(Context context, int textViewResourceId,
-                            String[] objects) {
+    private final Context mContext;
+
+    public OfflineSubAdapter(Context context, int textViewResourceId, String[] objects) {
         super(context, textViewResourceId, objects);
 
         this.titles = objects;
         mContext = context;
     }
 
-    String[] titles;
+    final String[] titles;
+
     @Override
-    public View getDropDownView(int position, View convertView, ViewGroup parent) {
+    public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
         return getCustomView(position, convertView, parent);
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         return getCustomView(position, convertView, parent);
     }
 
     public View getCustomView(int position, View convertView, ViewGroup parent) {
 
         LayoutInflater inflater =
-                ( LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         ViewHolder holder;
         if (convertView == null) {
             convertView = inflater.inflate(android.R.layout.simple_list_item_1, null);
             holder = new ViewHolder();
-            holder.txt01 = (TextView) convertView.findViewById(android.R.id.text1);
+            holder.txt01 = convertView.findViewById(android.R.id.text1);
             holder.txt01.setTextColor(Color.WHITE);
             convertView.setTag(holder);
         } else {
@@ -57,7 +60,6 @@ public class OfflineSubAdapter extends ArrayAdapter<String> {
     class ViewHolder {
         TextView txt01;
     }
-
 
 
 }

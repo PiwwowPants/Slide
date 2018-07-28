@@ -1,11 +1,9 @@
 package me.ccrama.redditslide.Activities;
 
 import android.os.Bundle;
-
 import me.ccrama.redditslide.R;
 import me.ccrama.redditslide.Reddit;
 import me.ccrama.redditslide.SwipeLayout.app.SwipeBackActivityBase;
-import me.ccrama.redditslide.util.LogUtil;
 
 
 /**

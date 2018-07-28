@@ -39,7 +39,7 @@ public class TimeUtils {
         } else if (diff < DAY_MILLIS) {
             int hours = longToInt(diff / HOUR_MILLIS);
             return c.getString(R.string.time_hours_short, hours);
-        } else if (diff < YEAR_MILLIS){
+        } else if (diff < YEAR_MILLIS) {
             int days = longToInt(diff / DAY_MILLIS);
             return c.getString(R.string.time_days_short, days);
         } else {
@@ -96,11 +96,9 @@ public class TimeUtils {
         String hour = "";
         String minute = "";
 
-        if (hours > 0)
-            hour = res.getQuantityString(R.plurals.time_hours, hours, hours);
-        if (minutes > 0)
-            minute = res.getQuantityString(R.plurals.time_minutes, minutes, minutes);
-        return hour.isEmpty() ? minute : hour + " " + minute ;
+        if (hours > 0) hour = res.getQuantityString(R.plurals.time_hours, hours, hours);
+        if (minutes > 0) minute = res.getQuantityString(R.plurals.time_minutes, minutes, minutes);
+        return hour.isEmpty() ? minute : hour + " " + minute;
     }
 
 }

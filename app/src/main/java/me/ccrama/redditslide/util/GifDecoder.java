@@ -43,7 +43,8 @@ class GifDecoder {
     private Bitmap image; // current frame
     private Bitmap lastBitmap; // previous frame
     private int blockSize = 0; // block size last graphic control extension info
-    private int dispose = 0; // 0=no action; 1=leave in place; 2=restore to bg; 3=restore to prev
+    private int dispose = 0;
+    // 0=no action; 1=leave in place; 2=restore to bg; 3=restore to prev
     private int lastDispose = 0;
     private boolean transparency = false; // use transparent color
     private int delay = 0; // delay in milliseconds
@@ -159,8 +160,7 @@ class GifDecoder {
     }
 
     private Bitmap getFrame(int n) {
-        if (frameCount <= 0)
-            return null;
+        if (frameCount <= 0) return null;
         n = n % frameCount;
         return frames.elementAt(n).image;
     }
@@ -180,8 +180,7 @@ class GifDecoder {
             status = STATUS_OPEN_ERROR;
         }
         try {
-            if (is != null)
-                is.close();
+            if (is != null) is.close();
         } catch (Exception ignored) {
         }
         return status;
@@ -190,7 +189,8 @@ class GifDecoder {
     private void decodeBitmapData() {
         int nullCode = -1;
         int npix = iw * ih;
-        int available, clear, code_mask, code_size, end_of_information, in_code, old_code, bits, code, count, i, datum, data_size, first, top, bi, pi;
+        int available, clear, code_mask, code_size, end_of_information, in_code, old_code, bits,
+                code, count, i, datum, data_size, first, top, bi, pi;
         if ((pixels == null) || (pixels.length < npix)) {
             pixels = new byte[npix]; // allocate new pixel array
         }
@@ -374,11 +374,11 @@ class GifDecoder {
                             break;
                         case 0xff: // application extension
                             readBlock();
-                            String app = "";
+                            StringBuilder app = new StringBuilder();
                             for (int i = 0; i < 11; i++) {
-                                app += (char) block[i];
+                                app.append((char) block[i]);
                             }
-                            if (app.equals("NETSCAPE2.0")) {
+                            if (app.toString().equals("NETSCAPE2.0")) {
                                 readNetscapeExt();
                             } else {
                                 skip(); // don't care
@@ -418,11 +418,11 @@ class GifDecoder {
     }
 
     private void readHeader() {
-        String id = "";
+        StringBuilder id = new StringBuilder();
         for (int i = 0; i < 6; i++) {
-            id += (char) read();
+            id.append((char) read());
         }
-        if (!id.startsWith("GIF")) {
+        if (!id.toString().startsWith("GIF")) {
             status = STATUS_FORMAT_ERROR;
             return;
         }
@@ -533,6 +533,7 @@ class GifDecoder {
     private static class GifFrame {
         public final Bitmap image;
         public final int delay;
+
         public GifFrame(Bitmap im, int del) {
             image = im;
             delay = del;

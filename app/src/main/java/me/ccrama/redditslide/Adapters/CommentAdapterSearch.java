@@ -13,47 +13,36 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.ImageSpan;
-import android.text.style.RelativeSizeSpan;
-import android.text.style.StyleSpan;
-import android.text.style.TypefaceSpan;
+import android.text.style.*;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
-
 import com.devspark.robototextview.RobotoTypefaces;
-
+import me.ccrama.redditslide.*;
+import me.ccrama.redditslide.Views.RoundedBackgroundSpan;
+import me.ccrama.redditslide.Visuals.FontPreferences;
+import me.ccrama.redditslide.Visuals.Palette;
+import me.ccrama.redditslide.util.SubmissionParser;
 import net.dean.jraw.models.Comment;
 import net.dean.jraw.models.CommentNode;
 import net.dean.jraw.models.DistinguishedStatus;
-
-import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-
-import me.ccrama.redditslide.Authentication;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.TimeUtils;
-import me.ccrama.redditslide.UserSubscriptions;
-import me.ccrama.redditslide.UserTags;
-import me.ccrama.redditslide.Views.RoundedBackgroundSpan;
-import me.ccrama.redditslide.Visuals.FontPreferences;
-import me.ccrama.redditslide.Visuals.Palette;
-import me.ccrama.redditslide.util.SubmissionParser;
 
 
 public class CommentAdapterSearch extends RecyclerView.Adapter<RecyclerView.ViewHolder>
@@ -84,8 +73,9 @@ public class CommentAdapterSearch extends RecyclerView.Adapter<RecyclerView.View
         return new UserFilter(this, originalDataSet);
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.comment, viewGroup, false);
         return new CommentViewHolder(v);
@@ -235,7 +225,7 @@ public class CommentAdapterSearch extends RecyclerView.Adapter<RecyclerView.View
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder firstHolder, int pos) {
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder firstHolder, int pos) {
 
         final CommentViewHolder holder = (CommentViewHolder) firstHolder;
 

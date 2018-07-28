@@ -5,17 +5,14 @@ package me.ccrama.redditslide.util;
  */
 
 import android.content.Context;
-
 import com.nostra13.universalimageloader.core.assist.ContentLengthInputStream;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
+import me.ccrama.redditslide.Reddit;
+import okhttp3.Request;
+import okhttp3.ResponseBody;
 
 import java.io.IOException;
 import java.io.InputStream;
-
-import me.ccrama.redditslide.Reddit;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.ResponseBody;
 
 /**
  * Implementation of ImageDownloader which uses {@link com.squareup.okhttp.OkHttpClient} for image

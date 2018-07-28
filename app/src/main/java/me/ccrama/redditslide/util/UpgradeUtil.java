@@ -19,7 +19,6 @@ package me.ccrama.redditslide.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-
 import me.ccrama.redditslide.SettingValues;
 
 public class UpgradeUtil {
@@ -47,8 +46,7 @@ public class UpgradeUtil {
             SharedPreferences prefs = context.getSharedPreferences("SETTINGS", 0);
             String domains = prefs.getString(SettingValues.PREF_ALWAYS_EXTERNAL, "");
 
-            domains = domains
-                    .replaceFirst("(?<=^|,)youtube.co(?=$|,)", "youtube.com")
+            domains = domains.replaceFirst("(?<=^|,)youtube.co(?=$|,)", "youtube.com")
                     .replaceFirst("(?<=^|,)play.google.co(?=$|,)", "play.google.com");
 
             prefs.edit().putString(SettingValues.PREF_ALWAYS_EXTERNAL, domains).apply();

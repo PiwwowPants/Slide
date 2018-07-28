@@ -8,14 +8,12 @@ import android.text.Html;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
-
+import me.ccrama.redditslide.Adapters.SubredditPosts;
+import me.ccrama.redditslide.util.LogUtil;
 import net.dean.jraw.models.Submission;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import me.ccrama.redditslide.Adapters.SubredditPosts;
-import me.ccrama.redditslide.util.LogUtil;
 
 /**
  * Created by ccrama on 10/2/2015.
@@ -36,7 +34,8 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
     public StackRemoteViewsFactory(Context context, Intent intent) {
         mContext = context;
-        int mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+        int mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+                AppWidgetManager.INVALID_APPWIDGET_ID);
     }
 
     public void onCreate() {
@@ -52,7 +51,8 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     }
 
     public RemoteViews getViewAt(int position) {
-        final RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.submission_widget);
+        final RemoteViews rv =
+                new RemoteViews(mContext.getPackageName(), R.layout.submission_widget);
 
         if (position <= getCount()) {
 
@@ -62,11 +62,32 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             ContentType.Type type = ContentType.getContentType(submission);
             if (type == ContentType.Type.IMAGE) {
                 url = submission.getUrl();
-            } else if (submission.getDataNode().has("preview") && submission.getDataNode().get("preview").get("images").get(0).get("source").has("height") && submission.getDataNode().get("preview").get("images").get(0).get("source").get("height").asInt() > 200) {
+            } else if (submission.getDataNode().has("preview")
+                    && submission.getDataNode()
+                    .get("preview")
+                    .get("images")
+                    .get(0)
+                    .get("source")
+                    .has("height")
+                    && submission.getDataNode()
+                    .get("preview")
+                    .get("images")
+                    .get(0)
+                    .get("source")
+                    .get("height")
+                    .asInt() > 200) {
 
-                url = submission.getDataNode().get("preview").get("images").get(0).get("source").get("url").asText();
+                url = submission.getDataNode()
+                        .get("preview")
+                        .get("images")
+                        .get(0)
+                        .get("source")
+                        .get("url")
+                        .asText();
 
-            } else if (submission.getThumbnail() != null && (submission.getThumbnailType() == Submission.ThumbnailType.URL || submission.getThumbnailType() == Submission.ThumbnailType.NSFW)) {
+            } else if (submission.getThumbnail() != null && (submission.getThumbnailType()
+                    == Submission.ThumbnailType.URL
+                    || submission.getThumbnailType() == Submission.ThumbnailType.NSFW)) {
                 url = submission.getThumbnail();
             }
             try {
@@ -83,7 +104,8 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             rv.setTextViewText(R.id.title, Html.fromHtml(submission.getTitle()));
 
             rv.setTextViewText(R.id.subreddit, submission.getSubredditName());
-            rv.setTextViewText(R.id.info, submission.getAuthor() + " " + TimeUtils.getTimeAgo(submission.getCreated().getTime(), mContext));
+            rv.setTextViewText(R.id.info, submission.getAuthor() + " " + TimeUtils.getTimeAgo(
+                    submission.getCreated().getTime(), mContext));
 
             Bundle extras = new Bundle();
             extras.putString("url", submission.getUrl());
@@ -112,11 +134,11 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     }
 
     public void onDataSetChanged() {
-       // if (posts == null) {
+        // if (posts == null) {
         //    posts = new SubredditPosts("all", StackWidgetService.this);
-            Log.v(LogUtil.getTag(), "MAKING POSTS");
-       // }
-       // posts.loadMore(mContext, null, true);
+        Log.v(LogUtil.getTag(), "MAKING POSTS");
+        // }
+        // posts.loadMore(mContext, null, true);
         //TODO
         submissions = posts.posts;
         Log.v(LogUtil.getTag(), "POSTS IS SIZE " + submissions.size());

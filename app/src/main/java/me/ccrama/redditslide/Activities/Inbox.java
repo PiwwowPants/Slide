@@ -9,33 +9,20 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewTreeObserver;
+import android.view.*;
 import android.view.animation.LinearInterpolator;
 import android.view.inputmethod.InputMethodManager;
-
+import me.ccrama.redditslide.*;
+import me.ccrama.redditslide.Autocache.AutoCacheScheduler;
+import me.ccrama.redditslide.Fragments.InboxPage;
+import me.ccrama.redditslide.Fragments.SettingsGeneralFragment;
+import me.ccrama.redditslide.Notifications.NotificationJobScheduler;
+import me.ccrama.redditslide.Visuals.Palette;
+import me.ccrama.redditslide.util.LogUtil;
 import net.dean.jraw.managers.InboxManager;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import me.ccrama.redditslide.Authentication;
-import me.ccrama.redditslide.Autocache.AutoCacheScheduler;
-import me.ccrama.redditslide.ColorPreferences;
-import me.ccrama.redditslide.ContentGrabber;
-import me.ccrama.redditslide.Fragments.InboxPage;
-import me.ccrama.redditslide.Fragments.SettingsGeneralFragment;
-import me.ccrama.redditslide.Notifications.NotificationJobScheduler;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.SettingValues;
-import me.ccrama.redditslide.UserSubscriptions;
-import me.ccrama.redditslide.Visuals.Palette;
-import me.ccrama.redditslide.util.LogUtil;
 
 /**
  * Created by ccrama on 9/17/2015.
@@ -139,7 +126,9 @@ public class Inbox extends BaseActivityAnim {
     @Override
     public void onCreate(Bundle savedInstance) {
         overrideSwipeFromAnywhere();
-        if (Authentication.reddit == null || !Authentication.reddit.isAuthenticated() || Authentication.me == null) {
+        if (Authentication.reddit == null
+                || !Authentication.reddit.isAuthenticated()
+                || Authentication.me == null) {
             LogUtil.v("Reauthenticating");
 
             new AsyncTask<Void, Void, Void>() {
@@ -174,7 +163,8 @@ public class Inbox extends BaseActivityAnim {
 
                         if (Authentication.reddit.isAuthenticated()) {
                             final Set<String> accounts =
-                                    Authentication.authentication.getStringSet("accounts", new HashSet<String>());
+                                    Authentication.authentication.getStringSet("accounts",
+                                            new HashSet<String>());
                             if (accounts.contains(name)) { //convert to new system
                                 accounts.remove(name);
                                 accounts.add(name + ":" + Authentication.refresh);
@@ -186,7 +176,7 @@ public class Inbox extends BaseActivityAnim {
                             Reddit.notFirst = true;
                         }
 
-                    } catch (Exception ignored){
+                    } catch (Exception ignored) {
 
                     }
                     return null;
@@ -274,9 +264,10 @@ public class Inbox extends BaseActivityAnim {
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
-        InputMethodManager keyboard = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager keyboard =
+                (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         keyboard.hideSoftInputFromWindow(getWindow().getAttributes().token, 0);
     }
 }

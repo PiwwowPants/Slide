@@ -6,14 +6,12 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
-
-import java.util.Locale;
-
 import me.ccrama.redditslide.OpenRedditLink;
 import me.ccrama.redditslide.R;
 import me.ccrama.redditslide.util.LogUtil;
+
+import java.util.Locale;
 
 /**
  * Created by ccrama on 9/28/2015.
@@ -47,9 +45,9 @@ public class OpenContent extends Activity {
     boolean second = false;
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
-        if(second){
+        if (second) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 finishAndRemoveTask();
             } else {
@@ -61,7 +59,7 @@ public class OpenContent extends Activity {
     }
 
     @Override
-    public void onNewIntent(Intent intent){
+    public void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         Uri data = intent.getData();
         Bundle extras = intent.getExtras();

@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -20,14 +19,6 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
-
 import me.ccrama.redditslide.ContentType;
 import me.ccrama.redditslide.R;
 import me.ccrama.redditslide.Reddit;
@@ -37,6 +28,13 @@ import me.ccrama.redditslide.util.HttpUtil;
 import me.ccrama.redditslide.util.LogUtil;
 import me.ccrama.redditslide.util.NetworkUtil;
 import okhttp3.OkHttpClient;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
 
 
 /**
@@ -49,9 +47,7 @@ public class PopMediaView {
             final URI uri = new URI(url);
             final String path = uri.getPath();
 
-            return !ContentType.isGif(uri)
-                    && !ContentType.isImage(uri)
-                    && path.contains(".");
+            return !ContentType.isGif(uri) && !ContentType.isImage(uri) && path.contains(".");
         } catch (URISyntaxException e) {
             return false;
         }
@@ -98,13 +94,15 @@ public class PopMediaView {
     public void doLoadGif(final String dat, View v) {
         v.findViewById(R.id.gifarea).setVisibility(View.VISIBLE);
 
-        MediaVideoView videoView = (MediaVideoView) v.findViewById(R.id.gif);
+        MediaVideoView videoView = v.findViewById(R.id.gif);
 
         videoView.clearFocus();
         v.findViewById(R.id.submission_image).setVisibility(View.GONE);
-        final ProgressBar loader = (ProgressBar) v.findViewById(R.id.gifprogress);
+        final ProgressBar loader = v.findViewById(R.id.gifprogress);
         v.findViewById(R.id.progress).setVisibility(View.GONE);
-        GifUtils.AsyncLoadGif gif = new GifUtils.AsyncLoadGif(((Activity) v.getContext()), (MediaVideoView) v.findViewById(R.id.gif), loader, null, null, false, true, true, "");
+        GifUtils.AsyncLoadGif gif = new GifUtils.AsyncLoadGif(((Activity) v.getContext()),
+                (MediaVideoView) v.findViewById(R.id.gif), loader, null, null, false, true, true,
+                "");
         gif.execute(dat);
     }
 
@@ -198,7 +196,8 @@ public class PopMediaView {
             @Override
             protected void onPostExecute(JsonObject result) {
                 LogUtil.v("doLoad onPostExecute() called with: " + "result = [" + result + "]");
-                if (result != null && !result.isJsonNull() && (result.has("fullsize_url") || result.has("url"))) {
+                if (result != null && !result.isJsonNull() && (result.has("fullsize_url")
+                        || result.has("url"))) {
                     String url;
                     if (result.has("fullsize_url")) {
                         url = result.get("fullsize_url").getAsString();
@@ -212,23 +211,29 @@ public class PopMediaView {
     }
 
     public void doLoadImage(String contentUrl, final View v) {
-        if (contentUrl != null && contentUrl.contains("bildgur.de"))
+        if (contentUrl != null && contentUrl.contains("bildgur.de")) {
             contentUrl = contentUrl.replace("b.bildgur.de", "i.imgur.com");
+        }
         if (contentUrl != null && ContentType.isImgurLink(contentUrl)) {
             contentUrl = contentUrl + ".png";
         }
 
         v.findViewById(R.id.gifprogress).setVisibility(View.GONE);
 
-        if (contentUrl != null && contentUrl.contains("m.imgur.com"))
+        if (contentUrl != null && contentUrl.contains("m.imgur.com")) {
             contentUrl = contentUrl.replace("m.imgur.com", "i.imgur.com");
+        }
         if (contentUrl == null) {
 
             //todo maybe something better
 
         }
 
-        if ((contentUrl != null && !contentUrl.startsWith("https://i.redditmedia.com") && !contentUrl.startsWith("https://i.reddituploads.com") && !contentUrl.contains("imgur.com"))) { //we can assume redditmedia and imgur links are to direct images and not websites
+        if ((contentUrl != null
+                && !contentUrl.startsWith("https://i.redditmedia.com")
+                && !contentUrl.startsWith("https://i.reddituploads.com")
+                && !contentUrl.contains(
+                "imgur.com"))) { //we can assume redditmedia and imgur links are to direct images and not websites
             v.findViewById(R.id.progress).setVisibility(View.VISIBLE);
             ((ProgressBar) v.findViewById(R.id.progress)).setIndeterminate(true);
 
@@ -270,11 +275,11 @@ public class PopMediaView {
     }
 
     public void displayImage(final String url, final View v) {
-        final SubsamplingScaleImageView i = (SubsamplingScaleImageView) v.findViewById(R.id.submission_image);
+        final SubsamplingScaleImageView i = v.findViewById(R.id.submission_image);
 
         i.setMinimumDpi(70);
         i.setMinimumTileDpi(240);
-        final ProgressBar bar = (ProgressBar) v.findViewById(R.id.progress);
+        final ProgressBar bar = v.findViewById(R.id.progress);
         bar.setIndeterminate(false);
         bar.setProgress(0);
 
@@ -290,7 +295,9 @@ public class PopMediaView {
         fakeImage.setLayoutParams(new LinearLayout.LayoutParams(i.getWidth(), i.getHeight()));
         fakeImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-        File f = ((Reddit) v.getContext().getApplicationContext()).getImageLoader().getDiscCache().get(url);
+        File f = ((Reddit) v.getContext().getApplicationContext()).getImageLoader()
+                .getDiscCache()
+                .get(url);
         if (f != null && f.exists()) {
             try {
                 i.setImage(ImageSource.uri(f.getAbsolutePath()));
@@ -301,48 +308,55 @@ public class PopMediaView {
             handler.removeCallbacks(progressBarDelayRunner);
         } else {
             ((Reddit) v.getContext().getApplicationContext()).getImageLoader()
-                    .displayImage(url, new ImageViewAware(fakeImage), new DisplayImageOptions.Builder()
-                            .resetViewBeforeLoading(true)
-                            .cacheOnDisk(true)
-                            .imageScaleType(ImageScaleType.NONE)
-                            .cacheInMemory(false)
-                            .build(), new ImageLoadingListener() {
-                        private View mView;
+                    .displayImage(url, new ImageViewAware(fakeImage),
+                            new DisplayImageOptions.Builder().resetViewBeforeLoading(true)
+                                    .cacheOnDisk(true)
+                                    .imageScaleType(ImageScaleType.NONE)
+                                    .cacheInMemory(false)
+                                    .build(), new ImageLoadingListener() {
+                                private View mView;
 
-                        @Override
-                        public void onLoadingStarted(String imageUri, View view) {
-                            mView = view;
-                        }
+                                @Override
+                                public void onLoadingStarted(String imageUri, View view) {
+                                    mView = view;
+                                }
 
-                        @Override
-                        public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                            Log.v(LogUtil.getTag(), "LOADING FAILED");
+                                @Override
+                                public void onLoadingFailed(String imageUri, View view,
+                                                            FailReason failReason) {
+                                    Log.v(LogUtil.getTag(), "LOADING FAILED");
 
-                        }
+                                }
 
-                        @Override
-                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                            File f = ((Reddit) v.getContext().getApplicationContext()).getImageLoader().getDiscCache().get(url);
-                            if (f != null && f.exists()) {
-                                i.setImage(ImageSource.uri(f.getAbsolutePath()));
-                            } else {
-                                i.setImage(ImageSource.bitmap(loadedImage));
-                            }
-                            (v.findViewById(R.id.progress)).setVisibility(View.GONE);
-                            handler.removeCallbacks(progressBarDelayRunner);
-                        }
+                                @Override
+                                public void onLoadingComplete(String imageUri, View view,
+                                                              Bitmap loadedImage) {
+                                    File f = ((Reddit) v.getContext()
+                                            .getApplicationContext()).getImageLoader()
+                                            .getDiscCache()
+                                            .get(url);
+                                    if (f != null && f.exists()) {
+                                        i.setImage(ImageSource.uri(f.getAbsolutePath()));
+                                    } else {
+                                        i.setImage(ImageSource.bitmap(loadedImage));
+                                    }
+                                    (v.findViewById(R.id.progress)).setVisibility(View.GONE);
+                                    handler.removeCallbacks(progressBarDelayRunner);
+                                }
 
-                        @Override
-                        public void onLoadingCancelled(String imageUri, View view) {
-                            Log.v(LogUtil.getTag(), "LOADING CANCELLED");
+                                @Override
+                                public void onLoadingCancelled(String imageUri, View view) {
+                                    Log.v(LogUtil.getTag(), "LOADING CANCELLED");
 
-                        }
-                    }, new ImageLoadingProgressListener() {
-                        @Override
-                        public void onProgressUpdate(String imageUri, View view, int current, int total) {
-                            ((ProgressBar) v.findViewById(R.id.progress)).setProgress(Math.round(100.0f * current / total));
-                        }
-                    });
+                                }
+                            }, new ImageLoadingProgressListener() {
+                                @Override
+                                public void onProgressUpdate(String imageUri, View view,
+                                                             int current, int total) {
+                                    ((ProgressBar) v.findViewById(R.id.progress)).setProgress(
+                                            Math.round(100.0f * current / total));
+                                }
+                            });
         }
     }
 }

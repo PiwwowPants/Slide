@@ -6,24 +6,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ImageView;
-
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import me.ccrama.redditslide.ImgurAlbum.Image;
 import me.ccrama.redditslide.Reddit;
 import me.ccrama.redditslide.Tumblr.Photo;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by carlo_000 on 3/20/2016.
  */
 public class ImageGridAdapter extends android.widget.BaseAdapter {
-    private Context      mContext;
-    private List<String> jsons;
+    private final Context mContext;
+    private final List<String> jsons;
     public static final DisplayImageOptions options =
             new DisplayImageOptions.Builder().cacheOnDisk(true)
                     .resetViewBeforeLoading(true)

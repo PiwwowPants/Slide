@@ -11,15 +11,10 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Pair;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
-import android.view.View;
+import android.view.*;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.MediaController;
-import android.widget.SeekBar;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,8 +24,7 @@ import java.util.Vector;
 /**
  * Created by vishna on 22/07/15.
  */
-public class MediaVideoViewOld extends SurfaceView
-        implements MediaController.MediaPlayerControl {
+public class MediaVideoViewOld extends SurfaceView implements MediaController.MediaPlayerControl {
     // all possible internal statfes
     private static final int STATE_ERROR = -1;
     private static final int STATE_IDLE = 0;
@@ -39,7 +33,7 @@ public class MediaVideoViewOld extends SurfaceView
     private static final int STATE_PLAYING = 3;
     private static final int STATE_PAUSED = 4;
     private static final int STATE_PLAYBACK_COMPLETED = 5;
-    private String TAG = "VideoView";
+    private final String TAG = "VideoView";
     // settable by the client
     private Uri mUri;
     private Map<String, String> mHeaders;
@@ -57,7 +51,7 @@ public class MediaVideoViewOld extends SurfaceView
     private int mAudioSession;
     private int mVideoWidth;
     private int mVideoHeight;
-    MediaPlayer.OnVideoSizeChangedListener mSizeChangedListener =
+    final MediaPlayer.OnVideoSizeChangedListener mSizeChangedListener =
             new MediaPlayer.OnVideoSizeChangedListener() {
                 public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
                     mVideoWidth = mp.getVideoWidth();
@@ -76,11 +70,12 @@ public class MediaVideoViewOld extends SurfaceView
     private int mCurrentBufferPercentage;
     private MediaPlayer.OnErrorListener mOnErrorListener;
     private MediaPlayer.OnInfoListener mOnInfoListener;
-    private int mSeekWhenPrepared;  // recording the seek position while preparing
+    private int mSeekWhenPrepared;
+    // recording the seek position while preparing
     private boolean mCanPause;
     private boolean mCanSeekBack;
     private boolean mCanSeekForward;
-    MediaPlayer.OnPreparedListener mPreparedListener = new MediaPlayer.OnPreparedListener() {
+    final MediaPlayer.OnPreparedListener mPreparedListener = new MediaPlayer.OnPreparedListener() {
         public void onPrepared(MediaPlayer mp) {
             mCurrentState = STATE_PREPARED;
 
@@ -108,7 +103,8 @@ public class MediaVideoViewOld extends SurfaceView
             mVideoWidth = mp.getVideoWidth();
             mVideoHeight = mp.getVideoHeight();
 
-            int seekToPosition = mSeekWhenPrepared;  // mSeekWhenPrepared may be changed after seekTo() call
+            int seekToPosition =
+                    mSeekWhenPrepared;  // mSeekWhenPrepared may be changed after seekTo() call
             if (seekToPosition != 0) {
                 seekTo(seekToPosition);
             }
@@ -124,8 +120,7 @@ public class MediaVideoViewOld extends SurfaceView
                         if (mMediaController != null) {
                             mMediaController.show();
                         }
-                    } else if (!isPlaying() &&
-                            (seekToPosition != 0 || getCurrentPosition() > 0)) {
+                    } else if (!isPlaying() && (seekToPosition != 0 || getCurrentPosition() > 0)) {
                         if (mMediaController != null) {
                             // Show the media controls when we're paused into a video and make 'em stick.
                             mMediaController.show(0);
@@ -142,7 +137,7 @@ public class MediaVideoViewOld extends SurfaceView
         }
     };
     private Vector<Pair<InputStream, MediaFormat>> mPendingSubtitleTracks;
-    private MediaPlayer.OnCompletionListener mCompletionListener =
+    private final MediaPlayer.OnCompletionListener mCompletionListener =
             new MediaPlayer.OnCompletionListener() {
                 public void onCompletion(MediaPlayer mp) {
                     mCurrentState = STATE_PLAYBACK_COMPLETED;
@@ -155,7 +150,7 @@ public class MediaVideoViewOld extends SurfaceView
                     }
                 }
             };
-    private MediaPlayer.OnInfoListener mInfoListener =
+    private final MediaPlayer.OnInfoListener mInfoListener =
             new MediaPlayer.OnInfoListener() {
                 public boolean onInfo(MediaPlayer mp, int arg1, int arg2) {
                     if (mOnInfoListener != null) {
@@ -164,7 +159,7 @@ public class MediaVideoViewOld extends SurfaceView
                     return true;
                 }
             };
-    private MediaPlayer.OnErrorListener mErrorListener =
+    private final MediaPlayer.OnErrorListener mErrorListener =
             new MediaPlayer.OnErrorListener() {
                 public boolean onError(MediaPlayer mp, int framework_err, int impl_err) {
                     Log.d(TAG, "Error: " + framework_err + "," + impl_err);
@@ -174,18 +169,18 @@ public class MediaVideoViewOld extends SurfaceView
                         mMediaController.hide();
                     }
 
-            /* If an error handler has been supplied, use it and finish. */
+                    /* If an error handler has been supplied, use it and finish. */
                     if (mOnErrorListener != null) {
                         if (mOnErrorListener.onError(mMediaPlayer, framework_err, impl_err)) {
                             return true;
                         }
                     }
 
-            /* Otherwise, pop up an error dialog so the user knows that
-             * something bad has happened. Only try and pop up the dialog
-             * if we're attached to a window. When we're going away and no
-             * longer have a window, don't bother showing the user an error.
-             */
+                    /* Otherwise, pop up an error dialog so the user knows that
+                     * something bad has happened. Only try and pop up the dialog
+                     * if we're attached to a window. When we're going away and no
+                     * longer have a window, don't bother showing the user an error.
+                     */
 //            if (getWindowToken() != null) {
 //               Resources r = getContext().getResources();
 //               int messageId;
@@ -215,15 +210,15 @@ public class MediaVideoViewOld extends SurfaceView
                     return true;
                 }
             };
-    private MediaPlayer.OnBufferingUpdateListener mBufferingUpdateListener =
+    private final MediaPlayer.OnBufferingUpdateListener mBufferingUpdateListener =
             new MediaPlayer.OnBufferingUpdateListener() {
                 public void onBufferingUpdate(MediaPlayer mp, int percent) {
                     mCurrentBufferPercentage = percent;
                 }
             };
-    SurfaceHolder.Callback mSHCallback = new SurfaceHolder.Callback() {
-        public void surfaceChanged(SurfaceHolder holder, int format,
-                                   int w, int h) {
+    final SurfaceHolder.Callback mSHCallback =
+            new SurfaceHolder.Callback() {
+                public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
             mSurfaceWidth = w;
             mSurfaceHeight = h;
             boolean isValidState = (mTargetState == STATE_PLAYING);
@@ -265,7 +260,8 @@ public class MediaVideoViewOld extends SurfaceView
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public MediaVideoViewOld(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public MediaVideoViewOld(Context context, AttributeSet attrs, int defStyleAttr,
+                             int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initVideoView();
     }
@@ -475,8 +471,7 @@ public class MediaVideoViewOld extends SurfaceView
     private void attachMediaController() {
         if (mMediaPlayer != null && mMediaController != null) {
             mMediaController.setMediaPlayer(this);
-            View anchorView = this.getParent() instanceof View ?
-                    (View) this.getParent() : this;
+            View anchorView = this.getParent() instanceof View ? (View) this.getParent() : this;
             mMediaController.setAnchorView(anchorView);
             mMediaController.setEnabled(isInPlaybackState());
         }
@@ -558,39 +553,41 @@ public class MediaVideoViewOld extends SurfaceView
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        boolean isKeyCodeSupported = keyCode != KeyEvent.KEYCODE_BACK &&
-                keyCode != KeyEvent.KEYCODE_VOLUME_UP &&
-                keyCode != KeyEvent.KEYCODE_VOLUME_DOWN &&
-                keyCode != KeyEvent.KEYCODE_VOLUME_MUTE &&
-                keyCode != KeyEvent.KEYCODE_MENU &&
-                keyCode != KeyEvent.KEYCODE_CALL &&
-                keyCode != KeyEvent.KEYCODE_ENDCALL;
+        boolean isKeyCodeSupported = keyCode != KeyEvent.KEYCODE_BACK
+                && keyCode != KeyEvent.KEYCODE_VOLUME_UP
+                && keyCode != KeyEvent.KEYCODE_VOLUME_DOWN
+                && keyCode != KeyEvent.KEYCODE_VOLUME_MUTE
+                && keyCode != KeyEvent.KEYCODE_MENU
+                && keyCode != KeyEvent.KEYCODE_CALL
+                && keyCode != KeyEvent.KEYCODE_ENDCALL;
         if (isInPlaybackState() && isKeyCodeSupported && mMediaController != null) {
-            if (keyCode == KeyEvent.KEYCODE_HEADSETHOOK ||
-                    keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE) {
-                if (mMediaPlayer.isPlaying()) {
-                    pause();
-                    mMediaController.show();
-                } else {
-                    start();
-                    mMediaController.hide();
-                }
-                return true;
-            } else if (keyCode == KeyEvent.KEYCODE_MEDIA_PLAY) {
-                if (!mMediaPlayer.isPlaying()) {
-                    start();
-                    mMediaController.hide();
-                }
-                return true;
-            } else if (keyCode == KeyEvent.KEYCODE_MEDIA_STOP
-                    || keyCode == KeyEvent.KEYCODE_MEDIA_PAUSE) {
-                if (mMediaPlayer.isPlaying()) {
-                    pause();
-                    mMediaController.show();
-                }
-                return true;
-            } else {
-                toggleMediaControlsVisiblity();
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_HEADSETHOOK:
+                case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
+                    if (mMediaPlayer.isPlaying()) {
+                        pause();
+                        mMediaController.show();
+                    } else {
+                        start();
+                        mMediaController.hide();
+                    }
+                    return true;
+                case KeyEvent.KEYCODE_MEDIA_PLAY:
+                    if (!mMediaPlayer.isPlaying()) {
+                        start();
+                        mMediaController.hide();
+                    }
+                    return true;
+                case KeyEvent.KEYCODE_MEDIA_STOP:
+                case KeyEvent.KEYCODE_MEDIA_PAUSE:
+                    if (mMediaPlayer.isPlaying()) {
+                        pause();
+                        mMediaController.show();
+                    }
+                    return true;
+                default:
+                    toggleMediaControlsVisiblity();
+                    break;
             }
         }
 
@@ -674,10 +671,10 @@ public class MediaVideoViewOld extends SurfaceView
     }
 
     private boolean isInPlaybackState() {
-        return (mMediaPlayer != null &&
-                mCurrentState != STATE_ERROR &&
-                mCurrentState != STATE_IDLE &&
-                mCurrentState != STATE_PREPARING);
+        return (mMediaPlayer != null
+                && mCurrentState != STATE_ERROR
+                && mCurrentState != STATE_IDLE
+                && mCurrentState != STATE_PREPARING);
     }
 
     @Override
