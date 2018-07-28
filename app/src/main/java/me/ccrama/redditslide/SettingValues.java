@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import me.ccrama.redditslide.Views.CreateCardView;
 import me.ccrama.redditslide.Visuals.Palette;
+import me.ccrama.redditslide.util.SortingUtil;
 import net.dean.jraw.models.CommentSort;
 import net.dean.jraw.paginators.Sorting;
 import net.dean.jraw.paginators.TimePeriod;
@@ -452,22 +453,22 @@ public class SettingValues {
 
     public static Sorting getSubmissionSort(String sub) {
         String subreddit = sub.toLowerCase(Locale.ENGLISH);
-        if (Reddit.sorting.containsKey(subreddit)) {
-            return Reddit.sorting.get(subreddit);
+        if (SortingUtil.sorting.containsKey(subreddit)) {
+            return SortingUtil.sorting.get(subreddit);
         } else {
             return Sorting.valueOf(prefs.getString("defaultSort" + sub.toLowerCase(Locale.ENGLISH),
-                    Reddit.defaultSorting.name()));
+                    SortingUtil.defaultSorting.name()));
         }
     }
 
     public static TimePeriod getSubmissionTimePeriod(String sub) {
         String subreddit = sub.toLowerCase(Locale.ENGLISH);
-        if (Reddit.times.containsKey(subreddit)) {
-            return Reddit.times.get(subreddit);
+        if (SortingUtil.times.containsKey(subreddit)) {
+            return SortingUtil.times.get(subreddit);
         } else {
             return TimePeriod.valueOf(
                     prefs.getString("defaultTime" + sub.toLowerCase(Locale.ENGLISH),
-                            Reddit.timePeriod.name()));
+                            SortingUtil.timePeriod.name()));
         }
     }
 
@@ -488,13 +489,13 @@ public class SettingValues {
 
     public static Sorting getBaseSubmissionSort(String sub) {
         return Sorting.valueOf(prefs.getString("defaultSort" + sub.toLowerCase(Locale.ENGLISH),
-                Reddit.defaultSorting.name()));
+                SortingUtil.defaultSorting.name()));
 
     }
 
     public static TimePeriod getBaseTimePeriod(String sub) {
         return TimePeriod.valueOf(prefs.getString("defaultTime" + sub.toLowerCase(Locale.ENGLISH),
-                Reddit.timePeriod.name()));
+                SortingUtil.timePeriod.name()));
 
     }
 

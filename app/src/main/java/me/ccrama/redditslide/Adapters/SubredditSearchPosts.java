@@ -4,7 +4,11 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.widget.Toast;
-
+import me.ccrama.redditslide.Activities.MultiredditOverview;
+import me.ccrama.redditslide.Authentication;
+import me.ccrama.redditslide.PostMatch;
+import me.ccrama.redditslide.R;
+import me.ccrama.redditslide.util.SortingUtil;
 import net.dean.jraw.http.NetworkException;
 import net.dean.jraw.models.Contribution;
 import net.dean.jraw.models.Submission;
@@ -15,13 +19,6 @@ import net.dean.jraw.paginators.TimePeriod;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-
-import me.ccrama.redditslide.Activities.MultiredditOverview;
-import me.ccrama.redditslide.Authentication;
-import me.ccrama.redditslide.PostMatch;
-import me.ccrama.redditslide.R;
-import me.ccrama.redditslide.Reddit;
-import me.ccrama.redditslide.util.LogUtil;
 
 /**
  * Created by ccrama on 9/17/2015.
@@ -160,7 +157,7 @@ public class SubredditSearchPosts extends GeneralPosts {
                                 MultiredditOverview.searchMulti);
                         ((SubmissionSearchPaginatorMultireddit) paginator).setSearchSorting(
                                 SubmissionSearchPaginatorMultireddit.SearchSort.valueOf(
-                                        Reddit.search.toString()));
+                                        SortingUtil.search.toString()));
                         ((SubmissionSearchPaginatorMultireddit) paginator).setSyntax(
                                 SubmissionSearchPaginatorMultireddit.SearchSyntax.LUCENE);
 
@@ -169,7 +166,8 @@ public class SubredditSearchPosts extends GeneralPosts {
                         if (!subreddit.isEmpty()) {
                             ((SubmissionSearchPaginator) paginator).setSubreddit(subreddit);
                         }
-                        ((SubmissionSearchPaginator) paginator).setSearchSorting(Reddit.search);
+                        ((SubmissionSearchPaginator) paginator).setSearchSorting(
+                                SortingUtil.search);
                         ((SubmissionSearchPaginator) paginator).setSyntax(
                                 SubmissionSearchPaginator.SearchSyntax.LUCENE);
 

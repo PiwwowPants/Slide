@@ -13,18 +13,9 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.text.Html;
-
-import net.dean.jraw.models.Message;
-import net.dean.jraw.paginators.InboxPaginator;
-
-import org.apache.commons.text.StringEscapeUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import me.ccrama.redditslide.Activities.Inbox;
 import me.ccrama.redditslide.Activities.OpenContent;
 import me.ccrama.redditslide.Adapters.MarkAsReadService;
@@ -32,6 +23,12 @@ import me.ccrama.redditslide.Authentication;
 import me.ccrama.redditslide.R;
 import me.ccrama.redditslide.Reddit;
 import me.ccrama.redditslide.SettingValues;
+import net.dean.jraw.models.Message;
+import net.dean.jraw.paginators.InboxPaginator;
+import org.apache.commons.text.StringEscapeUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CheckForMailSingle extends BroadcastReceiver {
 
@@ -53,7 +50,7 @@ public class CheckForMailSingle extends BroadcastReceiver {
         public void onPostExecute(List<Message> messages) {
             Resources res = c.getResources();
             if (messages != null && !messages.isEmpty()) {
-                if (Reddit.isPackageInstalled(c, "com.teslacoilsw.notifier")) {
+                if (Reddit.isPackageInstalled("com.teslacoilsw.notifier")) {
                     try {
 
                         ContentValues cv = new ContentValues();
@@ -101,15 +98,15 @@ public class CheckForMailSingle extends BroadcastReceiver {
                                 message.getSubreddit()));
                     }
 
-                    Notification notification =
-                            new NotificationCompat.Builder(c).setContentIntent(intent)
+                    NotificationCompat.Builder builder =
+                            new NotificationCompat.Builder(c, Reddit.CHANNEL_MAIL).setContentIntent(
+                                    intent)
                                     .setSmallIcon(R.drawable.notif)
                                     .setTicker(
                                             res.getQuantityString(R.plurals.mail_notification_title,
                                                     1, 1))
                                     .setWhen(System.currentTimeMillis())
                                     .setAutoCancel(true)
-                                    .setChannelId(SettingValues.notifSound ? Reddit.CHANNEL_MAIL_SOUND : Reddit.CHANNEL_MAIL)
                                     .setContentTitle(
                                             res.getQuantityString(R.plurals.mail_notification_title,
                                                     1, 1))
@@ -118,8 +115,11 @@ public class CheckForMailSingle extends BroadcastReceiver {
                                     .setGroupSummary(true)
                                     .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_SUMMARY)
                                     .addAction(R.drawable.ic_check_all_black,
-                                            c.getString(R.string.mail_mark_read), readPI)
-                                    .build();
+                                            c.getString(R.string.mail_mark_read), readPI);
+                    if (!SettingValues.notifSound) {
+                        builder.setSound(null);
+                    }
+                    Notification notification = builder.build();
 
                     notificationManager.notify(0, notification);
                 }
@@ -166,8 +166,9 @@ public class CheckForMailSingle extends BroadcastReceiver {
                             2 + (int) message.getCreated().getTime(), c,
                             new String[]{message.getFullName()});
 
-                    Notification notification =
-                            new NotificationCompat.Builder(c).setContentIntent(openPi)
+                    NotificationCompat.Builder builder =
+                            new NotificationCompat.Builder(c, Reddit.CHANNEL_MAIL).setContentIntent(
+                                    openPi)
                                     .setSmallIcon(R.drawable.notif)
                                     .setTicker(
                                             res.getQuantityString(R.plurals.mail_notification_title,
@@ -175,15 +176,17 @@ public class CheckForMailSingle extends BroadcastReceiver {
                                     .setWhen(System.currentTimeMillis())
                                     .setAutoCancel(true)
                                     .setContentTitle(contentTitle)
-                                    .setChannelId(SettingValues.notifSound ? Reddit.CHANNEL_MAIL_SOUND : Reddit.CHANNEL_MAIL)
                                     .setContentText(Html.fromHtml(StringEscapeUtils.unescapeHtml4(
                                             message.getDataNode().get("body_html").asText())))
                                     .setStyle(notiStyle)
                                     .setGroup("MESSAGES")
                                     .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_SUMMARY)
                                     .addAction(R.drawable.ic_check_all_black,
-                                            c.getString(R.string.mail_mark_read), readPISingle)
-                                    .build();
+                                            c.getString(R.string.mail_mark_read), readPISingle);
+                    if (!SettingValues.notifSound) {
+                        builder.setSound(null);
+                    }
+                    Notification notification = builder.build();
                     notificationManager.notify((int) message.getCreated().getTime(), notification);
                 }
             }

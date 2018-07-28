@@ -12,16 +12,10 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Pair;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
+import android.view.*;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.afollestad.materialdialogs.AlertDialogWrapper;
-
 import me.ccrama.redditslide.ColorPreferences;
 import me.ccrama.redditslide.R;
 import me.ccrama.redditslide.Reddit;
@@ -323,7 +317,7 @@ public class Tutorial extends AppCompatActivity {
                 public void onClick(View v) {
                     Reddit.colors.edit().putString("Tutorial", "S").commit();
                     Reddit.appRestart.edit().putString("startScreen", "a").apply();
-                    Reddit.forceRestart(getActivity());
+                    Reddit.forceRestart(getActivity(), false);
                 }
             });
             return v;
